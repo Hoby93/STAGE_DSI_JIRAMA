@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+        <!-- basic -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- mobile metas -->
+        {# <meta name="viewport" content="width=device-width, initial-scale=1"> #}
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+        <!-- Title -->
+        <title>
+            Jirama | Coupure & Site
+        </title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!-- bootstrap css -->
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-customized.css') }}">
+        <!-- style css -->
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.info.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.map.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.time.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/demo.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/sidebar.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/searchbar.css') }}">
+        <!-- theme css -->
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/theme.css') }}">
+        <!-- style leaflet css -->
+        <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
+        <link rel="stylesheet" href="{{ asset('leaflet/L.Icon.Pulse.css') }}" />
+        <!-- Responsive-->
+        <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/responsive.map.css') }}">
+        <!-- fevicon -->
+       <link rel="shortcut icon" href="{{ asset('images/logo-jirama.png') }}">
+        <!-- Scrollbar Custom CSS -->
+        <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}">
+        <!-- Tweaks for older IEs-->
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+        <!-- fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+        <!-- font awesome -->
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!--  -->
+        <!-- owl stylesheets -->
+        <link href="https://fonts.googleapis.com/css?family=Great+Vibes|Poppins:400,700&display=swap&subset=latin-ext" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        {# <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}"> #}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+    
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    </head>
+    <body>
+        <!-- banner bg main start -->
+        <div class="banner_bg_main map_main" id="map">
+
+            <!-- logo section start -->
+            <div class="map-logo ml-5">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="logo"><a href="index.html"><img src="images/logo-jirama-mg2.png"></a></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!-- logo section end -->
+            <!-- header section start -->
+            <div class="map-header">
+                <div class="container">
+                <div class="containt_main">
+                    <div id="mySidenav" class="sidenav">
+                        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                        <a href="index.html">Accueil</a>
+                        <a href="fashion.html">Annonce</a>
+                        <a href="electronic.html">Service</a>
+                        <a href="jewellery.html">Support</a>
+                    </div>
+                    <a class="toggle_icon link-bars dark" onclick="openNav()">
+                        <i class="bars-icon" data-feather="menu"></i>
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tous
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Shop</a>
+                            <a class="dropdown-item" href="#">Agence</a>
+                            <a class="dropdown-item" href="#">Endroit</a>
+                        </div>
+                    </div>
+                    <div class="main">
+                        <!-- Another variation with a button -->
+                        <div class="input-group">
+                            {# <i class="fa fa-map-marker mt-2 ms-2" style="margin-right: -4%;z-index: 10;margin-top: -20px;"></i> #}
+                            <input type="text" class="form-control form-search" placeholder="Recherche un endroit">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary btn-search pb-0" type="button" onclick="search_location()">
+                                    <i class="icon" data-feather="search"></i>
+                                </button>
+                            </div>
+                            {# <img src="{{ asset('images/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="30" class="d-none" id="spinner-search">
+                            <!-- Liste déroulante -->
+                            <div class="dropdown-search p-1">
+                                <div class="d-flex justify-content-between mt-1 align-items-center ${hoverClass}" ${idAttr} onclick="selectThisOne('${type}', ${item.id_region}, '${item.region}')">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <span class="star" style="background-image: url({{ asset('images/ext/pin.png') }});background-size: cover;background-repeat: no-repeat;">
+                                        </span>
+                                        <div class="d-flex flex-column">
+                                            <span>Lieu</span>
+                                        </div>
+                                    </div>
+                                    <span class="content-text-1">?</span>
+                                </div>
+                            </div>  #}
+                        </div>
+                        <div class="meta mt-2 ml-2 dark">
+                            <div>
+                                <a id="trigger1" href="#">
+                                    <i class="date-filter-icon" data-feather="calendar"></i>
+                                    <span class="date-time">
+                                        <div class="date">Sept 17, 2024</div>
+                                        <div class="time">21:00</div>
+                                    </span>
+                                </a>
+                                <div class="datetimepicker-icon"><input type="text" id="datetimepicker1"/></div>
+                            </div>
+                            <div class="separator"></div> <!-- Ajout du séparateur ici -->
+                            <div>
+                                <a id="trigger2" href="#">
+                                    <i class="date-filter-icon" data-feather="calendar"></i>
+                                    <span class="date-time">
+                                        <div class="date">Sept 18, 2024</div>
+                                        <div class="time">21:00</div>
+                                    </span>
+                                </a>
+                                <div class="datetimepicker-icon"><input type="text" id="datetimepicker2"/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header_box">
+                        <div class="lang_box" style="height: 36px !important;">
+                            <button class="btn btn-dark pt-1" type="button" data-toggle="tooltip" data-placement="bottom" title="Actualiser les données" onclick="filterMap()">
+                                <i class="menu-icon" data-feather="download-cloud"></i>
+                            </button>
+                        </div>
+                        <div class="login_menu dark" style="text-transform: unset;">
+                            <ul>
+                            <li><a href="#" class="">
+                                <i class="menu-icon" data-feather="phone"></i>
+                                <span class="padding_10">Contact</span></a>
+                            </li>
+                            <li><a href="#">
+                                <i class="menu-icon" data-feather="user"></i>
+                                <span class="padding_10">Connexion</span></a>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!-- header section end -->
+
+            <!-- Légende -->
+            <div id="map-legend" class="map-legend-container text-09 col-5 col-md-3 p-3">
+                <h6 class="text-uppercase text-muted">
+                    <strong class="text-09 text-white">Légende</strong>
+                </h6>
+                <div id="my_slider" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item pt-1 active">
+                            <div class="row">
+                                <div class="col-sm-12 legend-item">
+                                    <div class="legend-symbole">
+                                        <i class="legend-icon" style="fill: currentColor;" data-feather="circle"></i>
+                                    </div>
+                                    <span>Votre position</span>
+                                </div>
+                                <div class="col-sm-12 legend-item">
+                                    <div class="legend-symbole">
+                                        <img src="{{ asset('images/icons/light-off2.png') }}" alt="coupure_courant">
+                                    </div>
+                                    <span>Coupure de courant</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item pt-1">
+                            <div class="row">
+                                <div class="col-sm-12 legend-item">
+                                    <div class="legend-symbole">
+                                        <img src="{{ asset('images/icons/agence-icon.svg') }}" alt="Loading...">
+                                    </div>
+                                    <span>Agence | Site</span>
+                                </div>
+                                <div class="col-sm-12 legend-item">
+                                    <div class="legend-symbole">
+                                        <img src="{{ asset('images/icons/shop-icon.svg') }}" alt="Loading...">
+                                    </div>
+                                    <span>Shop | Site</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- spinner sur la carte -->
+            <div id="loading-on-map" class="map-spinner-container">
+                <img src="{{ asset('images/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="30">
+                <span class="text-14">Chargement ...</span>
+            </div>
+
+            <!-- Description sur la carte -->
+            <div class="sidebar-info col-10 col-md-4 scroll-y-perfect scroll-x-perfect p-4" id="sidebar-info">
+                <div style="float: right;">
+                    <a class="close-btn" onclick="show_hidde_sidebar(0)">
+                        <i class="icon" data-feather="x"></i>
+                    </a>
+                </div>
+                <h3 style="width: 90%;">Details</h3>
+                <div class="desc-spinner-container" id="desc-spinner-container">
+                    <img src="{{ asset('images/icons/dual-ring-orange.svg') }}" alt="Loading..." style="height: 40px;">
+                </div>
+                <div class="info-coupure" id="info-coupure">
+                    <h5 class="text-muted"><a id="sidebar-info-title">Partie concernée</a></h5>
+                    <div id="secteur-fkt" class="tag-clouds scroll-y-perfect">
+                        <!-- List-Fokontany ici -->
+                        <a href="#" class="tag-cloud-link">Anosy</a>
+                        <a href="#" class="tag-cloud-link">Andavamamba</a>
+                        <a href="#" class="tag-cloud-link">67ha Sud</a>
+                        <a href="#" class="tag-cloud-link">Ankadimbahoaka</a>
+                    </div>
+                    <div class="row p-2 mt-4 text-14">
+                        <div class="col-md-12 pl-0">
+                            <div class="col-md-12 mb-4">
+                                <div class="d-flex flex-row tab-icon">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab3" role="tablist" aria-orientation="vertical">
+                                        <a class="nav-link py-3 active" id="v-pills-profile-tab3" data-toggle="pill" href="#v-pills-profile3" role="tab" aria-controls="v-pills-profile3" aria-selected="false"><i class="menu-icon" data-feather="calendar"></i></span></a>
+                                        <a class="nav-link py-3" id="v-pills-home-tab3" data-toggle="pill" href="#v-pills-home3" role="tab" aria-controls="v-pills-home3" aria-selected="true"><i class="menu-icon" data-feather="layers"></i></span></a>
+                                        <a class="nav-link py-3" id="v-pills-messages-tab3" data-toggle="pill" href="#v-pills-messages3" role="tab" aria-controls="v-pills-messages3" aria-selected="false"><i class="menu-icon" data-feather="trending-up"></i></a>
+                                    </div>
+                                    <div class="tab-content tab-icon-content scroll-x-perfect scroll-y-perfect" id="v-pills-tabContent3" style="">
+                                        <div class="tab-pane fade show active  p-1" id="v-pills-profile3" role="tabpanel" aria-labelledby="v-pills-profile-tab3">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-10 col-md-10">
+                                                        <div class="carousel-vertical scroll-y">
+                                                            <div id="events">
+                                                                <!-- Les evenements de coupures ici -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade p-4" id="v-pills-home3" role="tabpanel" aria-labelledby="v-pills-home-tab3">
+                                            <div class="row text-14">
+                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                    <span class="text-left"><i class="info-title-icon" data-feather="map"></i></span>
+                                                    <span class="text-right" id="sidebar-info-adress">Zone résidentiel</span>
+                                                </div>
+                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                    <span class="text-left"><i class="info-title-icon" data-feather="activity"></i></span>
+                                                    <span class="text-right number-inc" id="count-hopital" data-number="5">0</span>
+                                                </div>
+                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                    <span class="text-left"><i class="info-title-icon" data-feather="lock"></i></span>
+                                                    <span class="text-right number-inc" id="count-prison" data-number="3">0</span>
+                                                </div>
+                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                    <span class="text-left"><i class="info-title-icon" data-feather="book"></i></span>
+                                                    <span class="text-right number-inc" id="count-point-cle" data-number="2">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-messages3" role="tabpanel" aria-labelledby="v-pills-messages-tab3">
+                                            <div class="mb-0 p-3">
+                                                {# <dt class="mb-2"><em>Post coupee</em></dt> #}
+                                                <div class="mb-2">
+                                                    <h6 class="text-uppercase text-muted">
+                                                        <strong style="font-size: 0.8em">Statistique</strong>
+                                                    </h6>
+                                                </div>
+                                                <div id="stat-coupure">
+                                                    <div class="card-body text-center text-09"> Aucun élément </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-site" id="info-site">
+                    <h5 class="text-muted">
+                        <a class="text-muted text-uppercase" id="sidebar-info-title">Site | <span id="site-libelle"> Shop Anosizato</span></a> 
+                    </h5>
+                    <div class="tag-clouds scroll-y-perfect">
+                        <div>
+                            <h6 class="text-white text-09" id="site-descr">
+                                Boutique destine pour le service de la jirama pour assister nos clients.
+                            <h6>
+                        </div> 
+                    </div>
+                    <div class="row p-2 mt-4 text-14">
+                        <div class="col-md-12 pl-0">
+                            <div class="col-md-12 mb-4 pl-0">
+                                <div class="d-flex flex-row tab-icon">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab3" role="tablist" aria-orientation="vertical">
+                                        <a class="nav-link py-3 active" id="v-pills-home-tab3" data-toggle="pill" href="#v-site-info" role="tab" aria-controls="v-site-info" aria-selected="true"><i class="menu-icon" data-feather="info"></i></span></a>
+                                        <a class="nav-link py-3" id="v-pills-profile-tab3" data-toggle="pill" href="#v-site-horaire" role="tab" aria-controls="v-site-horaire" aria-selected="false"><i class="menu-icon" data-feather="clock"></i></span></a>
+                                        <a class="nav-link py-3" id="v-pills-messages-tab3" data-toggle="pill" href="#v-site-autre" role="tab" aria-controls="v-site-autre" aria-selected="false"><i class="menu-icon" data-feather="trending-up"></i></a>
+                                    </div>
+                                    <div class="tab-content tab-icon-content scroll-x-perfect scroll-y-perfect" id="v-pills-tabContent3" style="">
+                                        <div class="tab-pane fade show active" id="v-site-info" role="tabpanel" aria-labelledby="v-pills-home-tab3">
+                                            <div class="mb-0 p-3">
+                                                <div class="mb-1">
+                                                    <h6 class="text-uppercase text-muted">
+                                                        <strong style="font-size: 0.8em">Info</strong>
+                                                    </h6>
+                                                </div>
+                                                <div id="site-info" style="font-size: 0.9em">
+                                                    <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                        <span class="text-left"><i class="info-title-icon" data-feather="map-pin"></i></span>
+                                                        <span class="text-right" id="site-adresse">Anosizato, 145Bis</span>
+                                                    </div>
+                                                    <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                        <span class="text-left"><i class="info-title-icon" data-feather="bookmark"></i></span>
+                                                        <span class="text-right" id="site-type" data-number="5">Shop</span>
+                                                    </div>
+                                                    <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                        <span class="text-left"><i class="info-title-icon" data-feather="map"></i></span>
+                                                        <span class="text-right" id="site-distance" data-number="2">1.2 km</span>
+                                                    </div>
+                                                    <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                        <span class="text-left"><i class="info-title-icon" data-feather="phone"></i></span>
+                                                        <span class="text-right" id="site-contact" data-number="2">112</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-site-horaire" role="tabpanel" aria-labelledby="v-pills-profile-tab3">
+                                            <div class="mb-0 p-3">
+                                                <div class="mb-1">
+                                                    <h6 class="text-uppercase text-muted">
+                                                        <strong style="font-size: 0.8em">Horaires</strong>
+                                                    </h6>
+                                                </div>
+                                                <div id="site-horaire" class="text-09">
+                                                    <!-- Les horaires ici -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-site-autre" role="tabpanel" aria-labelledby="v-pills-messages-tab3">
+                                            <div class="mb-0 p-3">
+                                                {# <dt class="mb-2"><em>Post coupee</em></dt> #}
+                                                <div class="mb-2">
+                                                    <h6 class="text-uppercase text-muted">
+                                                        <strong style="font-size: 0.8em">Statistique</strong>
+                                                    </h6>
+                                                </div>
+                                                <div id="site-stat">
+                                                    <div class="card-body text-center text-09"> Aucun élément </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Description sur la carte end -->
+
+            <!-- Menu bas-droite -->
+            <div class="menu-bottom-right">
+                <!-- Filter -->
+                <div class="map-time-filter">
+                    <div class="wrapper">
+                        <div class="item menu" data-toggle="tooltip" data-placement="top" title="Style du carte">
+                            <div class="linee linee1"></div>
+                            <div class="linee linee2"></div>
+                            <div class="linee linee3"></div>
+                        </div>
+                        <div class="item">
+                            <a class="pointer" onclick="toNearestSite(1)" data-toggle="tooltip" data-placement="top" title="Shop la plus proche">
+                                <div class="icon-container">
+                                    <i class="menu-icon" data-feather="shopping-cart"></i>
+                                    <div class="badge-icon">
+                                        <i class="menu-icon" data-feather="map-pin"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="item">
+                            <a class="pointer" onclick="toNearestSite(2)" data-toggle="tooltip" data-placement="top" title="Agence la plus proche">
+                                 <div class="icon-container">
+                                    <i class="menu-icon" data-feather="home"></i>
+                                    <div class="badge-icon">
+                                        <i class="menu-icon" data-feather="map-pin"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="item">
+                            {# <a class="pointer"><i class="fa fa-info-circle"></i></a> #}
+                            
+                            <details>
+                                <summary data-toggle="tooltip" data-placement="top" title="Plus d'information">
+                                    <i class="menu-icon" data-feather="info"></i>
+                                </summary>
+                                <div class="info-contener">
+                                    <div class="info-item active">
+                                        <h4 style="display: flex; justify-content: space-between; align-items: center;">
+                                            Géolocalisation
+                                            <img class="mr-2" src="{{ asset('images/icons/map-location.png') }}" />
+                                        </h4>
+                                        <p>
+                                            L'accès à votre <code>position géographique</code> permet à notre site de paramétrer des fonctionnalités importantes 
+                                            et de faciliter une interaction <code>plus fluide</code> avec la carte en fonction de vos besoins.
+                                        </p>
+                                    </div>
+                                    <div class="info-item">
+                                        <h4 style="display: flex; justify-content: space-between; align-items: center;">
+                                            À propos des données
+                                            <img class="mr-2" src="{{ asset('images/icons/map-location.png') }}" />
+                                        </h4>
+                                        <p>
+                                            Les <code>informations</code> affichées sur la carte proviennent des prévisions de coupures 
+                                            <code>confirmées</code> par nos agents. Cependant, certaines données peuvent être ajoutées 
+                                            <code>tardivement</code> selon la situation.
+                                        </p>
+                                    </div>
+
+                                    <!-- Indicators -->
+                                    <div class="info-indicators">
+                                        <span class="indicator active"></span>
+                                        <span class="indicator"></span>
+                                    </div>
+                                </div>
+
+                            </details>
+                        </div>
+
+                        <div class="nav-items items1" onclick="switchMapStyle('street')" style="background-image: url('{{ asset('images/ext/street_map.png') }}');">
+                            <!-- Icon du couche street_map -->
+                        </div>
+                        <div class="nav-items items2" onclick="switchMapStyle('satellite')" style="background-image: url('{{ asset('images/ext/satellite_map.png') }}');">
+                            <!-- Icon du couche satellite_map -->
+                        </div>
+                        <div class="nav-items items3" onclick="switchMapStyle('topo')" style="background-image: url('{{ asset('images/ext/topo_map.png') }}');">
+                            <!-- Icon du couche topo_map -->
+                        </div>
+                        <div class="box">
+                            <div class="box-line box-line1"></div>
+                            <div class="box-line box-line2"></div>
+                            <div class="box-line box-line3"></div>
+                            <div class="box-line box-line4"></div>
+                        </div>
+                    </div>
+
+                    <div class="effect"></div>
+                </div>
+                <!-- /Filter -->
+                <!-- Zoom & etc. -->
+                <div class="map-mini-menu">
+                    <div class="wrapper">
+                        <div class="item menu">
+                            <a class="" onclick="zoom('-')" data-toggle="tooltip" data-placement="top" title="Zoom moins">
+                                <i class="menu-icon" data-feather="zoom-out"></i>
+                            </a>
+                        </div>
+                        <div class="item">
+                            <a class="" onclick="zoom('+')" data-toggle="tooltip" data-placement="top" title="Zoom plus">
+                                <i class="menu-icon" data-feather="zoom-in"></i>
+                            </a>
+                        </div>
+                        <div class="item">
+                            <a class="" onclick="ajustViewToUserPosition()" data-toggle="tooltip" data-placement="top" title="Vers votre position">
+                                <i class="menu-icon" data-feather="navigation"></i>
+                            </a>
+                        </div>
+                        <div class="item">
+                            <a class="" data-toggle="tooltip" data-placement="top" title="Plein écran">
+                                <i class="menu-icon" data-feather="maximize"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Zoom & etc. -->
+            </div>
+            <!-- Menu bas-droite end -->
+        </div>
+        <!-- banner bg main end -->
+        
+        {# <!-- footer section start -->
+        <div class="footer_section layout_padding">
+            <div class="container">
+                <div class="footer_logo"><a href="index.html"><img src="images/footer-logo.png"></a></div>
+                <div class="input_bt">
+                <input type="text" class="mail_bt" placeholder="Your Email" name="Your Email">
+                <span class="subscribe_bt" id="basic-addon2"><a href="#">Subscribe</a></span>
+                </div>
+                <div class="footer_menu">
+                <ul>
+                    <li><a href="#">Best Sellers</a></li>
+                    <li><a href="#">Gift Ideas</a></li>
+                    <li><a href="#">New Releases</a></li>
+                    <li><a href="#">Today's Deals</a></li>
+                    <li><a href="#">Customer Service</a></li>
+                </ul>
+                </div>
+                <div class="location_main">Help Line  Number : <a href="#">+1 1800 1200 1200</a></div>
+            </div>
+        </div>
+        <!-- footer section end -->
+        <!-- copyright section start -->
+        <div class="copyright_section">
+            <div class="container">
+                <p class="copyright_text">© 2020 All Rights Reserved. Design by <a href="https://html.design">Free html  Templates</a></p>
+            </div>
+        </div>
+        <!-- copyright section end --> #}
+
+        <!-- Javascript files-->
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/popper.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-3.0.0.min.js') }}"></script>
+        <script src="{{ asset('js/plugin.js') }}"></script>
+        <!-- icons -->
+        <script src='https://unpkg.com/feather-icons'></script>
+        <!-- sidebar -->
+        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+        <script src="{{ asset('js/custom.js') }}"></script>
+        <!-- map -->
+        <script src="{{ asset('js/map/sidebar.js') }}"></script>
+        <script src="{{ asset('js/map/const.js') }}"></script>
+        <script src="{{ asset('js/map/filter.js') }}"></script>
+        <script src="{{ asset('js/map/site.js') }}"></script>
+        <script src="{{ asset('js/map/zonecoupee.js') }}"></script>
+        <!-- leaflet -->
+        <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="leaflet//L.Icon.Pulse.js"></script>
+        
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        {# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+        {# <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+        <!-- Inclure CSS et JS de Flatpickr -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+        <!-- Initialisation des variables communs -->
+        <script>
+            var zones_coupee_loaded = [];
+            var zones_coupee = [];
+            var user_coords = null; // coordonnee de l'utilisateur
+            var stored_bounds = null; // coordonnee du cadre vue sur la carte
+            var json_icons = null; // icones sur la carte
+
+            var add_shop = false;
+            var add_agence = false;
+            var add_coupure = true;
+
+            var site_loaded = [];
+            var site_nearest = []; // stocker les sites plus proche de l'utilisateur
+
+            const addSite = new Map([
+                [1, 'addShop'],
+                [2, 'addAgence']
+            ]);
+        </script>
+
+        <script>
+            /* menu */
+            document.querySelector(".menu").addEventListener("click", () => {
+                for (let i = 0; i <= 2; i++) {
+                document.querySelector(".box").classList.remove("box-show");
+                document
+                    .getElementsByClassName("nav-items")
+                    [i].classList.toggle("show-menu");
+                document
+                    .getElementsByClassName("box-line")
+                    [i].classList.remove("box-line-show");
+                }
+            });
+
+            // Basculer entre les items du menu info
+            document.addEventListener('DOMContentLoaded', function() {
+                const items = document.querySelectorAll('.info-item');
+                const indicators = document.querySelectorAll('.indicator');
+
+                indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', function() {
+                        // Remove active class from all items and indicators
+                        items.forEach(item => item.classList.remove('active'));
+                        indicators.forEach(ind => ind.classList.remove('active'));
+
+                        // Add active class to the clicked item and its corresponding indicator
+                        items[index].classList.add('active');
+                        indicator.classList.add('active');
+                    });
+                });
+            });
+
+            // Initialiser Flatpickr pour le premier calendrier
+            const flatpickrInstance1 = flatpickr("#datetimepicker1", {
+                enableTime: true,
+                dateFormat: "F j, Y H:i", // Format : Sept 17, 2024 21:00
+                time_24hr: true, // Utiliser le format 24 heures
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Extraire la date et l'heure sélectionnées
+                    const date = selectedDates[0];
+                    const formattedDate = date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                    // Mettre à jour les éléments correspondants pour le premier calendrier
+                    document.querySelector("#trigger1 .date").textContent = formattedDate;
+                    document.querySelector("#trigger1 .time").textContent = formattedTime;
+
+                    if(add_coupure) {
+                        loadZoneCoupeeOnView("{{ path('visible_coupure') }}");
+                    }
+                }
+            });
+
+            // Initialiser Flatpickr pour le deuxième calendrier
+            const flatpickrInstance2 = flatpickr("#datetimepicker2", {
+                enableTime: true,
+                dateFormat: "F j, Y H:i", // Format : Sept 18, 2024 21:00
+                time_24hr: true, // Utiliser le format 24 heures
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Extraire la date et l'heure sélectionnées
+                    const date = selectedDates[0];
+                    const formattedDate = date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                    // Mettre à jour les éléments correspondants pour le deuxième calendrier
+                    document.querySelector("#trigger2 .date").textContent = formattedDate;
+                    document.querySelector("#trigger2 .time").textContent = formattedTime;
+                    
+                    if(add_coupure) {
+                        loadZoneCoupeeOnView("{{ path('visible_coupure') }}");
+                    }
+                }
+            });
+
+            // Ouvrir Flatpickr au clic sur l'icône de calendrier du premier élément
+            document.querySelector("#trigger1").addEventListener("click", function(event) {
+                console.log("Open #trigger1");
+                event.preventDefault();
+                flatpickrInstance1.open();
+            });
+
+            // Ouvrir Flatpickr au clic sur l'icône de calendrier du deuxième élément
+            document.querySelector("#trigger2").addEventListener("click", function(event) {
+                event.preventDefault();
+                flatpickrInstance2.open();
+            });
+        </script>
+        <script>
+            function setDateFilter(flatpickrInstance, trigger, date) {
+                // Déclencher onChange avec la nouvelle date
+                flatpickrInstance.setDate(date);
+
+                const formattedDate = date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' });
+                const formattedTime = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                document.querySelector(`${trigger} .date`).textContent = formattedDate;
+                document.querySelector(`${trigger} .time`).textContent = formattedTime;
+            }
+
+            // Initialiser les dates du filtre
+            function initDateFilter() {
+                const date = new Date();
+                date.setMinutes(0, 0, 0);
+                    setDateFilter(flatpickrInstance1, "#trigger1", date);
+                date.setHours(23, 59, 0, 0);
+                    setDateFilter(flatpickrInstance2, "#trigger2", date);
+            }
+            
+            function openNav() {
+                document.getElementById("mySidenav").style.width = "250px";
+                document.getElementById("switch-style").style.transform = "translateX(-400px)";
+
+                if (window.innerWidth <= 575) {
+                    show_hidde_sidebar(0); // Appelle la fonction spécifique pour les petits écrans
+                }
+            }
+            
+            function closeNav() {
+                document.getElementById("mySidenav").style.width = "0";
+                document.getElementById("switch-style").style.transform = "translateX(0px)";
+            }
+
+            function getBoundsView() {
+                var bounds = map.getBounds();
+                var visibleBounds = {
+                    north: bounds.getNorth(),
+                    south: bounds.getSouth(),
+                    east: bounds.getEast(),
+                    west: bounds.getWest()
+                };
+
+                // Appeler la fonction pour mettre à jour les limites stockées
+                var movedoutside = updateStoredBounds(visibleBounds.north, visibleBounds.south, visibleBounds.east, visibleBounds.west);
+
+                // Vérifier si storedBounds est vide ou si la vue de la carte va à l'extérieur du rectangle tracé
+                if (movedoutside || true) {
+                    var north = visibleBounds.north;
+                    var south = visibleBounds.south;
+                    var east = visibleBounds.east;
+                    var west = visibleBounds.west;
+
+                    var newBounds = [
+                        [south, west], // Coin sud-ouest
+                        [north, east]  // Coin nord-est
+                    ];
+
+                    // Tracer un rectangle avec les nouvelles limites pour visualiser l'aire englobante
+                    var rectangleOptions = {
+                        color: 'blue', // Couleur du contour
+                        weight: 2, // Épaisseur du contour
+                        fillColor: 'rgba(0, 0, 255, 0.05)', // Couleur de remplissage transparente pour visualisation
+                        fillOpacity: 0.2 // Opacité du remplissage
+                    };
+
+                    //console.log("MySQL Query to get zones within the rectangle:", coord_str_wkt);
+                    // console.log("** We load data **");
+
+                    // Supprimer l'ancien rectangle s'il existe
+                    if (window.rectangle) {
+                        map.removeLayer(window.rectangle);
+                    }
+
+                    // Ajouter le nouveau rectangle à la carte
+                // window.rectangle = L.rectangle(newBounds, rectangleOptions).addTo(map);
+
+                    // return window.rectangle.getLatLngs();
+                    return true;
+                }
+
+                return null;
+            }
+
+            // Fonction pour comparer et mettre à jour les limites stockées
+            function updateStoredBounds(north, south, east, west) {
+                // Si storedBounds est null, cela signifie que les limites n'ont jamais été définies
+                if (!stored_bounds || (north > stored_bounds.north) || (south < stored_bounds.south) || (east > stored_bounds.east) || (west < stored_bounds.west)) {
+                    // Mettre à jour les limites stockées
+                    stored_bounds = { north, south, east, west };
+                    return true;
+                }
+                return false;
+            }
+
+            function setLegend() {
+                var add_lg = document.getElementById('addLegende').checked;
+                var ctn_lg = document.getElementById('map-legend');
+                if(add_lg) {
+                    ctn_lg.style.display = "block";
+                } else {
+                    ctn_lg.style.display = "none";
+                }
+            }
+
+            function filterMap() {
+                add_shop = document.getElementById('addShop').checked;
+                add_agence = document.getElementById('addAgence').checked;
+                add_coupure = document.getElementById('addCoupure').checked;
+
+                removeSiteOnMap();
+                removeZoneCoupeeOnMap();
+                if(add_shop || add_agence) {
+                    loadSiteOnView("{{ path('visible_site') }}");
+                }
+                if(add_coupure) {
+                    loadZoneCoupeeOnView("{{ path('visible_coupure') }}");
+                }
+            }
+
+            async function toNearestSite(type) {
+                if(site_nearest[type]) {
+                    setViewToNearestSite(type);
+                    document.getElementById(addSite.get(type)).checked = true;
+                    filterMap(); 
+                }
+            }
+
+            // -18.910409888011817, 47.523013874611756
+
+            function getUserPosition() {
+                if (user_coords == null) {
+                    // Stocker les coordonnées dans user_coords
+                    user_coords = {
+                        latitude: -18.910409888011817,
+                        longitude: 47.523013874611756
+                    };
+                    ajustViewToUserPosition();
+                    fetchSiteNearestOfUser("{{ path('nearest_site_view') }}", user_coords);
+                }
+                return user_coords;
+            }
+
+            async function getUserPositionSecured() {
+                if (user_coords == null) {
+                    // Démarer la localisation
+                    map.locate({setView: true});
+
+                    // Écouter les événements de localisation
+                    map.on('locationfound', onLocationFound);
+                    map.on('locationerror', onLocationError);
+
+                    // Attendre que la localisation soit terminée
+                    return new Promise((resolve) => {
+                        let timeoutId = setTimeout(() => {
+                            resolve(user_coords);
+                        }, 2000); // Attendez pendant 10 secondes
+
+                        map.on('locationfound', () => {
+                            clearTimeout(timeoutId);
+                            resolve(user_coords);
+                        });
+                    });
+                }
+                return user_coords;
+            }
+
+            function onLocationFound(e) {
+                const latlng = e.latlng;
+                
+                // Stocker les coordonnées dans user_coords
+                user_coords = {
+                    latitude: latlng.lat,
+                    longitude: latlng.lng
+                };
+                console.log(user_coords);
+
+                ajustViewToUserPosition();
+                fetchSiteNearestOfUser("{{ path('nearest_site_view') }}", user_coords);
+            }
+
+            function onLocationError(e) {
+                console.error(`Erreur de localisation : ${e.message}`);
+            }
+
+            async function ajustViewToUserPosition() {
+                if (user_coords) {
+                    // Ajuster la vue de la carte à la position de l'utilisateur
+                    map.flyTo([user_coords.latitude, user_coords.longitude], 15, {
+                        duration: 1.0 // Durée de l'animation en secondes
+                    });
+
+                    // Ajouter le marqueur animé avec effet "pulse"
+                    if(!window.userPulse) {
+                        var pulseIcon = L.icon.pulse({iconSize:[10,10], color:'#f26522'});
+                        window.userPulse = L.marker([user_coords.latitude, user_coords.longitude], {icon: pulseIcon}).addTo(map);
+                    }
+                } else {
+                    console.error('Impossible d\'obtenir la position utilisateur.');
+                }
+            }
+
+
+            function zoom(sens) {                
+                // Vérifier si le zoom est au niveau minimum ou maximum
+                if (sens === '+' && map.getZoom() >= map.getMaxZoom()) {
+                    // console.log("Le zoom est déjà au niveau maximum");
+                    return;
+                } else if (sens === '-' && map.getZoom() <= map.getMinZoom()) {
+                    // console.log("Le zoom est déjà au niveau minimum");
+                    return;
+                }
+
+                // Ajouter ou retirer un niveau de zoom selon le sens
+                var newZoom = map.getZoom() + (sens === '+' ? 1 : -1);
+                map.setZoom(newZoom);
+            }
+
+            async function getCoordinates(location) {
+                const encodedLocation = encodeURIComponent(location); // Encoder le texte pour l'URL
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedLocation}&bounded=1&addressdetails=1&extratags=1`;
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    if (data.length > 0) {
+                        const result = data[0];
+                        const lat = result.lat;
+                        const lon = result.lon;
+                        const address = result.display_name;
+                        const adress_nv = address.split(", ");
+
+                        console.log(`Location: ${location}`);
+                        console.log(`Lat: ${lat}, Lng: ${lon}`);
+                        console.log(`Address: ${address}`);
+                        console.log(`Niveau: ${adress_nv.length}`);
+
+                        return {
+                            lat: lat,
+                            lng: lon,
+                            zoom: 8 + adress_nv.length
+                        };
+                    } else {
+                        console.log('No results found for the given location.');
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    return null;
+                }
+            }
+
+            function onSearch(process) {
+                var btn_search = document.querySelector('.btn-search');
+                if(!process) {
+                    btn_search.innerHTML = `<i class="fa fa-search"></i>`;
+                } else {
+                    btn_search.innerHTML = `<img src="{{ asset('images/spinner/dual-ring-white.svg') }}" alt="Loading..." style="height: 22px;">`;
+                }
+            }
+
+            async function search_location() {
+                var location = document.querySelector('.form-search').value;
+                onSearch(true); // en cours de chargement
+                var coord = await getCoordinates(location);
+                if (coord) {
+                    console.log(coord);
+                    // Utilisez les coordonnées et le niveau de zoom pour centrer la carte ici
+                    map.flyTo([coord.lat, coord.lng], coord.zoom, {
+                        duration: 1.0 // Durée de l'animation en secondes
+                    });
+                }
+                onSearch(false); // fin de chargement
+            }
+
+            function switchTheme(add, remove) {
+                // Sélectionner tous les éléments qui ont la classe "remove"
+                const elements = document.querySelectorAll(`.${remove}`);
+
+                // Parcourir chaque élément et remplacer la classe
+                elements.forEach(function(element) {
+                    element.classList.remove(remove); // Retirer la classe "remove"
+                    element.classList.add(add); // Ajouter la classe "add"
+                });
+            }
+        </script>
+
+        <!-- =========================================================
+	     STYLE SWITCHER | ONLY FOR DEMO NOT INCLUDED IN MAIN FILES
+        ============================================================== -->
+        <script type="text/javascript" src="{{ asset('js/demo.js') }}"></script>
+        <div class="demo-style-switch map-filter" id="switch-style">
+            <a id="toggle-switcher" class="switch-button map-filter-btn"><i class="fa-spin fa-fw mt-2" data-feather="settings"></i></a>
+            <div class="switched-options">				
+                <div class="map-menu-item w-100" id="item-menu">
+                    <ul class="nav nav-pills" id="pills-tab2" role="tablist">
+                        <li class="mr-2 mt-1">
+                            <a class="nav-link nav-link2 px-3 active" id="filtre-site" data-toggle="pill" href="#tofiltre-site" role="tab" aria-controls="tofiltre-site" aria-selected="false">
+                                <i class="filter-icon" data-feather="map-pin"></i>
+                            </a>
+                        </li>
+                        <li class="mr-2 mt-1">
+                            <a class="nav-link nav-link2 px-3" id="filtre-coupure" data-toggle="pill" href="#tofiltre-coupure" role="tab" aria-controls="tofiltre-coupure" aria-selected="false">
+                                <i class="filter-icon" data-feather="zap-off"></i>
+                            </a>
+                        </li>
+                        <li class="mr-2 mt-1">
+                            <a class="nav-link nav-link2 px-3" id="filtre-autre" data-toggle="pill" href="#tofiltre-autre" role="tab" aria-controls="tofiltre-coupure" aria-selected="false">
+                                <i class="filter-icon" data-feather="sliders"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content text-10 mb-2 mt-4" id="pills-tabContent2">
+                        <div class="tab-pane fade show active" id="tofiltre-site" role="tabpanel" aria-labelledby="filtre-site">
+                            <div class="checkbox-container">
+                                <div class="form-check form-check-sm form-switch">
+                                    <input class="form-check-input" type="checkbox" id="addAgence" onChange="filterMap()">
+                                    <label class="form-check-label ml-3" for="addAgence">Agence</label>
+                                </div>
+                                <div class="form-check form-check-sm form-switch">
+                                    <input class="form-check-input" type="checkbox" id="addShop" onChange="filterMap()">
+                                    <label class="form-check-label ml-3" for="addShop">Shop</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tofiltre-coupure" role="tabpanel" aria-labelledby="filtre-coupure">
+                            <div class="checkbox-container">
+                                <div class="form-check form-check-sm form-switch">
+                                    <input class="form-check-input" type="checkbox" id="addCoupure" checked onChange="filterMap()">
+                                    <label class="form-check-label ml-3" for="addCoupure">Coupure</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tofiltre-autre" role="tabpanel" aria-labelledby="filtre-autre">
+                            <div class="checkbox-container">
+                                <div class="form-check form-check-sm form-switch">
+                                    <input class="form-check-input" type="checkbox" id="addLegende" onChange="setLegend()">
+                                    <label class="form-check-label ml-3" for="addLegende">Légende</label>
+                                </div>
+                                <div class="form-check form-check-sm form-switch">
+                                    <input class="form-check-input" type="checkbox" id="addAnimation">
+                                    <label class="form-check-label ml-3" for="addAnimation">Actu. auto</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Fonction pour changer de style
+            function switchMapStyle(style) {
+                // Supprimer uniquement les couches de tuiles (layers de type tile)
+                map.eachLayer(function (layer) {
+                    if (layer instanceof L.TileLayer) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                // Ajouter la nouvelle couche selon le style choisi
+                if (style === 'street') {
+                    switchTheme('dark', 'light');
+                    streetLayer.addTo(map);
+                } else if (style === 'satellite') {
+                    switchTheme('light', 'dark');
+                    satelliteLayer.addTo(map);
+                } else if (style === 'topo') {
+                    switchTheme('dark', 'light');
+                    topoLayer.addTo(map);
+                }
+            }
+
+            // Initialiser la carte avec un style de base
+            var map = L.map('map', {
+                zoomControl: false // Désactiver le contrôle de zoom par défaut
+            }).setView([-18.90807288872151, 47.53393650054932], 12);
+
+            // Définir les différentes couches de tuiles (styles)
+            var streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri — Source: Esri, DeLorme, NAVTEQ',
+                maxZoom: 19
+            });
+
+            var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri — Source: Esri, DeLorme, Earthstar Geographics',
+                maxZoom: 19
+            });
+
+            var topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri — Source: Esri, DeLorme, FAO, NOAA, USGS',
+                maxZoom: 19
+            });
+
+            // Ajouter la première couche (par défaut, la World Street Map)
+            streetLayer.addTo(map);
+
+            initDateFilter();
+            filterMap();
+            getUserPosition();
+
+            feather.replace(); // Appliquer les icons feather
+        </script>
+    </body>
+</html>

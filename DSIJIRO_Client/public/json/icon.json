@@ -1,0 +1,12 @@
+{
+    "1": {
+        "legend": "Boutique",
+        "iconUrl": "/leaflet/images/shop-icon.svg",
+        "iconSize": [25, 25]
+    },
+    "2": {
+        "legend": "Agence",
+        "iconUrl": "/leaflet/images/agence-icon.svg",
+        "iconSize": [24, 24]
+    }
+}

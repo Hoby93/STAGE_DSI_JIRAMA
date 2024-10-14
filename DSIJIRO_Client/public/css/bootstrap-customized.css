@@ -1,0 +1,258 @@
+
+.checkbox-container .form-check {
+    /* display: inline-block; */
+    margin-right: 1rem;
+}
+
+/* Cacher l'input réel */
+.form-check-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 10px;
+}
+  
+/* Style pour le label qui agira comme notre switch */
+.form-check-label {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 10px;
+}
+
+/* Création du track (fond) du switch */
+.form-check-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 52px;
+    height: 16px;
+    border-radius: 13px;
+    /* background-color: #ccc; */
+    border: 0.5px solid #ccc;
+}
+  
+/* Création du curseur (thumb) du switch */
+.form-check-label::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 9px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: white;
+    transition: transform 0.3s ease-in-out;
+}
+  
+/* Animer le curseur lorsque le switch est activé */
+.form-check-input:checked + .form-check-label::after {
+    transform: translateX(26px);
+}
+  
+/* Changer la couleur du track lorsque le switch est activé */
+.form-check-input:checked + .form-check-label::before {
+    background-color: #f26522; /* Bleu par défaut */
+    border: 0.5px solid #f26522;
+}
+
+/* Switch plus petit */
+.form-check-sm .form-check-label::before {
+    width: 26px;
+    height: 14px;
+    border-radius: 7px;
+}
+
+.form-check-sm .form-check-label::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.form-check-sm .form-check-input:checked + .form-check-label::after {
+    transform: translateX(12px);
+}
+
+.nav-link2 {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    border-radius: 20px !important;
+    color: white;
+}
+
+.nav-link2.active {
+    background-color: #f26522 !important;
+}
+
+.datetimepicker-icon input {
+    width: 0px;
+    height: 0px;
+    cursor: none;
+    border: none;
+    background-color: unset;
+}
+
+.datetimepicker-icon {
+    margin-top: -10%;
+    margin-left: -5%;
+}
+
+/* Réduire la taille des polices dans la fenêtre Flatpickr */
+.flatpickr-calendar {
+    font-size: 8px; /* Réduit la taille globale de la police */
+    padding: 5px; /* Réduit les marges internes */
+}
+
+/* Réduire les marges des éléments de la date */
+.flatpickr-calendar .flatpickr-months,
+.flatpickr-calendar .flatpickr-time {
+    margin: 0;
+    padding: 0;
+}
+
+/* Réduire la taille du sélecteur de mois */
+.flatpickr-calendar .flatpickr-month {
+    font-size: 12px;
+    padding: 0;
+}
+
+/* Réduire la taille des boutons */
+.flatpickr-calendar .flatpickr-next-month,
+.flatpickr-calendar .flatpickr-prev-month {
+    /* width: 10px; */
+    height: 10px;
+}
+
+.flatpickr-prev-month {
+    width: auto;
+}
+
+/* Ajuster la grille des jours */
+.flatpickr-calendar .flatpickr-day {
+    width: 20px;  /* Ajuste la largeur des jours */
+    height: auto; /* Ajuste la hauteur des jours */
+    line-height: 25px; /* Centrer verticalement le texte des jours */
+}
+
+/* Réduire la taille du sélecteur d'heure */
+.flatpickr-calendar .flatpickr-time {
+    font-size: 12px;
+}
+
+
+.tag-cloud-link {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    background-color: rgba(244, 242, 255, 0.096);
+    color: #fff !important;
+    border-radius: 3px;
+    transition: all .2s ease;
+    margin-right: 0.75%;
+}
+
+.tag-cloud-link:hover {
+    background-color: #ff511c;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+
+.scroll-y-perfect {
+    overflow-y: auto;
+}
+
+/* Style de la barre de défilement */
+.scroll-y-perfect::-webkit-scrollbar {
+    width: 5px; /* Largeur de la barre de défilement */
+}
+
+/* Style du rail de la barre de défilement */
+.scroll-y-perfect::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Couleur du rail */
+    border-radius: 5px;
+}
+
+/* Style de la poignée de la barre de défilement */
+.scroll-y-perfect::-webkit-scrollbar-thumb {
+    background: #cccccc; /* Couleur de la poignée */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style de la poignée au survol */
+.scroll-y-perfect::-webkit-scrollbar-thumb:hover {
+    background: #c7c7c7; /* Couleur de la poignée au survol */
+    cursor: pointer;
+}
+
+
+
+.scroll-x-perfect {
+    overflow-x: auto !important;
+}
+
+/* Style de la barre de défilement */
+.scroll-x-perfect::-webkit-scrollbar {
+    height: 5px;
+}
+
+/* Style du rail de la barre de défilement */
+.scroll-x-perfect::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Couleur du rail */
+    border-radius: 5px;
+}
+
+/* Style de la poignée de la barre de défilement */
+.scroll-x-perfect::-webkit-scrollbar-thumb {
+    background: #cccccc; /* Couleur de la poignée */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style de la poignée au survol */
+.scroll-x-perfect::-webkit-scrollbar-thumb:hover {
+    background: #c7c7c7; /* Couleur de la poignée au survol */
+    cursor: pointer;
+}
+
+.tag-clouds {
+    height: 60px;
+}
+
+.divider {
+    display: block;
+    /* margin-top: 16px; */
+    /* margin-bottom: 10px; */
+    width: 32px;
+    height: 3px;
+    background-color: #ff511c;
+}
+
+.divider-lg {
+    display: block;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    width: 64px;
+    height: 3px;
+    background-color: #fff;
+}
+
+.text-primary2 {
+    color: #ff511c !important;
+}
+
+.text-dark2 {
+    color: #222222 !important;
+}
+
+.text-09 {
+    font-size: 0.9em !important;
+}
+
+.tooltip .arrow {
+    display: none; /* Masque le triangle */
+}

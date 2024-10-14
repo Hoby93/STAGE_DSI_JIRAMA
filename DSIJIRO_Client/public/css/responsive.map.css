@@ -1,0 +1,12 @@
+@media (max-width: 575px) {
+    .sidebar-info {
+        top: 32%;
+        height: 48%;
+    }
+    .map-spinner-container {
+        left: 40%;
+    }
+    .meta {
+        margin-left: 5% !important;
+    }
+}

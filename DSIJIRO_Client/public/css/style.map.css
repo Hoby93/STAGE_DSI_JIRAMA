@@ -1,0 +1,438 @@
+.map_main {
+    z-index: 0; /* S'assurer que la carte est derrière les autres éléments */
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.map-logo {
+    position: absolute;
+    width: 100%;
+    float: left;
+    z-index: 1000;
+}
+
+.map-header {
+    position: absolute;
+    top: 15%;
+    width: 100%;
+    display: flex;
+    z-index: 1000;
+}
+
+
+/** 
+    Description element sur la carte
+**/
+
+#sidebar-info {
+    /* display: none; */
+    transition: all 0.5s ease-in-out;
+    transform: translateX(110%);
+    /* opacity: 0; */
+}
+
+.sidebar-info {
+    position: absolute;
+    top: 22%;
+    right: 0;
+    /* width: 40%; */
+    height: 56%;
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    /* padding: 5% !important; */
+    background-color: #30302ed5;
+    border-color: #30302e;
+    /* box-shadow: -2px 0 5px rgba(0,0,0,0.5); */
+    /* overflow-y: auto; */
+    z-index: 1000;
+    margin: 1%;
+    border-radius: 4px;
+}
+
+.sidebar-info h3 {
+    color: #fff;
+}
+
+.sidebar-info .text-muted {
+    color: #f1f0f0 !important;
+}
+
+.sidebar-info .nav-link {
+    color:  #fff !important;
+    padding: 0.88em 1rem 0.88em 1em !important;
+}
+
+.sidebar-info .nav-link:hover {
+    color:  #313131 !important;
+}
+
+.sidebar-info .nav-link.active {
+    color:  #fff !important;
+    background-color: #313131 !important;
+}
+
+.sidebar-info .close-btn {
+    color: #fff !important;
+    cursor: pointer !important;
+}
+
+.sidebar-info .close-btn:hover {
+    color: #f26522 !important;
+}
+
+.sidebar-info .motif-coupure {
+    font-size: 0.9em !important; 
+    margin-top: 5px !important;
+    margin-left: 0px !important;
+    margin-bottom: 10px !important;
+}
+
+.sidebar-info dt {
+    font-size: 0.8em !important;
+}
+
+
+
+.map-sidebar {
+    /* position: absolute; */
+    /* top: 22%; */
+    right: 0;
+    /* width: 40%; */
+    height: 56%;
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    padding: 2%;
+    background-color: #30302ed5;
+    border-color: #30302e;
+    /* box-shadow: -2px 0 5px rgba(0,0,0,0.5); */
+    /* overflow-y: auto; */
+    /* z-index: 1000; */
+    /* margin: 1%; */
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    position: absolute;
+    z-index: 1000 !important;
+    top: 24% !important;
+    display: none;
+}
+
+.map-sidebar h3 {
+    color: #fff;
+}
+
+.map-sidebar .text-muted {
+    color: #f1f0f0 !important;
+}
+
+.map-sidebar .nav-link {
+    color:  #fff !important;
+}
+
+.map-sidebar .nav-link:hover {
+    color:  #313131 !important;
+}
+
+.map-sidebar .nav-link.active {
+    color:  #fff !important;
+    background-color: #313131 !important;
+}
+
+.map-sidebar .close-btn {
+    color: #fff !important;
+    cursor: pointer !important;
+}
+
+.map-sidebar .motif-coupure {
+    font-size: 0.9em !important; 
+    margin-top: 5px !important;
+    margin-left: 0px !important;
+    margin-bottom: 10px !important;
+}
+
+.map-sidebar dt {
+    font-size: 0.8em !important;
+}
+
+
+/** 
+    Lengende sur la carte
+**/
+
+.map-legend-container {
+    position: absolute;
+    top: 70%;
+    left: 1%;
+    /* width: 20%; */
+    height: 20% !important;
+    color: #fff !important;
+    background-color: #30302eaf;
+    border-color: #30302e;
+    border-radius: 3px;
+    padding-top: 1% !important;
+    z-index: 1000;
+    display: none;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend-symbole {
+    width: 20px;
+    height: 10px;
+    margin-right: 10px;
+    margin-top: -5%;
+    /* opacity: 0.5; */
+}
+
+/** 
+    Zoom control menu styles
+**/
+
+.menu-bottom-right {
+    position: fixed;
+    bottom: 15px;
+    right: 30px;
+    width: 200px; /* Ajustez cette valeur selon vos besoins */
+    z-index: 1000;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+}
+.map-mini-menu {
+    /* color: #fff !important;
+    background-color: #30302eaf;
+    border-color: #30302e;
+    border-radius: 15px; */
+    padding: 2px !important;
+    width: 220px !important;
+    margin-top: 2% !important;
+}
+
+.menu-icon {
+    width: 18px;
+    height: 18px;
+    margin-top: 5px !important;
+}
+.filter-icon {
+    width: 12px;
+    height: 15px;
+    margin-top: 6px !important;
+}
+.info-title-icon {
+    width: 14px;
+    height: 14px;
+    margin-top: 2px !important;
+}
+.legend-icon {
+    color: #f26522;
+    width: 14px;
+    height: 14px;
+    margin-top: 5px !important;
+}
+.bars-icon {
+    width: 45px;
+    height: 45px;
+    margin-top: -2px !important;
+}
+.icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.badge-icon {
+    position: absolute;
+    bottom: 5px;  /* Positionnement en bas à droite */
+    right: -5px;
+    background-color: #666666ce;
+    border-radius: 50%;  /* Pour créer un cercle */
+    width: 10px;  /* Taille du cercle */
+    height: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid #ccc; Ajoute une bordure si nécessaire */
+}
+
+.badge-icon i {
+    width: 10px; /* Taille de l'icône "map-pin" */
+    height: 10px;
+    color: #000; /* Couleur de l'icône "map-pin" */
+}
+
+.date-filter-icon {
+    width: 21px;
+    height: 21px;
+}
+
+.map-time-filter {
+    bottom: 30px !important;
+}
+
+.zoom-control-menu {
+    list-style-type: none;  /* Supprime les puces */
+    display: flex;          /* Permet d'aligner les éléments horizontalement */
+    padding: 0;
+    margin: 0;
+}
+
+.zoom-control-menu li {
+    margin-left: 5.5%;
+    margin-right: 15%;      /* Espace entre les éléments */
+}
+
+.zoom-control-menu .item {
+    display: inline-block;
+    /* color: white;           Couleur blanche pour les icônes */
+    text-align: center;
+    cursor: pointer;
+    padding: 1px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease; /* Animation douce lors du survol */
+}
+
+.zoom-control-menu .item:hover {
+    color: #f26522 !important;
+}
+
+.zoom-control-menu i {
+    font-size: 14px;        /* Ajuste la taille des icônes */
+}
+
+.map-filter {
+    position: absolute;
+    z-index: 1000 !important;
+    top: 50% !important;
+    transition: transform 0.8s ease-in-out;
+}
+
+.meta {
+    display: flex;
+    align-items: center; /* Aligner les éléments verticalement */
+}
+
+.meta a {
+    display: flex;
+    align-items: center; /* Pour aligner l'icône avec le texte */
+    text-decoration: none;
+    margin-right: 10px; /* Espace entre les éléments et le séparateur */
+}
+
+.meta i {
+    margin-right: 10px; /* Espace entre l'icône et le texte */
+    font-size: 16px;
+    margin-top: 1px;
+}
+
+.date-time {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.separator {
+    height: 20px; /* Hauteur pour correspondre à la hauteur des éléments */
+    width: 1px;
+    background-color: #ccc; /* Couleur du trait */
+    margin: 0 15px; /* Espace autour du séparateur */
+}
+
+.bg-gray {
+    background-color: #fff;
+    color: #313131;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25rem .5rem;
+    font-size: 75%;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .125rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.tab-icon-content {
+    background-color: rgba(244, 242, 255, 0.096);
+    /* height: 100%; */
+    margin-left: 2%;
+    color: #fff !important;
+    /* color: white !important; */
+    width: 100%;
+    height: 160px;
+    border-radius: 2%;
+}
+
+.row-striped:nth-of-type(odd) {
+    padding-top: 5px;
+    padding-bottom: 2px;
+    /* background-color: #efefef; */
+    /* border-left: 4px #000000 solid; */
+    /* border-bottom: 1px solid #ffffff44; */
+}
+
+.row-striped {
+    padding: 15px 0;
+    /* border-bottom: 1px solid #eaeaea; */
+}
+
+.text-14 {
+    /* font-weight: 300; */
+    font-size: 14px;
+    /* line-height: 31px; */
+    /* font-family: Source Sans Pro,Helvetica,Arial,sans-serif; */
+}
+
+.map-spinner-container {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    /* transform: translate(-50%, -50%); */
+    z-index: 1000;
+    /* display: none; */
+    opacity: 0.75;
+    /* background-color: red; */
+}
+
+.map-spinner-container img {
+    height: 30px !important;
+}
+
+.loading {
+    opacity: 0.8 !important;
+}
+
+.loading .desc-spinner-container {
+    display: block; /* Show spinner when loading */
+}
+
+.desc-spinner-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: none; /* Hide by default */
+}
+
+.loading .desc-spinner-container {
+    display: block; /* Show spinner when loading */
+}
+
+.info-coupure {
+    display: none;
+}
+
+.card-desc {
+    /* position: relative;
+    display: flex;
+    flex-direction: row; */
+    padding: 1.2%;
+}

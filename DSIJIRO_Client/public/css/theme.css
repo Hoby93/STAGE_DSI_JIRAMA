@@ -1,0 +1,63 @@
+
+.link-bars.dark {
+    color: #30302e !important;
+}
+
+.link-bars.light {
+    color: #ffffff !important;
+}
+
+.link-bars i {
+    font-size: 2.8em;
+}
+
+.link-bars:hover {
+    color: #f26522 !important;
+}
+
+.login_menu.dark li a {
+    color: #30302e !important;
+}
+
+.login_menu.light li a {
+    color: #ffffff !important;
+}
+
+.login_menu li a:hover {
+    color: #f26522 !important;
+}
+
+.dark .date {
+    font-size: 12px;
+    color: #222222;
+}
+
+.dark .time {
+    font-size: 10px;
+    color: gray;
+    margin-top: -5px;
+}
+
+.light .date {
+    font-size: 12px;
+    color: #ffffff;
+}
+
+.light .time {
+    font-size: 10px;
+    color: #e0e0e0;
+    margin-top: -5px;
+}
+
+.meta.light .date-filter-icon {
+    transition: color 0.4s ease;
+    color: #ffffff !important;
+}
+.meta.dark .date-filter-icon {
+    transition: color 0.4s ease;
+    color: #222222 !important;
+}
+
+.meta .date-filter-icon:hover {
+    color: #f26522 !important;
+}

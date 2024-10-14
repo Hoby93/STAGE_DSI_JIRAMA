@@ -1,0 +1,21 @@
+{# templates/category/list.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data | Select | Test</title>
+</head>
+<body>
+    <h1>List Infrastructure</h1>
+    <table border=1 style="border-collapse: collapse;">
+        <tr>
+            <th>Adresse</th><th>Nom</th><th>Lat/Lng</th>
+        </tr>
+        {% for infra in infras %}
+         <tr>
+            <td>{{ infra.adresse }}</td><td>{{ infra.libelle }}</td><td>{{ infra.getLatitude() }}/{{ infra.getLongitude() }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
