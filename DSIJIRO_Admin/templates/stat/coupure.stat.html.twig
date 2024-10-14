@@ -1,0 +1,359 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | coupure générale{% endblock %}
+
+{% block menuactive %}stat{% endblock %}
+
+{% block body %}
+
+
+<div class="py-4 px-3 px-md-4">
+    <div class="mb-md-0 d-flex justify-content-between">
+        <h1 class="h3">Tableau de bord</h1>
+    </div>
+    {# <div class="mb-5 text-muted">
+        <h5>
+            Consultez le Tableau de Bord Administrateur pour Gérer les Constructions Immobilières, <br>
+            Visualiser les Profits et les Propriétés Liées à la Construction.
+        </h5>
+    </div> #}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+            <div class="row">
+                <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                    <!-- Breadcrumb -->
+                    <nav class="d-none d-md-block" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a>Tableau de bord</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Rapport de coupure</li>
+                        </ol>
+                    </nav>
+                    <!-- End Breadcrumb -->
+                    
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="mt-5" id="list-stock">
+                            <div class="toolbar row mb-3 mt-4">
+                                <div class="col-md-6">
+                                    <form class="form-inline">
+                                        <a class="btn btn-light" style="width: 150px;" data-toggle="collapse" href="#recherche-employe" aria-expanded="false" aria-controls="form-elements">
+                                            <span class="menu-title">Filtre</span>
+                                            <sub><i class="gd-filter ml-1"></i></sub>
+                                        </a>
+                                        <div class="spinner-border spinner-border-sm text-info ml-4" role="status" id="list-stat-spinner">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dropdown float-right">
+                                        <span class="mr-8 text-muted h5">
+                                            <strong id="date-title" style="text-transform: capitalize;">
+                                                Oct. 2024
+                                            </strong>
+                                        </span>
+                                        <button class="btn btn-facebook dropdown-toggle" type="button" id="actionMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Exporter <i class="gd-import icon-text icon-text-xs align-middle ml-3"></i></button>
+                                        <div class="dropdown-menu" aria-labelledby="actionMenuButton">
+                                        <a class="dropdown-item" href="#">Pdf</a>
+                                        <a class="dropdown-item" href="#">CSV</a>
+                                        <a class="dropdown-item" href="#">Excel</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="collapse mt-2" id="recherche-employe">
+                                        <div class="row">
+                                            <div class="col-md-4 with-border-text">
+                                                <label class="border-text-label">Niveau</label>
+                                                <select class="custom-select" id="niveau">
+                                                    <option value="secteur">Secteur</option>
+                                                    <option value="zone">Zone</option>
+                                                    <option value="post">Post</option>
+                                                    <option value="lieu">Lieu</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 with-border-text">
+                                                <label class="border-text-label">Recherche</label>
+                                                <input type="text" id="motclee" placeholder="" class="form-control">
+                                            </div>
+                                            <div class="col-md-4 with-border-text">
+                                            </div>
+                                            <div class="col-md-4 with-border-text">
+                                                <label class="border-text-label">Groupe date</label>
+                                                <select class="custom-select" id="groupe-date"> 
+                                                    <option value="jour">Journalier</option>
+                                                    <option value="mois">Mensuel</option>
+                                                    <option value="annee">Annuel</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 with-border-text">
+                                                <label class="border-text-label" id="date">Date</label>
+                                                <input type="date" id="date-selector" value="2024-08" class="form-control" style="text-transform: capitalize;">
+                                            </div>
+                                            <div class="col-md-4 with-border-text">
+                                                <button type="button" class="btn btn-soft-light" onclick="search()">
+                                                    <i class="gd-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-4">
+                                    <table class="table table-responsive-xl scroll-x-perfect table-bordered text-nowrap mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="font-weight-semi-bold border-top-0 py-2" id="tab-niv-col" style="text-transform: capitalize;">
+                                                <!-- Niveau --> ?
+                                            </th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2">
+                                                Heure total coupure
+                                                <a class='link-dark pointer' onclick="filter('heure_total_coupure', 'desc')">&#8593;</a>
+                                                <a class='link-dark pointer' onclick="filter('heure_total_coupure', 'asc')">&#8595;</a>
+                                            </th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2">
+                                                Freq. coupure
+                                                <a class='link-dark pointer' onclick="filter('frequence_coupure', 'desc')">&#8593;</a>
+                                                <a class='link-dark pointer' onclick="filter('frequence_coupure', 'asc')">&#8595;</a>
+                                            </th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2">
+                                                Heure freq. coupure 
+                                            </th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2">
+                                                AVG Duree coupure (h)
+                                                <a class='link-dark pointer' onclick="filter('duree_moyenne_coupure', 'desc')">&#8593;</a>
+                                                <a class='link-dark pointer' onclick="filter('duree_moyenne_coupure', 'asc')">&#8595;</a>
+                                            </th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2">
+                                                Action
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="stat-table-body">
+                                        </tbody>
+                                    </table>
+                                <div>
+                            </div>
+                            <div class="mb-0 pt-2 text-center d-none" id="no-result">
+                                <div class="card-body text-muted"> Aucun élément trouvée</div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                                <div class="row">
+                                    <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <!-- Pagination items will be dynamically inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('js/pagination.js') }}"></script>
+<script src="{{ asset('js/session.js') }}"></script>
+<script>
+    var page = 1;  // Page actuelle
+    var count = 1; // Nombre total de pages
+
+    var orderby = '';
+    var orderinc = '';
+
+    const dateType = new Map([
+        ['jour', 'date'],
+        ['mois', 'month'],
+        ['annee', 'number']
+    ]);
+
+    // Fonction pour formater la date du jour selon le format choisi
+    function currentDateGroupFormat(selectedOption) {
+        // Obtenir la date actuelle
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Mois avec zéro au début
+        const day = ('0' + currentDate.getDate()).slice(-2); // Jour avec zéro au début
+
+        if (selectedOption === 'jour') {
+            return year + '-' + month + '-' + day; // Format 'YYYY-MM-DD' pour jour
+        } else if (selectedOption === 'mois') {
+            return year + '-' + month; // Format 'YYYY-MM' pour mois
+        } else if (selectedOption === 'annee') {
+            return year; // Format 'YYYY' pour année
+        }
+        return '';
+    }
+
+    window.onload = function() {
+        $(document).ready(function() {
+            $('#groupe-date').change(function() {
+                var group = $(this).val();
+                var inputElement = $('#date-selector');
+                inputElement.attr('type', dateType.get(group));
+
+                // Initialiser la valeur de l'input avec la date formatée
+                inputElement.val(currentDateGroupFormat(group));
+            });
+        });
+
+        initFilter();
+        search();
+    };
+
+    function setDateTitle(group, value) {
+        let title = '';
+
+        switch (group) {
+            case 'jour':
+                title = `${value.slice(8, 10)} ${new Date(value).toLocaleString('default', { month: 'short' })} ${value.slice(0, 4)}`;
+                break;
+            case 'mois':
+                title = new Date(value).toLocaleString('default', { month: 'short' }) + ' ' + value.slice(0, 4);
+                break;
+            case 'annee':
+                title = value.slice(0, 4);
+                break;
+        }
+
+        document.getElementById('date-title').innerHTML = title.trim();
+    }
+
+    function setFilterForms(gpniv, niv, gpdate, date) {
+        var selectNiv = document.getElementById('niveau');
+        var selectDate = document.getElementById('groupe-date');
+        var valueDate = document.getElementById('date-selector');
+        selectNiv.querySelector(`option[value="${gpniv}"]`).setAttribute('selected', '');
+        selectDate.querySelector(`option[value="${gpdate}"]`).setAttribute('selected', '');
+        document.getElementById('motclee').value = niv;
+        $('#date-selector').attr('type', dateType.get(gpdate));
+        valueDate.value = date;
+    }
+
+    function initFilter() {
+        var filter = getFilterFromSession();
+        if(filter) {
+            setFilterForms(filter.gpniv, '', filter.gpdate, filter.date);
+            console.log('Filter found');
+        } else {
+            setFilterForms('secteur', '', 'mois', "{{ 'now'|date('Y-m') }}");
+            console.log('Filter not found');
+        }
+    }
+
+    function search() {
+        page = 1;
+        orderby = 'niveau';
+        orderinc = 'asc';
+        fetchStatCoupure();
+    }
+
+    function filter(_orderby, _orderinc) {
+        page = 1;
+        orderby = _orderby;
+        orderinc = _orderinc;
+        fetchStatCoupure();
+    }
+
+    function fetchStatCoupure() {
+        let niv = document.getElementById('niveau').value;
+        var data = {
+            page: page,
+            limit: getPreferenceLimitPerPage(),
+            niv: niv,
+            motclee: document.getElementById('motclee').value,
+            orderby: orderby,
+            orderinc: orderinc,
+            dategroupe: document.getElementById('groupe-date').value,
+            datevalue: document.getElementById('date-selector').value
+        };
+
+        saveFilterOnSession(data.niv, data.motclee, data.dategroupe, data.datevalue);
+        setDateTitle(data.dategroupe, data.datevalue);
+
+        console.log(data);
+
+        $.ajax({
+            url: "{{ path('list_stat_coupure') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('list-stat-spinner').style.display = "block";
+            },
+            success: function(response) {
+                //console.log(response);
+
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                console.log(data.stats.totalPages);
+
+                var stats = data.stats;
+
+                // Obtenir l'élément tbody du tableau
+                let tbody = document.getElementById('stat-table-body');
+                document.getElementById('tab-niv-col').innerHTML = niv;
+                tbody.innerHTML = ""; // Vider le contenu existant du tableau
+
+                // Parcourir les résultats et remplir le tableau
+                if(stats.results.length == 0) {
+                    document.getElementById('no-result').classList.remove('d-none');
+                } else {
+                    document.getElementById('no-result').classList.add('d-none');
+                    stats.results.forEach(function(result) {
+                        let row = `
+                            <tr>
+                                <td class="py-3">${result['niveau']}</td>
+                                <td class="py-3 text-center">${result['heure_total_coupure']}</td>
+                                <td class="py-3 text-right">${result['frequence_coupure']}</td>
+                                <td class="py-3 text-center">${result['heure_coupure_frequent']}</td>
+                                <td class="py-3 text-center">${result['duree_moyenne_coupure']}</td>
+                                <td class="p-0 py-3">
+                                    <a class="unfold-link media align-items-center text-nowrap ml-3 p-0" href="statistique-coupure/fiche/${niv}/${result['niveau']}">
+                                        <i class="gd-stats-up unfold-item-icon mr-3"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.insertAdjacentHTML('beforeend', row);
+                    });
+                }
+
+                count = stats.totalPages;
+
+                // updatePaginationIndication();
+
+                //console.log(coupures);
+                document.getElementById('list-stat-spinner').style.display = "none";
+
+                generatePagination(page, count);
+                updatePaginationIndication(page, count);
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('list-stat-spinner').style.display = "none";
+            }
+        });
+    }
+
+    function loadDataOfPage() {
+        fetchStatCoupure();
+    }
+</script>
+{% endblock %}

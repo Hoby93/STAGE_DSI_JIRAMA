@@ -1,0 +1,383 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Liste secteurs{% endblock %}
+
+{% block menuactive %}parametre{% endblock %}
+
+{% block othercss %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Paramètre</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Secteur éléctrique</li>
+                                <li class="breadcrumb-item active" aria-current="page">Liste</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">List des Secteur éléctrique</h1>
+                        </div>
+                        {# <div class="mb-3 text-muted">
+                            <h5>Consultez la Liste des Types de finition Disponibles pour la Construction Immobilière.</h5>
+                        </div> #}
+                        
+                    </div>
+                </div>
+
+                {# {% if message %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endif %} #}
+
+            <div class="card-body pt-0">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="toolbar row mb-3 mt-4">
+                            <div class="col">
+                                <a class="btn btn-light" style="width: 150px;" data-toggle="collapse" href="#recherche-employe" aria-expanded="false" aria-controls="form-elements">
+                                    <span class="menu-title">Filtre</span>
+                                    <sub><i class="gd-filter ml-1"></i></sub>
+                                </a>
+                                <div class="spinner-border spinner-border-sm text-info ml-4 d-none" role="status" id="zone-table-spinner">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="col ml-auto">
+                                <div class="dropdown float-right">
+                                    <a class="btn btn-primary float-right ml-3 pointer" data-toggle="modal" data-target="#addSecteur"><i class="gd-plus text-white mr-1"></i></a>
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Exporter <i class="gd-import icon-text icon-text-xs align-middle ml-3"></i></button>
+                                    <div class="dropdown-menu" aria-labelledby="actionMenuButton">
+                                        <a class="dropdown-item" href="#">Pdf</a>
+                                        <a class="dropdown-item" href="#">CSV</a>
+                                        <a class="dropdown-item" href="#">Excel</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="collapse mt-2" id="recherche-employe">
+                                    <div class="row">
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label">Recherche</label>
+                                            <input type="text" id="mot-clee" placeholder="" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <button type="button" class="btn btn-soft-light" onclick="search()">
+                                                <i class="gd-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5" id="list-stock">
+                            <table class="table table-bordered scroll-x-perfect text-nowrap mb-0">
+                                <thead>
+                                <tr>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Secteur
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Région
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="table-secteur-body">
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mb-0 text-center" id="no-result">
+                            <div class="card-body text-muted"> Aucun élément</div>
+                        </div>
+                        <div class="col-md-12">
+                            <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                                <div class="row">
+                                    <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <!-- Pagination items will be dynamically inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                            
+</div>
+{% endblock %}
+
+{% block modals %}
+{{ parent() }}
+
+<!-- Add Secteur - Modal -->
+<div id="addSecteur" class="modal fade" role="dialog" aria-labelledby="addSecteur" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('new_secteur_do') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title ml-2" id="exampleModalLabel">Ajout Secteur éléctrique</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="add-idregion">Région</label>
+                        <select class="custom-select" id="add-region" name="idregion" style="width: 100%;">
+                            <!-- Liste des secteurs ici -->
+                        </select>
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="add-ref">Référence</label>
+                        <input type="text" class="form-control" value="" id="add-ref" name="ref">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+
+<!-- Edit Secteur - Modal -->
+<div id="editSecteur" class="modal fade" role="dialog" aria-labelledby="editSecteur" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('update_secteur_do') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title ml-2" id="exampleModalLabel">Modification Secteur éléctrique</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="edit-idregion">Région</label>
+                        <select class="custom-select" id="edit-region" name="idregion" style="width: 100%;">
+                            <!-- Liste des secteurs ici -->
+                        </select>
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="edit-ref">Référence</label>
+                        <input type="text" class="form-control" value="" id="edit-ref" name="ref">
+                    </div>
+                    <div class="form-hidden">
+                        <input type="hidden" id="edit-id" name="idsecteur">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+
+<script src="{{ asset('js/pagination.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+    var page = 1;  // Page actuelle
+    var count = 1; // Nombre total de pages
+
+    function fetchRegion(input) {
+        $.ajax({
+            url: "{{ path('fetch_region') }}",
+            method: 'GET',
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(response) {
+                let data = JSON.parse(response);
+                let regions = data.regions;
+
+                // Vider les anciennes options
+                input.empty();
+
+                console.log(regions);
+
+                // Ajouter l'option par défaut
+                input.append('<option value="">Choisissez...</option>');
+
+                // Ajouter les nouvelles options reçues du serveur
+                regions.forEach(function(region) {
+                    input.append(`<option value="${region['id_region']}">
+                                        ${region['libelle']}
+                                  </option>`);
+                });
+
+                // Recharger Select2 pour afficher les nouvelles options
+                input.trigger('change');
+            },
+            error: function() {
+                console.error('Erreur lors de la récupération des regions.');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Configuration pour l'input Select2
+        const select2config = {
+            placeholder: "Choisissez...",
+            allowClear: true,
+            width: '100%'
+        };
+
+        // Initialisation des select2
+        $('#add-region').select2(select2config);
+        $('#edit-region').select2(select2config);
+
+        search();
+        fetchRegion($('#add-region'), false);
+        fetchRegion($('#edit-region'), false);
+
+        {% if message %} 
+            show_exception_modal('{{ message }}');
+        {% endif %}
+    });
+
+    function updateEditRegionOptions(regionId) {
+        // Sélectionner le <select> avec l'id 'edit-region'
+        const $select = $('#edit-region');
+
+        // Étape 1 : Retirer l'attribut 'selected' de toutes les options
+        $select.find('option').prop('selected', false);
+
+        // Étape 2 : Trouver l'option correspondant à la région et ajouter l'attribut 'selected'
+        $select.find(`option[value="${regionId}"]`).prop('selected', true);
+
+        // Étape 4 : Actualiser Select2 pour qu'il prenne en compte les changements
+        $($select).trigger('change');
+    }
+
+    function setModalEditSecteurContent(secteur) {
+        // Si secteur est un string JSON, désérialiser
+        if (typeof secteur === 'string') {
+            secteur = JSON.parse(secteur);
+        }
+        document.getElementById('edit-ref').value = secteur.refSecteur;
+        document.getElementById('edit-id').value = secteur.id;
+        updateEditRegionOptions(secteur.regionId);
+        // console.log(secteur);
+    }
+
+    function updateTableContent(secteurs) {
+        // Obtenir l'élément tbody du tableau
+        let tbody = document.getElementById('table-secteur-body');
+        tbody.innerHTML = "";
+
+        function createRow(secteur) {
+            var tr = document.createElement('tr');
+            tr.className = "text-left";
+            tr.innerHTML = `
+                <td class="py-3">${secteur.refSecteur}</td>
+                <td class="py-3">${secteur.region}</td>
+                <td class="py-3 text-center">
+                    <div class="position-relative">
+                        <a class="link-dark d-inline-block pointer" data-toggle="modal" data-target="#editSecteur" onclick='setModalEditSecteurContent(${JSON.stringify(secteur)})'>
+                            <i class="gd-pencil icon-text"></i>
+                        </a>
+                        <a class="link-dark d-inline-block" href="#">
+                            <i class="gd-trash icon-text"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+            return tr;
+        }
+
+        if(secteurs.length == 0) {
+            document.getElementById('no-result').classList.remove('d-none');
+        } 
+        else {
+            document.getElementById('no-result').classList.add('d-none');
+            secteurs.forEach(function(secteur) {
+                var tr = createRow(secteur[0]);
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function search() {
+        var data = {
+            page: page,
+            limit: getPreferenceLimitPerPage(),
+            motclee: document.getElementById('mot-clee').value
+        };
+        fetchSecteur(data);
+    }
+
+    function fetchSecteur(data) {
+        $.ajax({
+            url: "{{ path('search_secteur_on_liste') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('zone-table-spinner').classList.remove('d-none');
+            },
+            success: function(response) {
+
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                var secteurs_loaded = data.secteurs;
+                console.log(secteurs_loaded);
+
+                count = secteurs_loaded.totalPages;
+
+                // Parcourir les résultats et remplir le tableau
+                updateTableContent(secteurs_loaded.results);
+
+                // Generer la pagination
+                generatePagination(page, count);
+                updatePaginationIndication(page, count);
+
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            }
+        });
+        //document.getElementById('zone-table-spinner').style.display = "none";
+    }
+
+    function loadDataOfPage() {
+        search();
+    }
+
+    search();
+</script>
+{% endblock %}

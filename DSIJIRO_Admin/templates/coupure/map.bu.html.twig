@@ -1,0 +1,918 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Prevision coupure{% endblock %}
+
+{% block menuactive %}coupure{% endblock %}
+
+{% block othercss %}
+    <link rel="stylesheet" href="{{ asset('css/style.map.css') }}">
+    <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
+    <link rel="stylesheet" href="leaflet/L.Icon.Pulse.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-fullscreen/dist/leaflet.fullscreen.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Coupure</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Carte</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">Prévisions de coupure</h1>
+                        </div>
+                        <div class="mb-3 text-muted">
+                            {# <h5>Consultez la Liste des infrastructures.</h5> #}
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Resultat & carte -->
+                <div class="col-lg-12 mt-5 pb-3">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <a class="btn btn-sm btn-primary pointer ml-auto mr-2 text-white" href="{{ path('new_infra')}}">
+                                <i class="gd-plus text-white mr-1"></i> Prévision
+                            </a>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end">
+                            <a class="btn btn-sm btn-primary ml-auto mr-2 text-white pointer" href="{{ path('list_infra')}}">
+                                <i class="gd-list text-white mr-1"></i> Liste
+                            </a>
+                        </div>
+                    </div>
+                    <section id="results-carte">
+                    <div id="results" class="about-video">
+                        <div class="widget-box mb-2">
+                            <div id="result-tag-clouds" class="tag-clouds">
+                                    <!-- Linked view here -->
+                            </div>
+                        </div>
+                        <div id="map" style="height: 500px;border-radius: 0.5%;">
+                            <div id="loading-on-map" class="map-spinner-container">
+                                <img src="{{ asset('img/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="30">
+                                <span class="text-14">Chargement ...</span>
+                            </div>
+                            <!-- recherche sur la carte -->
+                            <div class="search-map-container p-2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <i class="gd-location-pin icon-text icon-text-sm"></i>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <a class="pointer" onclick="search_location()">
+                                            <i id="search-map-icon" class="gd-search icon-text icon-text-sm"></i>
+                                            <img id="search-map-spinner" class="d-none" src="{{ asset('img/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="25">
+                                        </a>
+                                    </div>
+                                    <input class="form-control text-12 form-control-icon-img search-input" id="location" placeholder="Entrez un endroit..." type="text">
+                                </div>
+                            </div>
+
+                            <!-- Preference -->
+                            <div class="time-container p-2">
+                                <div class="time-item d-flex align-items-center mb-2">
+                                    <div class="icon-map-circle bg-primary text-white mr-3">
+                                        <i class="gd-calendar"></i>
+                                    </div>
+                                    <input type="date" class="b-none text-12" id="date-search-info" value="{{ 'now'|date('Y-m-d') }}" onchange="changeDate()"/>
+                                </div>
+                                <div class="time-item d-flex align-items-center">
+                                    <div class="icon-map-circle bg-primary text-white mr-3">
+                                        <i class="gd-time"></i>
+                                    </div>
+                                    <input type="time" class="b-none text-12" id="hours-start" value="06:00" onchange="changeIntervalDate()"/>
+                                    <span class="text-12 mx-2">-</span>
+                                    <input type="time" class="b-none text-12" id="hours-end" value="12:00" onchange="changeIntervalDate()"/>
+                                </div>
+                            </div>
+
+                            <!-- Légende -->
+                            <div id="map-legend" class="map-legend-container p-2 text-10">
+                                <h5>Légende</h5>
+                                <div class="legend-item">
+                                    <div class="legend-box yellow"></div>
+                                    <span>Aucune coupure prévue</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-box black"></div>
+                                    <span>Intersecte une coupure</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-box red"></div>
+                                    <span>Coupure totale</span>
+                                </div>
+                            </div>
+
+
+                            <!-- Menu contextuel -->
+                            <div class="map-menu-container p-2">
+                                <div class="menu-header" id="close-menu">
+                                    <a class="text-secondary pointer text-10" onclick="show_hidde_map_menu('none', 'block')"><i class="gd-close"></i></a>
+                                </div>
+                                <div class="map-menu-item w-100" id="item-menu">
+                                    <ul class="nav nav-pills" id="pills-tab2" role="tablist">
+                                        <li class="mr-2 mt-1">
+                                            <a class="nav-link px-3 active" id="pills-profile-tab2" data-toggle="pill" href="#pills-profile2" role="tab" aria-controls="pills-profile2" aria-selected="false"><i class="gd-location-pin"></i></a>
+                                        </li>
+                                        <li class="mr-2 mt-1">
+                                            <a class="nav-link px-3" id="pills-contact-tab2" data-toggle="pill" href="#pills-contact2" role="tab" aria-controls="pills-contact2" aria-selected="false"><i class="gd-help"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content text-10 mb-2 mt-4" id="pills-tabContent2">
+                                        <div class="tab-pane fade show active" id="pills-profile2" role="tabpanel" aria-labelledby="pills-profile-tab2">
+                                            <div class="checkbox-container">
+                                                <div class="form-check form-check-sm form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="agence">
+                                                    <label class="form-check-label ml-3" for="agence">Agence</label>
+                                                </div>
+                                                <div class="form-check form-check-sm form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="shop">
+                                                    <label class="form-check-label ml-3" for="shop">Shop</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="pills-contact2" role="tabpanel" aria-labelledby="pills-contact-tab2">
+                                            <div class="checkbox-container">
+                                                <div class="form-check form-check-sm form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="legende">
+                                                    <label class="form-check-label ml-3" for="legende">Légende</label>
+                                                </div>
+                                                <div class="form-check form-check-sm form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="animation">
+                                                    <label class="form-check-label ml-3" for="animation">Animation</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="map-menu-btn" class="map-menu-btn">
+                                <a class="text-white pointer" id="toggle-menu" onclick="show_hidde_map_menu('block', 'none')"><img src="{{ asset('img/spinner/panel-orange.gif') }}" alt="Loading..." height="18"></a>
+                            </div>
+
+                            <!-- Desc-info secteur de la carte -->
+                            <div class="sidebar-info" id="sidebar-info" style="width: 50%">
+                                <a class="close-btn pointer" onclick="show_hidde_sidebar(0)"><i class="gd-close"></i></a>
+                                <h3>Details</h3>
+                                <div class="desc-spinner-container" id="desc-spinner-container">
+                                    <img src="{{ asset('img/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="45">
+                                </div>
+                                <div class="content-container" id="content-container">
+                                    <h5 class="text-muted"><a id="sidebar-info-title">Partie concernée</a></h5>
+                                    <div id="secteur-fkt" class="tag-clouds">
+                                        <!-- List-Fokontany ici -->
+                                    </div>
+                                    <div class="row p-2 mt-4 text-14">
+                                        <div class="col-md-12 pl-0">
+                                            <div class="col-md-12 mb-4 pl-0">
+                                                <div class="d-flex flex-row tab-icon">
+                                                    <div class="nav flex-column nav-pills" id="v-pills-tab3" role="tablist" aria-orientation="vertical">
+                                                        <a class="nav-link py-3" id="v-pills-home-tab3" data-toggle="pill" href="#v-pills-home3" role="tab" aria-controls="v-pills-home3" aria-selected="true"><i class="gd-info"></i></span></a>
+                                                        <a class="nav-link py-3 active" id="v-pills-profile-tab3" data-toggle="pill" href="#v-pills-profile3" role="tab" aria-controls="v-pills-profile3" aria-selected="false"><i class="gd-calendar"></i></span></a>
+                                                        <a class="nav-link py-3" id="v-pills-messages-tab3" data-toggle="pill" href="#v-pills-messages3" role="tab" aria-controls="v-pills-messages3" aria-selected="false"><i class="gd-pin-2"></i></a>
+                                                    </div>
+                                                    <div class="tab-content tab-icon-content" id="v-pills-tabContent3" style="">
+                                                        <div class="tab-pane fade p-4" id="v-pills-home3" role="tabpanel" aria-labelledby="v-pills-home-tab3">
+                                                            <div class="row text-14">
+                                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                                    <span class="text-left"><i class="gd-map"></i></span>
+                                                                    <span class="text-right" id="sidebar-info-adress">Zone résidentiel</span>
+                                                                </div>
+                                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                                    <span class="text-left"><i class="gd-heart-broken"></i></span>
+                                                                    <span class="text-right number-inc" id="count-hopital" data-number="5">0</span>
+                                                                </div>
+                                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                                    <span class="text-left"><i class="gd-na"></i></span>
+                                                                    <span class="text-right number-inc" id="count-prison" data-number="3">0</span>
+                                                                </div>
+                                                                <div class="col-md-12 card-desc d-flex justify-content-between">
+                                                                    <span class="text-left"><i class="gd-book"></i></span>
+                                                                    <span class="text-right number-inc" id="count-point-cle" data-number="2">0</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade show active  p-1" id="v-pills-profile3" role="tabpanel" aria-labelledby="v-pills-profile-tab3">
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <div class="carousel-vertical scroll-y">
+                                                                            <div id="events">
+                                                                                <div class="row row-striped">
+                                                                                    <div class="col-3 text-center">
+                                                                                        <h5 class=""><span class="badge bg-gray" style="font-size: unset;" id="date-number-coupure">23</span></h5>
+                                                                                        <dt id="date-month-coupure">OCT</dt>
+                                                                                    </div>
+                                                                                    <div class="col-9">
+                                                                                        <h6 class="text-uppercase text-muted">
+                                                                                            <strong style="font-size: 0.8em">Coupure de courant</strong>
+                                                                                        </h6>
+                                                                                        <ul class="list-inline" style="font-size: 12px;">
+                                                                                            <li class="list-inline-item"><i class="gd-time" aria-hidden="true"></i><span id="horaire-coupure"></span></li>
+                                                                                            <li class="list-inline-item" id="duree-coupure"> (2h)</li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="mt-2">
+                                                                                    <p id="motif-coupure">
+                                                                                        Coupure en raison d'une elegage d'arbre.
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {# <div class="carousel-controls">
+                                                                            <a class="" id="scroll-up"><i class="gd-arrow-up"></i></a>
+                                                                            <a class="" id="scroll-down"><i class="gd-arrow-down"></i></a>
+                                                                        </div> #}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="v-pills-messages3" role="tabpanel" aria-labelledby="v-pills-messages-tab3">
+                                                            <div class="mb-0 p-3">
+                                                                {# <dt class="mb-2"><em>Post coupee</em></dt> #}
+                                                                <div class="mb-2">
+                                                                    <h6 class="text-uppercase text-muted">
+                                                                        <strong style="font-size: 0.8em">Post coupée</strong>
+                                                                    </h6>
+                                                                </div>
+                                                                <div id="postes-coupee">
+                                                                    <!-- Les postes ici -->
+                                                                    <div class="card-body text-center text-09"> Aucun élément </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p id="sidebar-info-content"></p>
+                            </div>
+                        </div>
+                    </div>
+                    </section>
+                </div>
+                <!-- /results & carte -->
+        </div>
+    </div>     
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('leaflet/leaflet.js') }}"></script>
+    <script src="https://unpkg.com/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+    {# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        function show_hidde_map_menu(menu_display, button_display) {
+            var mapMenuContainer = document.querySelector('.map-menu-container');
+            if (menu_display === 'block') {
+                mapMenuContainer.classList.add('open');
+                mapMenuContainer.style.opacity = 1;
+            } else {
+                mapMenuContainer.classList.remove('open');
+                mapMenuContainer.style.opacity = 0;
+            }
+
+            document.getElementById('item-menu').style.display = menu_display;
+            document.getElementById('toggle-menu').style.display = button_display;
+            document.getElementById('close-menu').style.display = menu_display;
+            document.getElementById('map-menu-btn').style.display = button_display;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const legendCheckbox = document.getElementById('legende');
+            const legendContainer = document.querySelector('.map-legend-container');
+
+            legendCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    legendContainer.style.opacity = 1;
+                } else {
+                    legendContainer.style.opacity = 0;
+                }
+            });
+        });
+        
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2({
+                placeholder: "Sélectionnez une option",
+                ajax: {
+                    url: 'https://nominatim.openstreetmap.org/search',
+                    dataType: 'jsonp', // Utilisez 'jsonp' pour éviter les problèmes CORS
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term + ' Madagascar', // Inclure 'Madagascar' dans la recherche
+                            format: 'json',
+                            addressdetails: 1,
+                            limit: 10 // Limite le nombre de résultats renvoyés
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.display_name, // Utilisez display_name pour le texte de l'option
+                                    id: item.place_id // Utilisez place_id comme identifiant unique
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1
+            });
+        });
+
+        async function getCoordinates(location) {
+            const encodedLocation = encodeURIComponent(location); // Encoder le texte pour l'URL
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedLocation}&bounded=1&addressdetails=1&extratags=1`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                if (data.length > 0) {
+                    const result = data[0];
+                    const lat = result.lat;
+                    const lon = result.lon;
+                    const address = result.display_name;
+                    const adress_nv = address.split(", ");
+
+                    console.log(`Location: ${location}`);
+                    console.log(`Lat: ${lat}, Lng: ${lon}`);
+                    console.log(`Address: ${address}`);
+                    console.log(`Niveau: ${adress_nv.length}`);
+
+                    return {
+                        lat: lat,
+                        lng: lon,
+                        zoom: 8 + adress_nv.length
+                    };
+                } else {
+                    console.log('No results found for the given location.');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                return null;
+            }
+        }
+
+        function changeDate() {
+            // set_zonescoupee_loaded
+            getZoneCoupeeVisible();
+        }
+
+        function changeIntervalDate() {
+            updateMapLayers();
+        }
+
+        async function search_location() {
+            var location = document.getElementById('location').value;
+            document.getElementById('search-map-icon').classList.add('d-none');
+            document.getElementById('search-map-spinner').classList.remove('d-none');
+            var coord = await getCoordinates(location);
+            if (coord) {
+                console.log(coord);
+                // Utilisez les coordonnées et le niveau de zoom pour centrer la carte ici
+                map.flyTo([coord.lat, coord.lng], coord.zoom, {
+                    duration: 1.0 // Durée de l'animation en secondes
+                });
+            }
+
+            document.getElementById('search-map-icon').classList.remove('d-none');
+            document.getElementById('search-map-spinner').classList.add('d-none');
+        }
+
+        // Exemple d'appel de la fonction
+        // getCoordinates('analamanga');
+
+    </script>
+
+
+    <script>
+        var map = L.map('map').setView([-18.922647647936802, 47.46631766551795], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var sidebar = document.getElementById('sidebar-info');
+        var sidebarContent = document.getElementById('sidebar-info-content');
+        var currentSelectedMarker = null;
+
+        function show_hidde_sidebar(opacity) {
+            // sidebar.classList.add('hidden2');
+            var info = document.getElementById("sidebar-info");
+            //info.style.transform = "translateX(80%)";
+            info.style.opacity = opacity;
+
+            if(opacity == 0) {
+                map.eachLayer(function(layer) {
+                    if (layer instanceof L.Marker) {
+                        layer._icon.style.animation = ''; // Retirez l'animation
+                    }
+                });
+            }
+        }
+
+        {# map.on('click', function(e) {
+            var latlng = e.latlng;
+            alert('Coordonnées : ' + latlng.lat + ' ' + latlng.lng);
+        }); #}
+
+        map.zoomControl.setPosition('bottomright');
+
+        // Ajout du bouton plein écran
+        L.control.fullscreen({
+            position: 'topright',
+            title: 'Plein écran',
+            titleCancel: 'Quitter le plein écran'
+        }).addTo(map);
+
+        map.on('enterFullscreen', function(){
+            if(window.console) window.console.log('plein écran activé');
+        });
+
+        map.on('exitFullscreen', function(){
+            if(window.console) window.console.log('plein écran désactivé');
+        });
+
+        var shop = true;
+        var agence = true;
+
+        var zones_coupee_loaded = [];
+
+        var user_coords = null;
+
+        var cartIcon = L.icon({
+            iconUrl: "{{ asset('leaflet/images/cart-icon.png') }}", // Chemin vers votre icône
+            iconSize: [25, 25], // Taille de l'icône
+        });
+
+        var agenceIcon = L.icon({
+            iconUrl: "{{ asset('leaflet/images/agence-icon.png') }}", // Chemin vers votre icône
+            iconSize: [30, 30], // Taille de l'icône
+        });
+
+       // Variable pour stocker les limites visibles actuelles
+        var storedBounds = null;
+
+        var json_icons = null;
+
+
+        // Fonction pour comparer et mettre à jour les limites stockées
+        function updateStoredBounds(north, south, east, west) {
+            // Si storedBounds est null, cela signifie que les limites n'ont jamais été définies
+            if (!storedBounds || (north > storedBounds.north) || (south < storedBounds.south) || (east > storedBounds.east) || (west < storedBounds.west)) {
+                // Mettre à jour les limites stockées
+                storedBounds = { north, south, east, west };
+                return true;
+            }
+            return false;
+        }
+
+        function getBoundsView() {
+            var bounds = map.getBounds();
+            var visibleBounds = {
+                north: bounds.getNorth(),
+                south: bounds.getSouth(),
+                east: bounds.getEast(),
+                west: bounds.getWest()
+            };
+
+            // Appeler la fonction pour mettre à jour les limites stockées
+            var movedoutside = updateStoredBounds(visibleBounds.north, visibleBounds.south, visibleBounds.east, visibleBounds.west);
+
+            // Vérifier si storedBounds est vide ou si la vue de la carte va à l'extérieur du rectangle tracé
+            if (movedoutside || true) {
+                var north = visibleBounds.north;
+                var south = visibleBounds.south;
+                var east = visibleBounds.east;
+                var west = visibleBounds.west;
+
+                var newBounds = [
+                    [south, west], // Coin sud-ouest
+                    [north, east]  // Coin nord-est
+                ];
+
+                // Tracer un rectangle avec les nouvelles limites pour visualiser l'aire englobante
+                var rectangleOptions = {
+                    color: 'blue', // Couleur du contour
+                    weight: 2, // Épaisseur du contour
+                    fillColor: 'rgba(0, 0, 255, 0.05)', // Couleur de remplissage transparente pour visualisation
+                    fillOpacity: 0.2 // Opacité du remplissage
+                };
+
+                //console.log("MySQL Query to get zones within the rectangle:", coord_str_wkt);
+                console.log("** We load data **");
+
+                // Supprimer l'ancien rectangle s'il existe
+                if (window.rectangle) {
+                    map.removeLayer(window.rectangle);
+                }
+
+                // Ajouter le nouveau rectangle à la carte
+               // window.rectangle = L.rectangle(newBounds, rectangleOptions).addTo(map);
+
+                // return window.rectangle.getLatLngs();
+                return true;
+            }
+
+            return null;
+        }
+
+        function setSideBarLoading(isLoading) {
+            const sidebarInfo = document.getElementById('sidebar-info');
+            if (isLoading) {
+                sidebarInfo.classList.add('loading');
+            } else {
+                sidebarInfo.classList.remove('loading');
+            }
+        }
+
+
+        function set_sidebar_content(zone_coupee) {
+            setSideBarLoading(true);
+            setTimeout(() => {
+                setSideBarLoading(false);
+            }, 500);
+            // Obtenir l'élément contenant les tags
+            var tagCloudContainer = document.getElementById('secteur-fkt');
+
+            // S'assurer que l'élément existe
+            if (!tagCloudContainer) {
+                console.error('L\'élément avec l\'id "secteur-fkt" est introuvable.');
+                return;
+            }
+
+            // Nettoyer le conteneur avant d'ajouter de nouveaux éléments
+            tagCloudContainer.innerHTML = '';
+
+            // Diviser la chaîne de fokontany par le point-virgule
+            var lieux = zone_coupee.zone.lieux.split('-');
+
+            // Parcourir chaque fokontany
+            lieux.forEach(function(lieu) {
+                // Créer un lien pour chaque fokontany
+                var tagLink = document.createElement('a');
+                tagLink.href = "#";
+                tagLink.className = "tag-cloud-link";
+                tagLink.textContent = lieu.trim(); // Utiliser textContent et enlever les espaces inutiles
+
+                // Ajouter le lien au conteneur
+                tagCloudContainer.appendChild(tagLink);
+            });
+
+            // Obtenir l'élément contenant les événements
+            var eventsContainer = document.getElementById('events');
+
+            // S'assurer que l'élément existe
+            if (!eventsContainer) {
+                console.error('L\'élément avec l\'id "events" est introuvable.');
+                return;
+            }
+
+            // Nettoyer le conteneur avant d'ajouter de nouveaux éléments
+            // eventsContainer.innerHTML = '';
+
+            // Convertir les timestamps Unix en objets Date
+            var dateDebut = new Date(zone_coupee.coupure.dateDebut.timestamp * 1000); // Convertir les secondes en millisecondes
+            var dateFin = new Date(zone_coupee.coupure.dateFin.timestamp * 1000); // Convertir les secondes en millisecondes
+
+            // console.log(dateDebut + '-' + dateFin);
+
+            var day = dateDebut.getUTCDate();
+            var month = dateDebut.toLocaleString('default', { month: 'short' }).toUpperCase();
+            var durationInHours = (dateFin - dateDebut) / (1000 * 60 * 60); // Durée en heures
+
+            // Convertir la durée en heures et minutes
+            var hours = Math.floor(durationInHours);
+            var minutes = Math.round((durationInHours - hours) * 60);
+
+            // console.log(zone_coupee.zone.specificite);
+
+            // Diviser la chaîne en paires clé-valeur
+            var specs = zone_coupee.zone.specificite.split(';');
+
+            specs.forEach(function(spec) {
+                // Extraire la clé et la valeur de chaque spece
+                var parts = spec.split(':');
+                var key = parts[0];
+                var value = parseInt(parts[1], 10); // Convertir la valeur en nombre
+
+                // Trouver l'élément HTML correspondant à la clé
+                var elementId = 'count-' + key;
+                var element = document.getElementById(elementId);
+
+                // Vérifier si l'élément existe
+                if (element) {
+                    // Mettre à jour la valeur de l'élément HTML
+                    element.dataset.number = value.toString();
+                    element.textContent = value;
+                }
+            });
+
+            // Diviser la chaîne en valeurs
+            var postes = zone_coupee.zone.postes.split('-');
+
+            // Ajouter les badges à l'élément div
+            var postesCoupee = document.getElementById('postes-coupee');
+            postesCoupee.innerHTML = "";
+            postes.forEach(function(post) {
+                // Créer un nœud DOM à partir de la chaîne HTML
+                var badgeNode = document.createElement('span');
+                badgeNode.className = 'badge btn btn-outline-primary mr-1';
+                badgeNode.textContent = post;
+
+                // Ajouter le nœud DOM à l'élément parent
+                postesCoupee.appendChild(badgeNode);
+            });
+
+
+            document.getElementById('date-number-coupure').innerHTML = `${day}`;
+            document.getElementById('date-month-coupure').innerHTML = `${month.slice(0, -1)}`;
+            document.getElementById('horaire-coupure').innerHTML = ` ${dateDebut.getUTCHours()}h${dateDebut.getUTCMinutes().toString().padStart(2, '00')} - ${dateFin.getUTCHours()}h${dateFin.getUTCMinutes().toString().padStart(2, '0')}`;
+            document.getElementById('duree-coupure').innerHTML = `(${hours}h${minutes})`;
+            document.getElementById('motif-coupure').innerHTML = `${zone_coupee.coupure.motif}`;
+        }
+
+        function add_result_tag_content(lieux, center) {
+            // Générer les liens pour la tag-cloud
+            var tagCloudContainer = document.getElementById('result-tag-clouds');
+            lieux.forEach(function(lieu) {
+                var tagLink = document.createElement('a');
+                tagLink.href = "#";
+                tagLink.className = "tag-cloud-link";
+                tagLink.innerHTML = lieu;
+                tagLink.dataset.center = `${center.lat}, ${center.lng}`;
+
+                tagLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var centerCoordinates = this.dataset.center.split(',').map(parseFloat); // Convertir la chaîne en coordonnées numériques
+                    map.setView(centerCoordinates, 14); // Centre la carte sur les coordonnées
+                });
+
+                tagCloudContainer.appendChild(tagLink);
+            });
+        }
+
+        // Fonction pour obtenir la position de l'utilisateur
+        function getUserPosition() {
+            return new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => resolve(position.coords),
+                        error => reject(error)
+                    );
+                } else {
+                    reject(new Error("Geolocation is not supported by this browser."));
+                }
+            });
+        }
+
+        // Fonction pour ajuster la vue de la carte à la position de l'utilisateur
+        function ajustViewToUserPosition() {
+            getUserPosition()
+                .then(userCoords => {
+                    // map.setView([userCoords.latitude, userCoords.longitude], 14);
+                    map.flyTo([userCoords.latitude, userCoords.longitude], 14, {
+                        duration: 1.0 // Durée de l'animation en secondes
+                    });
+
+                    // Ajouter le marqueur animé avec effet "pulse"
+                    // var pulseIcon = L.icon.pulse({iconSize:[10,10],color:'#007bff'});
+                    // L.marker([userCoords.latitude, userCoords.longitude], {icon: pulseIcon}).addTo(map);
+                })
+                .catch(error => {
+                    console.error('Error obtaining user position:', error);
+                });
+        }
+
+        function addPolygonOnMap(zone_coupee, icon) {
+            // Récupérer les valeurs des champs de date et d'heure
+            const dateInput = document.getElementById('date-search-info').value;
+            const startTimeInput = document.getElementById('hours-start').value;
+            const endTimeInput = document.getElementById('hours-end').value;
+
+            // Combiner les valeurs pour créer des objets Date
+            const startTime = new Date(`${dateInput}T${startTimeInput}`);
+            const endTime = new Date(`${dateInput}T${endTimeInput}`);
+
+            // Ajuster manuellement pour GMT+3
+            startTime.setHours(startTime.getHours() + 3);
+            endTime.setHours(endTime.getHours() + 3);
+
+            // console.log(startTime + '-' + endTime);
+
+            // Déterminer le style du polygone basé sur les coupures
+            const polygon_style = [
+                {'color': 'yellow', 'icon': 'img/spinner/light-on.gif'},
+                {'color': 'black', 'icon': 'img/spinner/light-semi-off.gif'},
+                {'color': 'red', 'icon': 'img/spinner/light-off2.gif'}
+            ];
+            
+            function getStyleBasedOnCoupures(startTime, endTime) {
+                const coupureStart = new Date(zone_coupee.coupure.dateDebut.timestamp * 1000);
+                const coupureEnd = new Date(zone_coupee.coupure.dateFin.timestamp * 1000);
+
+                // console.log('[' + startTime.toISOString() + ' - ' + endTime.toISOString() + '] ? ' + '[' + coupureStart.toISOString() + ' - ' + coupureEnd.toISOString() + ']');
+
+                // intervalle compris entierement entre la coupure
+                if (startTime >= coupureStart && endTime <= coupureEnd) {
+                    return 2;
+                }
+
+                const cas1 = (startTime < coupureStart && endTime < coupureStart);
+                const cas2 = (startTime > coupureEnd && endTime > coupureEnd);
+                const cas = cas1 || cas2;
+
+                // une partie de l'intervalle compris entre la coupure
+                if (!cas) {
+                    return 1;
+                }
+
+                return 0;
+            }
+
+
+            // Choisir le style en fonction des coupures
+            const styleId = getStyleBasedOnCoupures(startTime, endTime);
+
+            // Extraire les coordonnées de la zone
+            const coords = zone_coupee.zone.coord.map(coord => [coord.longitude, coord.latitude]);
+            
+            // Créer un polygone avec les coordonnées extraites
+            const polygon = L.polygon(coords, {
+                fillOpacity: 0.2,
+                smoothFactor: 1,
+                weight: 2,
+                dashArray: "7, 7",
+                stroke: true,
+                color: polygon_style[styleId].color,
+            }).addTo(map); // Ajouter le polygone à la carte
+
+            // Obtenir le centre du polygone
+            const center = polygon.getBounds().getCenter();
+
+            // Variable pour stocker le marqueur GIF
+            let gifMarker = null;
+
+            // Ajouter un écouteur d'événement pour le clic sur le polygone
+            polygon.on('click', function() {
+                map.setView(center, 14);
+                show_hidde_sidebar(1); // Appeler la fonction show_hide_sidebar avec l'argument 1
+                set_sidebar_content(zone_coupee);
+            });
+
+            // Ajouter des écouteurs d'événements pour changer le style sur hover
+            polygon.on('mouseover', function() {
+                this.setStyle({
+                    fillOpacity: 0.4,
+                    dashArray: "7, 7",
+                });
+
+                // Créer une icône personnalisée
+                const lightOnIcon = L.icon({
+                    iconUrl: polygon_style[styleId].icon,
+                    iconSize: [25, 25], // Taille de l'icône
+                    iconAnchor: [12.5, 12.5] // Point de l'icône correspondant à sa position
+                });
+
+                // Ajouter un marqueur avec l'icône personnalisée au centre du polygone si il n'existe pas déjà
+                if (!gifMarker) {
+                    // gifMarker = L.marker(center, { icon: lightOnIcon }).addTo(map);
+                }
+            });
+
+            // Créer une icône personnalisée
+            const lightIcon = L.icon({
+                iconUrl: polygon_style[styleId].icon,
+                iconSize: [25, 25], // Taille de l'icône
+                iconAnchor: [12.5, 12.5] // Point de l'icône correspondant à sa position
+            });
+
+            // Créer une icône personnalisée
+            const warning = L.icon({
+                iconUrl: polygon_style[styleId].icon,
+                iconSize: [25, 25], // Taille de l'icône
+                iconAnchor: [12.5, 12.5] // Point de l'icône correspondant à sa position
+            });
+
+            gifMarker = L.marker(center, { icon: lightIcon }).addTo(map);
+
+            polygon.on('mouseout', function() {
+                this.setStyle({
+                    fillOpacity: 0.2,
+                    dashArray: "7, 7",
+                });
+
+                // Supprimer le marqueur GIF du centre du polygone
+                if (gifMarker) {
+                    //map.removeLayer(gifMarker);
+                    //gifMarker = null; // Réinitialiser le marqueur
+                }
+            });
+
+            add_result_tag_content(zone_coupee.zone.lieux.split('-'), center);
+        }
+
+        async function updateMapLayers() {
+            document.getElementById('loading-on-map').style.display = "block";
+
+            // Supprimer tous les polygones de la carte
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Polygon || layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Supprimer tout les resultats link-view
+            // document.getElementById('tag-clouds').innerHTML = '';
+
+            // const userCoords = await getUserPosition();
+
+            // Parcourir chaque shop dans le tableau shop_loaded
+            zones_coupee_loaded.forEach(zone_coupee => {
+                // console.log(zone_coupee.secteur);
+                addPolygonOnMap(zone_coupee); // Ajouter au map
+            });
+
+            document.getElementById('loading-on-map').style.display = "none";
+        }
+
+        function getZoneCoupeeVisible() {
+            var boundsview = getBoundsView();
+            if(boundsview) {
+                //console.log(JSON.stringify({ bounds: rectangle.getLatLngs() }));
+
+                // Mettre à jour les limites de la carte avec les nouvelles limites
+                // map.fitBounds(newBounds, { padding: [50, 50] }); // Le padding peut être ajusté selon vos besoins
+                // console.log(boundsview);
+                var data = {
+                    coord: boundsview,
+                    date: document.getElementById('date-search-info').value // devrait etre de la forme -> yyyy-mm-dd
+                };
+
+                $.ajax({
+                    url: "{{ path('visible_coupure') }}",
+                    method: 'POST',
+                    contentType: 'application/json',  // Ajout du type de contenu JSON
+                    data: JSON.stringify(data),  // Conversion en JSON
+                    beforeSend: function() {
+                        document.getElementById('loading-on-map').style.display = "block";
+                    },
+                    success: function(response) {
+                        //console.log(response);
+                        // Supprimer tous les infras existants sur la carte
+                        //zones_coupee_loaded.forEach(shop => map.removeLayer(shop));
+                        zones_coupee_loaded = [];
+
+                        // Convertissez la chaîne JSON en objet JavaScript
+                        let data = JSON.parse(response);
+
+                        zones_coupee_loaded = data.zonesCoupee;
+                        console.log(zones_coupee_loaded);
+
+                        updateMapLayers();
+                    },
+                    error: function() {
+                        // Masquer le spinner en cas d'erreur de la requête AJAX
+                        document.getElementById('loading-on-map').style.display = "none";
+                    }
+                });
+                //document.getElementById('loading-on-map').style.display = "none";
+            }
+        }
+
+        // Charger les zones visibles lors de l'initialisation de la carte
+        getZoneCoupeeVisible();
+        document.getElementById('sidebar-info').style.display = 'block';
+        ajustViewToUserPosition();
+
+        // Rafraîchir les zones visibles lors du déplacement de la carte
+        {# map.on('moveend', getZoneCoupeeVisible); #}
+    </script>
+{% endblock %}

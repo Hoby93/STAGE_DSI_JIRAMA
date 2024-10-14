@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Title -->
+    <title>Static Page | Graindashboard UI Kit</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('img/logo-jirama.png') }}">
+
+    <!-- Template -->
+    <link rel="stylesheet" href="{{ asset('graindashboard/css/graindashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.own.css') }}">
+  </head>
+
+  <body class="">
+
+    <main class="main">
+
+      <div class="content">
+        <div class="py-4 px-3 px-md-4">
+          <!-- Breadcrumb -->
+          <nav class="d-none d-md-block" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{{ path('list_coupure') }}" class="link-muted">&lt; Back</a>
+              </li>
+            </ol>
+          </nav>
+          <!-- End Breadcrumb -->
+
+          <h1 class="h3 mb-3 mb-md-4">
+            PDF - Models 
+            <button class="btn btn-sm btn-primary ml-3" type="button" onclick="exportToPDF('avis-de-coupure')">
+              <i class="gd-import text-white mr-1"></i>
+            </button>
+          </h1>
+
+          <!-- Page content -->
+          <div class="card mb-3 mb-md-4">
+            <div class="card-body" id="root">
+              <div id="lipsum">
+                <div class="row mb-4">
+                    <div class="d-flex ml-3 mt-4 text-12" style="margin-bottom: -5%;">
+                      <strong>RA L&M Voltage</strong>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <div class="col-md-12" style="height: 20px;"></div>
+                        <div class="text-uppercase text-12"> <strong>Prévision de coupure d'éléctricitée</strong> </div>
+                        <div class="text-12"> 
+                          {% set firstDate = zonescoupee|first.coupure.dateDebut|date('d M Y') %}
+                          {% set lastDate = zonescoupee|last.coupure.dateFin|date('d M Y') %}
+                          <span class="text-light ml-1">Du {{ firstDate }} au {{ lastDate }}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex ml-auto" style="margin-top: -5%;">
+                        <img src="{{ asset('img/logo-jirama-text.png') }}" height="50" alt="logo"/>
+                    </div>
+                </div>
+                <!-- table -->
+                  <table class="table table-min table-bordered">
+                      <thead>
+                          {# <tr role="row">
+                              <th colspan="3">Date</th>
+                              <th colspan="3">Localisation</th>
+                              <th colspan="5">Propriete</th>
+                          </tr> #}
+                        <tr role="row">
+                            <th rowspan="2"> Date</th>
+                            <th colspan="2">Heure</th>
+                            <th rowspan="2"> Secteur</th>
+                            <th rowspan="2"> Postes coupes</th>
+                            <th rowspan="2"> Lieu</th>
+                            <th rowspan="2"> Motif</th>
+                            <th rowspan="2"> Abonnées importantes <br> ou Entreprises</th>
+                            <th rowspan="2"> Division</th>
+                            <th rowspan="2"> SA</th>
+                        </tr>
+                        <tr role="row">
+                            <th> Début</th>
+                            <th> Fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for zonecoupee in zonescoupee %}
+                            <tr>
+                                <td class="text-center">
+                                  {{ zonecoupee.coupure.dateDebut|getDay }}<br>
+                                  {{ zonecoupee.coupure.dateDebut|date('j/m/Y') }}
+                                </td>
+                                <td>{{ zonecoupee.coupure.dateDebut|date('H:i') }}</td>
+                                <td>{{ zonecoupee.coupure.dateFin|date('H:i') }}</td>
+                                <td>S?</td>
+                                <td>{{ zonecoupee.zone.postes }}</td>
+                                <td>{{ zonecoupee.zone.lieux }}</td>
+                                <td>{{ zonecoupee.coupure.motif }}</td>
+                                <td></td>
+                                <td>{{ zonecoupee.coupure.division }}</td>
+                                <td>{{ zonecoupee.coupure.sa }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Page Content -->
+
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="small  p-3 px-md-4 mt-auto">
+          <div class="row justify-content-between">
+            <div class="col-lg text-center text-lg-left mb-3 mb-lg-0">
+              <ul class="list-dot list-inline mb-0">
+                <li class="list-dot-item list-dot-item-not list-inline-item mr-lg-2"><a class="link-dark" href="#">FAQ</a></li>
+                <li class="list-dot-item list-inline-item mr-lg-2"><a class="link-dark" href="#">Support</a></li>
+                <li class="list-dot-item list-inline-item mr-lg-2"><a class="link-dark" href="#">Contact us</a></li>
+              </ul>
+            </div>
+
+            <div class="col-lg text-center mb-3 mb-lg-0">
+              <ul class="list-inline mb-0">
+                <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-twitter-alt"></i></a></li>
+                <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-facebook"></i></a></li>
+                <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-github"></i></a></li>
+              </ul>
+            </div>
+
+            <div class="col-lg text-center text-lg-right">
+              &copy; 2019 Graindashboard. All Rights Reserved.
+            </div>
+          </div>
+        </footer>
+        <!-- End Footer -->
+      </div>
+    </main>
+  </body>
+</html>
+
+
+<script src="{{ asset('js/html2pdf.bundle.js') }}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const table = document.querySelector("tbody");
+      let previousDateCell = null;
+      let rowspanCount = 1;
+
+      table.querySelectorAll("tr").forEach((row, index) => {
+          const dateCell = row.querySelector("td:first-child");
+
+          if (previousDateCell && dateCell.textContent === previousDateCell.textContent) {
+              // Increment the rowspan count
+              rowspanCount++;
+              previousDateCell.rowSpan = rowspanCount;
+              // Remove the current date cell as it is now covered by rowspan
+              dateCell.remove();
+          } else {
+              // Reset the rowspan count
+              rowspanCount = 1;
+              previousDateCell = dateCell;
+          }
+      });
+  });
+
+  function exportToPDF(name) {
+    // Get the element.
+    var element = document.getElementById('root');
+
+    // Generate the PDF.
+    html2pdf().from(element).set({
+      margin: 0,
+      filename: name,
+      html2canvas: { scale: 2 },
+      pagebreak: {mode: 'avoid all'},
+      jsPDF: {orientation: 'landscape', unit: 'in', format: 'letter', compressPDF: true}
+    }).save();
+  }
+
+  // exportToPDF('avis-de-coupure');
+</script>

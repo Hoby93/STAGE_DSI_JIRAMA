@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Title -->
+    <title>Jirama | Connexion Admin</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('img/logo-jirama.png') }}">
+
+    <!-- Template -->
+    <link rel="stylesheet" href="{{ asset('graindashboard/css/graindashboard.css') }}">
+</head>
+
+
+<body>
+<main class="main">
+    <div class="content">
+        <div class="container-fluid pb-5">
+            <div class="row justify-content-md-center">
+                <div class="card-wrapper col-md-4 mt-5">
+                    <div class="brand text-center mb-3">
+                        <a href="/"><img src="{{ asset('img/logo-jirama-text.png') }}" alt="logo-jirama-text" height="75"></a>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Connexion</h4>
+                            <form method="post" action="{{ path('login') }}">
+                                <div class="form-group">
+                                    <label for="email">Adresse e-mail</label>
+                                    <input id="email" type="email" class="form-control" name="_username" value="{{ last_username }}" required autofocus>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password">Mot de passe</label>
+                                    <input id="password" type="password" class="form-control" name="_password" required>
+                                    <div class="text-right">
+                                        <a href="password-reset.html" class="small">Mot de passe oublié?</a>
+                                    </div>
+                                </div>
+
+                                {% if error %}
+                                    <h6 id="message" class="font-weight-light text-danger text-center" style="opacity: 1;">
+                                        Erreur: {{ error.messageKey|trans(error.messageData, 'security') }}
+                                    </h6>
+                                {% else %}
+                                    <h6 id="message" class="font-weight-light text-danger text-center" style="opacity: 0;">Echec de connexion</h6>
+                                {% endif %}
+
+                                <div class="form-group mt-4">
+                                    <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                    <footer class="footer mt-3">
+                        <div class="container-fluid">
+                            <div class="footer-content text-center small">
+                                <span class="text-muted">&copy; 2019 Graindashboard. All Rights Reserved.</span>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="{{ asset('graindashboard/js/graindashboard.js') }}"></script>
+<script src="{{ asset('graindashboard/js/graindashboard.vendor.js') }}"></script>
+
+{# <script>
+    {% if message %}
+        var ctn_message = document.getElementById('message');
+        ctn_message.innerHTML = '{{ message }}';
+        ctn_message.style.opacity = 1;
+    {% endif %}
+</script> #}
+
+</body>

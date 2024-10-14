@@ -1,0 +1,8 @@
+ALTER TABLE employe
+MODIFY COLUMN mdp VARCHAR(255);
+
+ALTER TABLE employe
+ADD COLUMN position VARCHAR(255);
+
+ALTER TABLE zone_electrique
+ADD COLUMN ref_secteur VARCHAR(120);

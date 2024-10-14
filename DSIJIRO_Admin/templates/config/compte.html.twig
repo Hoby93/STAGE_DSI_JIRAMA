@@ -1,0 +1,192 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Configuration compte{% endblock %}
+
+{% block menuactive %}config{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Configuration</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Compte</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">Gestion du Compte</h1>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="">
+                <div class="row">
+                    <div class="card-body tab-content p-2">
+                        {# <form method="post" action="{{ path('insert_zone') }}"> #}
+                            <div class="modal-body">
+                                <div class="col-md-12">
+                                    <div class="row mt-5 align-items-center">
+                                        <div class="col-md-3 text-center mb-12">
+                                        <div class="avatar avatar-xl ml-6">
+                                            <img src="{{ asset('img/icon/profil.png') }}" alt="_profil" class="avatar-img rounded-circle" height="125">
+                                        </div>
+                                        </div>
+                                        <div class="col">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-7">
+                                            <h4 class="mb-1">{{ app.user.nom }}, {{ app.user.prenom }}</h4>
+                                            <p class="small mb-3"><span class="badge badge-dark">Analamanga, MG</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-4">
+                                            <div class="col-md-7">
+                                            <p class="small text-muted">
+                                                Ce profil utilisateur vous permet de gérer vos informations de base. Certaines fonctionnalités sont restreintes et ne sont accessibles qu'aux administrateurs, qui disposent d'un accès complet.
+                                            </p>
+                                            </div>
+                                            <div class="col">
+                                            <p class="small mb-0 text-muted">Admin.</p>
+                                            <p class="small mb-0 text-muted">Analamanga, Madagascar</p>
+                                            <p class="small mb-0 text-muted">{{ app.user.email }}</p>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                        <label for="nom">Nom</label>
+                                        <input type="text" id="nom" class="form-control" value="{{ app.user.nom }}">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                        <label for="prenom">Prénom</label>
+                                        <input type="text" id="prenom" class="form-control" value="{{ app.user.prenom }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail4">Email (login)</label>
+                                        <input type="email" class="form-control fform-control-onfocus-inherit bg-transparent text-muted" id="email" value="{{ app.user.email }}" readonly>
+                                    </div>
+
+                                    <hr class="my-4">
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mdp-curr">Ancien mot de passe</label>
+                                            <input type="password" class="form-control mdp" id="mdp-curr" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mdp-new">Nouvelle mot de passe</label>
+                                            <input type="password" class="form-control mdp" id="mdp-new" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mdp-confirm">Confirmer mot de passe</label>
+                                            <input type="password" class="form-control mdp" id="mdp-confirm" disabled>
+                                        </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2">Exigences du mot de passe</p>
+                                            <p class="small text-muted mb-2"> Pour créer un nouveau mot de passe, vous devez respecter toutes les exigences suivantes : </p>
+                                            <ul class="small text-muted pl-4 mb-0">
+                                                <li> Minimum 8 caractères </li>
+                                                <li>Au moins un caractère spécial</li>
+                                                <li>Au moins un chiffre</li>
+                                                <li>Ne peut pas être identique à un mot de passe précédent </li>
+                                            </ul>
+
+                                            <div class="custom-control custom-switch mt-4 ml-1">
+                                                <input type="checkbox" class="custom-control-input" id="setPwd" onchange="toogleMdpInput()">
+                                                <label class="custom-control-label" for="setPwd">Modifier le mot de passe</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="btn-submit" type="button" class="btn btn-primary" style="width: 120px;" onclick="set_account()">Enregistrer</button>
+                            </div>
+                        {# </form> #}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                       
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script>
+    function on_process(btnId, btnText, process) {
+        let btn = document.getElementById(btnId);
+        if(process) {
+            btn.innerHTML = `
+                <div id="spinner" class="spinner-border spinner-border-sm text-white" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            `;
+        } else {
+            btn.innerHTML = btnText;
+        }
+    }
+
+    function toogleMdpInput() {
+        var disable = document.getElementById('setPwd').checked; // Avoir l'option si changer le mdp
+        var mdpInputs = document.querySelectorAll('.mdp'); // Sélectionnez tous les éléments avec l'id "mdp"
+
+        // Ajoutez un écouteur d'événements à chaque élément
+        mdpInputs.forEach(function(input) {
+            input.disabled = !disable;
+        });
+    }
+
+    async function set_account() {
+        var data = {
+            nom: document.getElementById('nom').value,
+            prenom: document.getElementById('prenom').value,
+            email: document.getElementById('email').value,
+            mdp: document.getElementById('mdp-curr').value,
+            setPwd: document.getElementById('setPwd').checked,
+            newPwd: document.getElementById('mdp-new').value
+        };
+        console.log(data);
+        $.ajax({
+            url: "{{ path('update_account') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                on_process('btn-submit', 'Enregistrer', true);
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                if(data.status === 0) {
+                    show_exception_modal(data.message);
+                }
+                console.log(data);
+                on_process('btn-submit', 'Enregistrer', false);
+            },
+            error: function() {
+                on_process('btn-submit', 'Enregistrer', false);
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+            }
+        });
+        //document.getElementById('loading-on-map').style.display = "none";
+    }
+</script>
+{% endblock %}

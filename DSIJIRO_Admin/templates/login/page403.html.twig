@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Acces refusé{% endblock %}
+
+{% block body %}
+
+<div class="ml-3 mb-md-4 d-flex justify-content-between">
+    <div class="h3 mb-0">Error_403</div>
+</div>
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card" style="height: 75%;">
+        <div class="card-body">            
+            <!-- ***** Welcome Area Start ***** -->
+            <div class="welcome-area" id="welcome">
+
+                <!-- ***** Header Text Start ***** -->
+                <div class="header-text">
+                    <div class="container">
+                        <div class="row">
+                            <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12 text-center">
+                                <div class="text-center ">
+                                    <img src="{{ asset('img/ext/computer-safe.svg') }}" alt="_profil" class="avatar-img rounded-circle" height="200">
+                                </div>
+
+                                <h1>Oops, désolé !</h1>
+
+                                <p>Vous n'êtes pas autorisé(e) à accéder à cette ressource..</p>
+                                <div class="row mt-5">
+                                  <div class="col-12 text-center mt-xl-2">
+                                    <a class="link text-primary" href="{{ path('logout') }}">
+                                        <strong style="text-decoration: underline">Se déconnecter</strong>
+                                    </a>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ***** Header Text End ***** -->
+            </div>
+            <!-- ***** Welcome Area End ***** -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,576 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Nouvelle zone{% endblock %}
+
+{% block menuactive %}parametre{% endblock %}
+
+{% block othercss %}
+    <link rel="stylesheet" href="{{ asset('css/style.map.css') }}">
+    <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-fullscreen/dist/leaflet.fullscreen.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" /> <!-- Leaflet-Geoman CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+{% endblock %}
+
+{% block body %}
+<style>
+    .d-none { display: none !important;};
+</style>
+
+<div class="py-4 px-3 px-md-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Paramètre</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <a class="text-muted" href="{{ path('list_zone') }}">Zone géographique</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Ajout</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">Nouvelle Zone géographique</h1>
+                        </div>
+                        {# <div class="mb-3 text-muted">
+                            <h5>Consultez la Liste des Types de finition Disponibles pour la Construction Immobilière.</h5>
+                        </div> #}
+                        
+                    </div>
+                </div>
+
+                {# {% if message %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endif %} #}
+
+            <div class="">
+                <div class="row">
+                    <div class="card-body tab-content p-2">
+                        <form method="post" action="{{ path('insert_zone') }}">
+                            <div class="modal-body">
+                                <div class="col-md-12">
+                                    <div class="form-row">
+                                        <div class="form-group col-12 col-md-6">
+                                            <label for="secteur">Secteur</label>
+                                            <select class="custom-select" id="secteur" name="refsecteur">
+                                                <option value="">Choisissez...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-12 col-md-6">
+                                            <label for="reference">Specificitée <i class="gd-help-alt icon-sm2 ml-2" data-toggle="tooltip" data-placement="top" title="Ce champ peut etre générée automatiquement en fonction du zone ou bien par votre saisie"></i></label>
+                                            <input type="text" placeholder="hopital:2;prison:0;abonnee:0" class="form-control" id="spec" name="specificite">
+                                        </div>
+                                        <div class="form-group hidden">
+                                            <input type="text" class="form-control" id="coords" name="coords" readonly>
+                                        </div>
+                                    </div>
+                                    <div id="borderedAccordion2">
+                                        <div class="accordion accordion-bordered-y accordion-stacked pl-0">
+                                            <header id="borderedAccordion-heading-2" class="accordion-header pointer pl-0" aria-expanded="true" aria-controls="borderedAccordion-2"
+                                                data-toggle="collapse"
+                                                data-target="#borderedAccordion-2">
+                                                <i class="gd-location-pin accordion-icon icon-text mr-2"></i>
+                                                <h5 class="mb-0">Lieu(x)</h5>
+
+                                                <div class="ml-40">
+                                                    <i class="gd-location-arrow accordion-icon icon-text mr-2 ml-auto"></i>
+                                                    <input class="b-none h5 mb-0 col-6" id="ref-zone" name="refZone" type="text" placeholder="Référence du zone..." required>
+                                                </div>
+                                                <i class="accordion-control gd-angle-down icon-text ml-auto"></i>
+                                            </header>
+
+                                            <div id="borderedAccordion-not" class="collapse show" aria-labelledby="borderedAccordion-heading-2"
+                                                data-parent="#borderedAccordion2">
+                                                <div class="accordion-body pl-0">
+                                                    <div class="col-md-12">
+                                                        <span id="lieu-list-container"></span>
+                                                        <!-- Votre HTML initial -->
+                                                        <span class="badge badge-pill badge-complex bg-semi-soft-primary text-white mt-1">
+                                                            <span class="badge badge-sm badge-primary rounded-circle mr-2 pointer" onclick="addMultiInputElement('input-add-lieu', 'primary', 'lieu-list')"><i class="gd-plus" style="font-size: 0.7em"></i></span>
+                                                            <span>
+                                                                <input class="b-none bg-transparent input-add-lieu input-width-focus" name="" type="text" list="lieu-list">
+                                                                <input type="hidden" id="lieu-list-value" name="lieux">
+                                                            </span>
+                                                            <datalist id="lieu-list">
+                                                                <!-- Les options seront ajoutées ici par JavaScript -->
+                                                            </datalist>
+                                                        </span>
+
+                                                        <!-- Conteneur pour les postes ajoutés -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="borderedAccordion2">
+                                        <div class="accordion accordion-bordered-y accordion-stacked pl-0">
+                                            <header id="borderedAccordion-heading-2" class="accordion-header pointer pl-0" aria-expanded="true" aria-controls="borderedAccordion-2"
+                                                data-toggle="collapse"
+                                                data-target="#borderedAccordion-2">
+                                                <i class="gd-location-pin accordion-icon icon-text mr-2"></i>
+                                                <h5 class="mb-0">Poste electrique</h5>
+                                                <i class="accordion-control gd-angle-down icon-text ml-auto"></i>
+                                            </header>
+
+                                            <div id="borderedAccordion-not" class="collapse show" aria-labelledby="borderedAccordion-heading-2"
+                                                data-parent="#borderedAccordion2">
+                                                <div class="accordion-body pl-0">
+                                                    <div class="col-md-12">
+                                                        <span id="post-list-container"></span>
+                                                        <!-- Votre HTML initial -->
+                                                        <span class="badge badge-pill badge-complex bg-semi-soft-primary-darker text-white mt-1">
+                                                            <span class="badge badge-sm badge-primary-darker rounded-circle mr-2 pointer" onclick="addMultiInputElement('input-add-post', 'primary-darker', 'post-list')"><i class="gd-plus" style="font-size: 0.7em"></i></span>
+                                                            <span>
+                                                                <input class="b-none bg-transparent input-add-post input-width-focus" name="postcoupeex" type="text" list="post-list">
+                                                                <input name="postescoupee" type="hidden" id="post-list-value">
+                                                            </span>
+                                                            <datalist id="post-list">
+                                                                <!-- Les options seront ajoutées ici par JavaScript -->
+                                                            </datalist>
+                                                        </span>
+
+                                                        <!-- Conteneur pour les postes ajoutés -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row mt-4 border-top pt-4 mb-1">
+                                        <i class="gd-map accordion-icon icon-text mr-2"></i>
+                                        <h5 class="">Carte</h5>
+                                    </div>
+                                    <div id="map" style="height: 500px;">
+                                        <!-- Div de la carte -->
+                                        <div id="loading-on-map" class="map-spinner-container">
+                                            <img src="{{ asset('img/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="30">
+                                            <span class="text-14">Chargement ...</span>
+                                        </div>
+
+                                        <!-- recherche sur la carte -->
+                                        <div class="search-map-container p-2">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <i class="gd-location-pin icon-text icon-text-sm"></i>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <a class="pointer" onclick="searchLocation()">
+                                                        <i id="search-map-icon" class="gd-search icon-text icon-text-sm"></i>
+                                                        <img id="search-map-spinner" class="d-none" src="{{ asset('img/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="25">
+                                                    </a>
+                                                </div>
+                                                <input class="form-control form-control-icon-img search-input" id="location" placeholder="Entrez un endroit..." type="text">
+                                            </div>
+                                        </div>
+
+                                        <!-- Info -->
+                                        <div id="map-alert-info" class="map-alert-info">
+                                            <div id="map-alert-info-spec" class="alert alert-primary alert-left-bordered border-primary alert-dismissible d-flex p-3 p-md-3 mb-1 fade show d-none" role="alert">
+                                                <i class="gd-info icon-text mr-2 mt-1" style="margin-top: 2px;"></i>
+
+                                                <div>
+                                                    <strong class="d-block mb-1">
+                                                        Information
+                                                        <i class="gd-files icon-text ml-2 icon-size-sm link link-primary pointer" onclick="setMapAlertInfoSpecInput()"></i>
+                                                    </strong>
+                                                    <p class="mb-1" id="map-info-spec">
+                                                        <span class="alert-left-bordered-sm border-primary-darker pl-1">Hopital: <strong>00</strong></span>
+                                                        <span class="alert-left-bordered-sm border-primary-darker pl-1">Prison: <strong>00</strong></span>
+                                                        <span class="alert-left-bordered-sm border-primary-darker pl-1">Abonnée important: <strong>01</strong></span>
+                                                    </p>
+                                                </div>
+                                                <button type="button" class="close">
+                                                    <i class="gd-close icon-text icon-text-xs" aria-hidden="true" onclick="set_map_alert_info_display('map-alert-info-spec', false)"></i>
+                                                </button>
+                                            </div>
+
+                                            <div id="map-alert-info-place" class="alert alert-success alert-left-bordered border-success alert-dismissible d-flex p-3 p-md-3 mb-1 fade show d-none" role="alert">
+                                                <i class="gd-location-pin icon-text mr-2 mt-1" style="margin-top: 2px;"></i>
+
+                                                <div>
+                                                    <strong class="d-block mb-1">
+                                                        Lieu(x) trouvé
+                                                        <i class="gd-files icon-text ml-2 icon-size-sm link text-success pointer" onclick="setMapAlertInfoLieuInput()"></i>
+                                                    </strong>
+                                                    <p class="mb-1" id="map-info-lieu">
+                                                        <!-- List de lieu ici -->
+                                                    </p>
+                                                </div>
+                                                <button type="button" class="close">
+                                                    <i class="gd-close icon-text icon-text-xs" aria-hidden="true" onclick="set_map_alert_info_display('map-alert-info-place', false)"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- GetZone-Menu -->
+                                        <div class="map-getzone-menu">
+                                            <button type="button" class="btn b-none" data-toggle="tooltip" data-placement="right" title="Propriété du zone séléctionée" onclick="getZoneProperty()">
+                                                <img src="{{ asset('img/spinner/search-map.gif') }}" alt="Loading..." height="50">
+                                            </button><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Confirmer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                       
+</div>
+{% endblock %}
+
+
+{% block modals %}
+{{ parent() }}
+
+<!-- Confirmation-Modal -->
+<div id="confirmation" class="modal fade" role="dialog" aria-labelledby="confirmation" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div id="processing-icon">
+                        <div id="processing-result-info">
+                            <i class="gd-info icon-text icon-text-xxl d-block text-info mb-3 mb-md-4"></i>
+                        </div>
+                    </div>
+                    <div class="h5 font-weight-semi-bold mb-2">Voulez-vous ajouter une coupure ?</div>
+                    <p class="mb-3 mb-md-4">Pour la zone crée récemment</p>
+
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-light" href="#" data-dismiss="modal" id="hidde-confirmation">Non</a>
+                        <a id="confirm-link" class="btn btn-success ml-2" href="#" onclick="navigateToListZone()">Oui</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Confirmation-Modal -->
+
+<a class="" id="show-confirmation" data-toggle="modal" data-target="#confirmation">
+    <!-- -->
+</a>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('leaflet/leaflet.js') }}"></script>
+<script src="{{ asset('js/session.js') }}"></script>
+<script src="{{ asset('js/map/filter.js') }}"></script>
+<script src="https://unpkg.com/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+<script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script> <!-- Leaflet-Geoman JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+    function fetchSecteur(motclee) {
+        var input = $('#secteur');
+        $.ajax({
+            url: "{{ path('search_secteur') }}",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ motclee: motclee }),
+            success: function(response) {
+                let data = JSON.parse(response);
+                let secteurs = data.secteurs;
+
+                // Vider les anciennes options
+                input.empty();
+
+                // Ajouter l'option par défaut
+                input.append('<option value="">Choisissez...</option>');
+
+                // Ajouter les nouvelles options reçues du serveur
+                secteurs.forEach(function(secteur) {
+                    input.append('<option value="' + secteur['ref_secteur'] + '">' + secteur['ref_secteur'] + '</option>');
+                });
+
+                // Recharger Select2 pour afficher les nouvelles options
+                input.trigger('change');
+            },
+            error: function() {
+                console.error('Erreur lors de la récupération des fokontany.');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('#secteur').select2({
+            placeholder: "Choisissez...",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Autres événements
+        $('#secteur').on('select2:open', function() {
+            let searchInput = $('.select2-search__field');  // Le champ de recherche dans Select2
+            searchInput.on('input', function() {
+                let motclee = $(this).val();
+                if (motclee) {
+                    // console.log('You type: ' + motclee);
+                    fetchSecteur(motclee);
+                }
+            });
+        });
+
+        fetchSecteur('');
+    });
+</script>
+<script>
+    {% if zone %}
+        const jsData = {{ zone|json_encode|raw }};
+        
+        //console.log(jsData);
+        setLastZoneAdded(jsData);
+        document.getElementById("show-confirmation").click();
+    {% endif %}
+</script>
+<script>
+    var info_spec = '';
+    var info_lieu = [];
+
+    function addMultiInputElement(input, bg, group) {
+        var input = document.querySelector(`.${input}`);
+        var inputValue = input.value.trim();
+
+        if (inputValue) {
+            createInputElement(inputValue, bg, group);
+            input.value = ''; // Réinitialiser l'input après l'ajout
+        }
+    }
+
+    function createInputElement(value, bg, group) {
+        var input = document.getElementById(`${group}-value`);
+        var currentValue = input.value;
+        var inputs = document.getElementById(`${group}-container`);
+        
+        // Ajouter la nouvelle valeur au champ caché
+        if (currentValue) {
+            input.value = `${currentValue}-${value}`;
+        } else {
+            input.value = value;
+        }
+
+        var new_input = document.createElement('span');
+        new_input.className = `badge badge-pill badge-complex bg-semi-soft-${bg} text-white mr-1 mt-1`;
+        new_input.innerHTML = `
+            <span class="badge badge-sm badge-${bg} rounded-circle mr-2 pointer ${group}-close"><i class="gd-close" style="font-size: 0.7em"></i></span>
+            <span>${value}</span>
+        `;
+
+        var closeIcon = new_input.querySelector(`.${group}-close`);
+        closeIcon.addEventListener('click', function() {
+            // Supprimer l'élément du conteneur
+            inputs.removeChild(new_input);
+
+            // Mettre à jour la valeur du champ caché en supprimant la valeur correspondante
+            var updatedValue = input.value.split('-').filter(item => item !== value).join('-');
+            input.value = updatedValue;
+        });
+
+        //console.log();
+
+        inputs.appendChild(new_input);
+    }
+
+    function set_map_alert_info_display(alert, display) {
+        var alert = document.getElementById(alert);
+        if(display) {
+            alert.classList.remove("d-none");
+        } else {
+            alert.classList.add("d-none");
+        }
+    }
+
+    function getZoneProperty() {
+        // console.log(document.getElementById('coords').value);
+        fetchZoneProperty();
+    }
+
+    function setMapAlertInfoSpecInput() {
+        document.getElementById('spec').value = info_spec;
+    }
+
+    function setMapAlertInfoLieuInput() {
+        // addMultiInputElement('input-add-lieu', 'primary', 'lieu-list')"
+        info_lieu.forEach(lieu => {
+            createInputElement(lieu.name, 'primary', 'lieu-list');
+        });
+    }
+
+    function setMapAlertInfoSpecContent(spec) {
+        info_spec = spec;
+        var spec = 'hopital:1;prison:0;abonnee:0';
+        var infoSpec = document.getElementById('map-info-spec');
+
+        var items = spec.split(';');
+        var ctn_specs = '';
+        items.forEach((item, index) => {
+            var [label, value] = item.split(':');
+            var spanClass = index === 0 ? '' : 'alert-left-bordered-sm border-primary-darker';
+            ctn_specs += `
+                <span class="${spanClass} pl-1">
+                    ${label.charAt(0).toUpperCase() + label.slice(1)}: <strong>${value.padStart(2, '0')}</strong>
+                </span>
+            `;
+        });
+        infoSpec.innerHTML = ctn_specs;
+    }
+
+    function setMapAlertInfoLieuContent(places) {
+        info_lieu = places;
+        var ctn_lieux = document.getElementById('map-info-lieu');
+        var lieux = '';
+        places.forEach(function(place) {
+            lieux += `${place.name} - `;
+        });
+        // Supprimez la dernière - et l'espace
+        lieux = lieux.slice(0, -3);
+
+        ctn_lieux.innerHTML = lieux;
+    }
+
+    function fetchZoneProperty() {
+        var data = {
+            coords: document.getElementById('coords').value
+        };
+        $.ajax({
+            url: "{{ path('get_zone_property') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('loading-on-map').style.display = "block"; // modal-search-spinner
+            },
+            success: function(response) {
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                setMapAlertInfoSpecContent(data.specificite.specificite);
+                setMapAlertInfoLieuContent(data.lieux.places);
+
+                //updateMapLayers();
+                document.getElementById('loading-on-map').style.display = "none";
+                set_map_alert_info_display('map-alert-info-place', true);
+                set_map_alert_info_display('map-alert-info-spec', true);
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('loading-on-map').style.display = "none";
+            }
+        });
+        //document.getElementById('loading-on-map').style.display = "none";
+    }
+
+    // Fonction pour vérifier si la carte est en plein écran
+    function checkFullscreenStatus() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            document.querySelector('.search-map-container').classList.remove('fullscreen');
+            document.querySelector('.map-getzone-menu').classList.remove('fullscreen');
+        } else {
+            document.querySelector('.search-map-container').classList.add('fullscreen');
+            document.querySelector('.map-getzone-menu').classList.add('fullscreen');
+        }
+    }
+
+    function navigateToListZone() {
+        // Redirection vers la route 'list_zone' avec le paramètre 'message' = 'Success'
+        const url = "{{ path('list_zone') }}?message=add";
+        
+        // Naviguer vers l'URL
+        window.location.href = url;
+    }
+</script>
+<script>
+    var map = L.map('map').setView([-18.922647647936802, 47.46631766551795], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    map.zoomControl.setPosition('bottomleft');
+
+    // Ajout du bouton plein écran
+    L.control.fullscreen({
+        position: 'bottomleft',
+        title: 'Plein écran',
+        titleCancel: 'Quitter le plein écran'
+    }).addTo(map);
+
+    // Écouter l'événement 'fullscreenchange' au niveau du document
+    document.addEventListener('fullscreenchange', checkFullscreenStatus);
+    document.addEventListener('webkitfullscreenchange', checkFullscreenStatus); // Pour compatibilité avec certains navigateurs
+
+
+    const options = {
+        position: "topleft",
+        drawMarker: false,
+        drawPolygon: true,
+        drawPolyline: false,
+        drawCircle: false,
+        drawCircleMarker: false,
+        editPolygon: true,
+        deleteLayer: true
+    };
+
+    map.pm.addControls(options);
+    {# map.pm.disableDraw('Polygon'); #}
+
+    var drawnPolygon;
+
+    function updateCoordinates(layer) {
+        var coords = layer.getLatLngs();
+        document.getElementById('coords').value = coords;
+    }
+
+    map.on('pm:create', function(e) {
+        if (drawnPolygon) {
+            map.removeLayer(drawnPolygon);
+        }
+        drawnPolygon = e.layer;
+        updateCoordinates(e.layer);
+        console.log('Nouvelle couche créée');
+
+        // Écouter les modifications sur la nouvelle couche
+        e.layer.on('pm:edit', function(x) {
+            updateCoordinates(e.layer);
+            console.log('Couches éditée');
+        });
+    });
+
+    map.on('pm:remove', function(e) {
+        if (e.layer === drawnPolygon) {
+            document.getElementById('coords').value = '';
+            drawnPolygon = null;
+            console.log('Couche supprimée');
+        }
+        //console.log('Couche supprimée');
+    });
+</script>
+{% endblock %}

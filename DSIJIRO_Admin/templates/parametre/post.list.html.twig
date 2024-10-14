@@ -1,0 +1,371 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Liste des postes éléctrique{% endblock %}
+
+{% block menuactive %}parametre{% endblock %}
+
+{% block othercss %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+            <div class="row">
+                <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                    <!-- Breadcrumb -->
+                    <nav class="d-none d-md-block" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a>Paramètre</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Poste éléctrique</li>
+                            <li class="breadcrumb-item active" aria-current="page">Liste</li>
+                        </ol>
+                    </nav>
+                    <!-- End Breadcrumb -->
+
+                    <div class="mb-md-2 d-flex justify-content-between">
+                        <h1 class="h3 mb-0">Liste des Postes éléctrique</h1>
+                    </div>
+                    {# <div class="mb-3 text-muted">
+                        <h5>Consultez la Liste des Types de finition Disponibles pour la Construction Immobilière.</h5>
+                    </div> #}
+                    
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="toolbar row mb-3 mt-4">
+                            <div class="col">
+                                <a class="btn btn-light" style="width: 150px;" data-toggle="collapse" href="#recherche-employe" aria-expanded="false" aria-controls="form-elements">
+                                    <span class="menu-title">Filtre</span>
+                                    <sub><i class="gd-filter ml-1"></i></sub>
+                                </a>
+                                <div class="spinner-border spinner-border-sm text-info ml-4 d-none" role="status" id="zone-table-spinner">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="col ml-auto">
+                                <div class="dropdown float-right">
+                                    <a class="btn btn-primary float-right ml-3 pointer" data-toggle="modal" data-target="#addPoste"><i class="gd-plus text-white mr-1"></i></a>
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Exporter <i class="gd-import icon-text icon-text-xs align-middle ml-3"></i></button>
+                                    <div class="dropdown-menu" aria-labelledby="actionMenuButton">
+                                        <a class="dropdown-item" href="#">Pdf</a>
+                                        <a class="dropdown-item" href="#">CSV</a>
+                                        <a class="dropdown-item" href="#">Excel</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="collapse mt-2" id="recherche-employe">
+                                    <div class="row">
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label">Recherche</label>
+                                            <input type="text" id="mot-clee" placeholder="" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <button type="button" class="btn btn-soft-light" onclick="search()">
+                                                <i class="gd-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5" id="list-stock">
+                            <table class="table table-bordered text-nowrap mb-0">
+                                <thead>
+                                <tr>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Numero
+                                    </th>
+                                     <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Sécteur
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="table-poste-body">
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mb-0 text-center" id="no-result">
+                            <div class="card-body text-muted"> Aucun élément</div>
+                        </div>
+                        <div class="col-md-12">
+                            <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                                <div class="row">
+                                    <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <!-- Pagination items will be dynamically inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>                       
+</div>
+{% endblock %}
+
+{% block modals %}
+{{ parent() }}
+
+<!-- Add Poste - Modal -->
+<div id="addPoste" class="modal fade" role="dialog" aria-labelledby="addPoste" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('new_post_do') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ajout Post éléctrique</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="type">Sécteur éléctrique</label>
+                        <select class="custom-select" id="secteur" name="idsecteur" style="width: 100%;">
+                            <!-- Liste des secteurs ici -->
+                        </select>
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="name">Numero</label>
+                        <input type="text" class="form-control" value="" id="password" name="ref">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+
+<!-- Edit Poste - Modal -->
+<div id="editPoste" class="modal fade" role="dialog" aria-labelledby="editPoste" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('update_post_do') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modification Post éléctrique</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="type">Sécteur éléctrique</label>
+                        <select class="custom-select" id="edit-secteur" name="idsecteur" style="width: 100%;">
+                            <!-- Liste des secteurs ici -->
+                        </select>
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="numero">Numero</label>
+                        <input type="text" class="form-control" value="" id="edit-numero" name="ref">
+                    </div>
+                    <div class="form-hidden">
+                        <input type="hidden" id="edit-id" name="idpost">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+
+<script src="{{ asset('js/pagination.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+    var page = 1;  // Page actuelle
+    var count = 1; // Nombre total de pages
+
+    var secteurs_loaded = null;
+
+    function updateTableContent(postes) {
+        // Obtenir l'élément tbody du tableau
+        let tbody = document.getElementById('table-poste-body');
+        tbody.innerHTML = "";
+
+        function createRow(poste) {
+            var tr = document.createElement('tr');
+            tr.className = "text-left";
+            tr.innerHTML = `
+                <td class="py-3">${poste.refPost}</td>
+                <td class="py-3">${poste.secteur}</td>
+                <td class="py-3 text-center">
+                    <div class="position-relative">
+                        <a class="link-dark d-inline-block pointer" data-toggle="modal" data-target="#editPoste" onclick='setModalEditPostContent(${JSON.stringify(poste)})'>
+                            <i class="gd-pencil icon-text"></i>
+                        </a>
+                        <a class="link-dark d-inline-block" href="#">
+                            <i class="gd-trash icon-text"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+            return tr;
+        }
+
+        if(postes.length == 0) {
+            document.getElementById('no-result').classList.remove('d-none');
+        } 
+        else {
+            document.getElementById('no-result').classList.add('d-none');
+            postes.forEach(function(poste) {
+                var tr = createRow(poste[0]);
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function search() {
+        var data = {
+            page: page,
+            limit: getPreferenceLimitPerPage(),
+            motclee: document.getElementById('mot-clee').value
+        };
+        fetchPoste(data);
+    }
+
+    function fetchPoste(data) {
+        $.ajax({
+            url: "{{ path('search_poste_on_liste') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('zone-table-spinner').classList.remove('d-none');
+            },
+            success: function(response) {
+
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                var postes_loaded = data.postes;
+                // console.log(postes_loaded);
+
+                count = postes_loaded.totalPages;
+
+                // Parcourir les résultats et remplir le tableau
+                updateTableContent(postes_loaded.results);
+
+                // Generer la pagination
+                generatePagination(page, count);
+                updatePaginationIndication(page, count);
+
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            }
+        });
+        //document.getElementById('zone-table-spinner').style.display = "none";
+    }
+
+    function fetchSecteur(input, motclee, init) {
+        $.ajax({
+            url: "{{ path('search_secteur') }}",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ motclee: motclee }),
+            success: function(response) {
+                let data = JSON.parse(response);
+                let secteurs = data.secteurs;
+
+                // Vider les anciennes options
+                input.empty();
+
+                // Ajouter l'option par défaut
+                input.append('<option value="">Choisissez...</option>');
+
+                // Ajouter les nouvelles options reçues du serveur
+                secteurs.forEach(function(secteur) {
+                    input.append(`<option value="${secteur['id_secteur']}" ${init ? "selected" : ""}>
+                                        ${secteur['ref_secteur']}
+                                  </option>`);
+                });
+
+                // Recharger Select2 pour afficher les nouvelles options
+                input.trigger('change');
+            },
+            error: function() {
+                console.error('Erreur lors de la récupération des fokontany.');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Configuration pour l'input Select2
+        const config = {
+            placeholder: "Choisissez...",
+            allowClear: true,
+            width: '100%'
+        };
+
+        // Initialisation des select2
+        $('#secteur').select2(config);
+        $('#edit-secteur').select2(config);
+
+        // Autres événements pour les deux éléments
+        $('#secteur, #edit-secteur').on('select2:open', function() {
+            let $select2Element = $(this);
+            let searchInput = $select2Element.find('.select2-search__field');
+            searchInput.on('input', function() {
+                let motclee = $(this).val();
+                if (motclee) {
+                    fetchSecteur($select2Element, motclee, false);
+                }
+            });
+        });
+
+        search();
+        fetchSecteur($('#secteur'), '', false);
+
+        {% if message %} 
+            show_exception_modal('{{ message }}'); 
+        {% endif %}
+    });
+
+    function setModalEditPostContent(poste) {
+        // Si zonecoupee est un string JSON, désérialiser
+        if (typeof poste === 'string') {
+            poste = JSON.parse(poste);
+        }
+        document.getElementById('edit-numero').value = poste.refPost;
+        document.getElementById('edit-id').value = poste.id;
+        fetchSecteur($('#edit-secteur'), poste.secteur, true);//*/
+        console.log(poste);
+    }
+
+    function loadDataOfPage() {
+        search();
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{
+    "prevision_coupure": {
+        "emetteur": "noreply@jirama.com",
+        "objet": "Prévisions de coupure d'électricité",
+        "contenu": "Nous vous informons des prévisions de coupures d'électricité."
+    },
+    "nouveau_compte": {
+        "emetteur": "noreply@jirama.com",
+        "objet": "Initialisation de compte",
+        "contenu": "Bonjour <nom>,\n\nLes administrateurs ont approuvé et initié votre compte en tant que <role> sur la plateforme JIRAMA Suivi-des-Coupures. Vous pouvez maintenant vous connecter. Votre mot de passe d'initialisation est <motdepasse>.\n\nLien de connexion: http://localhost:8000/connexion\n\nCordialement,\nL'équipe JIRAMA"
+    }
+}

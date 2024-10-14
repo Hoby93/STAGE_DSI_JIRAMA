@@ -1,0 +1,299 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Nouveau infrastructure{% endblock %}
+
+{% block othercss %}
+    <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.map.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" /> <!-- Leaflet-Geoman CSS -->
+{% endblock %}
+
+{% block menuactive %}infra{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <div class="py-4 px-3 px-md-4">
+            <div class="card mb-3 mb-md-4">
+                <div class="card-body">
+                    <!-- Breadcrumb -->
+                    <nav class="d-none d-md-block" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('list_infra') }}">Site</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Nouveau</li>
+                        </ol>
+                    </nav>
+                    <!-- End Breadcrumb -->
+
+                    <div class="mb-3 mb-md-4 d-flex justify-content-between">
+                        <div class="h3 mb-0">Ajouter une site</div>
+                    </div>
+
+                    <!-- Form -->
+                    <div>
+                        <div id="tabsContent2" class="card-body tab-content p-0">
+                            <div class="tab-pane fade show active" id="tabs2-tab1" role="tabpanel">
+                                <div>
+                                    <form method="post" action="{{ path('new_infra_do') }}">
+                                        <div class="form-row">
+                                            <div class="form-group col-12 col-md-6">
+                                                <label for="type">Type</label>
+                                                <select class="custom-select" id="type" name="typeInfra" required>
+                                                    <option value="">Choisissez...</option>
+                                                    {% for typeinfra in typeinfras %}
+                                                    <option value="{{ typeinfra.id }}">{{ typeinfra.libelle }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-12 col-md-6">
+                                                <label for="fkt">Fokontany</label>
+                                                <select class="custom-select" id="fkt" name="fktId">
+                                                    <option value="">Choisissez...</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-12 col-md-6">
+                                                <label for="reference">Reference</label>
+                                                <input type="text" class="form-control" id="reference" name="refInfra" required>
+                                            </div>
+                                            <div class="form-group col-12 col-md-6">
+                                                <label for="libelle">Libelle</label>
+                                                <input type="text" class="form-control" id="libelle" name="libelle" required>
+                                            </div>
+                                        </div>
+                                         <div class="form-row">
+                                            <div class="form-group col-12 col-md-12">
+                                                <label for="description">Description(s)</label>
+                                                <textarea class="form-control" name="descr" id="description" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-12 col-md-6">
+                                                <label for="contact">Contact</label>
+                                                <input type="text" class="form-control" id="contact" name="contact" placeholder="ex: contact1;contact2;...">
+                                            </div>
+                                            <div class="form-group col-12 col-md-6">
+                                                <label for="description">Adresse</label>
+                                                <input type="text" class="form-control" id="description" name="adresse" required>
+                                            </div>
+                                        </div>
+                                        <div id="borderedAccordion">
+                                            <div class="accordion accordion-bordered-y accordion-stacked pl-0">
+                                                <header id="borderedAccordion-heading-1" class="accordion-header pointer pl-0" aria-expanded="true" aria-controls="borderedAccordion-1"
+                                                    data-toggle="collapse"
+                                                    data-target="#borderedAccordion-1">
+                                                    <i class="gd-calendar accordion-icon icon-text mr-2"></i>
+                                                    <h5 class="mb-0">Horaire</h5>
+                                                    <i class="accordion-control gd-angle-down icon-text ml-auto"></i>
+                                                </header>
+
+                                                <div id="borderedAccordion-1" class="collapse show" aria-labelledby="borderedAccordion-heading-1"
+                                                    data-parent="#borderedAccordion">
+                                                    <div class="accordion-body pl-0">
+                                                        <table class="table table-bordered text-center">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">Lun</th>
+                                                                    <th scope="col">Mar</th>
+                                                                    <th scope="col">Mer</th>
+                                                                    <th scope="col">Jeu</th>
+                                                                    <th scope="col">Ven</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th scope="row">Ouverture</th>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[lun][ouverture]" value="08:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[mar][ouverture]" value="08:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[mer][ouverture]" value="08:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[jeu][ouverture]" value="08:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[ven][ouverture]" value="08:00"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Fermeture</th>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[lun][fermeture]" value="17:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[mar][fermeture]" value="17:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[mer][fermeture]" value="17:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[jeu][fermeture]" value="17:00"></td>
+                                                                    <td scope="col"><input class="b-none" type="time" name="horaire[ven][fermeture]" value="17:00"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-hidden">
+                                            <input type="hidden" class="form-control" id="coord" name="coord">
+                                        </div>
+                                        <div class="form-row mb-2 ml-0">
+                                            <i class="gd-map accordion-icon icon-text mr-2"></i>
+                                            <h5 class="">Carte</h5>
+                                        </div>
+                                        <div id="map" style="height: 500px;">
+                                            <!-- Div de la carte -->
+                                            <!-- recherche sur la carte -->
+                                            <div class="search-map-container p-2">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <i class="gd-location-pin icon-text icon-text-sm"></i>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <a class="pointer" onclick="searchLocation()">
+                                                            <i id="search-map-icon" class="gd-search icon-text icon-text-sm"></i>
+                                                            <img id="search-map-spinner" class="d-none" src="{{ asset('img/spinner/dual-ring-orange.svg') }}" alt="Loading..." height="25">
+                                                        </a>
+                                                    </div>
+                                                    <input class="form-control form-control-icon-img search-input" id="location" placeholder="Entrez un endroit..." type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <button type="submit" class="btn btn-primary float-right">Confirmer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Form -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-fullscreen/dist/leaflet.fullscreen.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" /> <!-- Leaflet-Geoman CSS -->
+    <script src="{{ asset('leaflet/leaflet.js') }}"></script>
+    <script src="{{ asset('js/map/filter.js') }}"></script>
+    <script src="https://unpkg.com/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+    <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script> <!-- Leaflet-Geoman JS -->
+
+    <!-- Ajoutez ces lignes dans votre fichier HTML -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        function fetchFokontany(motclee) {
+            $.ajax({
+                url: "{{ path('search_fokontany') }}",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ motclee: motclee }),
+                success: function(response) {
+                    let data = JSON.parse(response);
+                    let listefkt = data.listefkt;
+
+                    // Vider les anciennes options
+                    $('#fkt').empty();
+
+                    // Ajouter l'option par défaut
+                    $('#fkt').append('<option value="">Choisissez...</option>');
+
+                    // Ajouter les nouvelles options reçues du serveur
+                    listefkt.forEach(function(fkt) {
+                        $('#fkt').append('<option value="' + fkt['id_fokontany'] + '">' + fkt['libelle'] + '</option>');
+                    });
+
+                    // Recharger Select2 pour afficher les nouvelles options
+                    $('#fkt').trigger('change');
+                },
+                error: function() {
+                    console.error('Erreur lors de la récupération des fokontany.');
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('#fkt').select2({
+                placeholder: "Choisissez...",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Autres événements
+            $('#fkt').on('select2:open', function() {
+                let searchInput = $('.select2-search__field');  // Le champ de recherche dans Select2
+                searchInput.on('input', function() {
+                    let motclee = $(this).val();
+                    if (motclee) {
+                        // console.log('You type: ' + motclee);
+                        fetchFokontany(motclee);
+                    }
+                });
+            });
+
+            fetchFokontany('');
+        });
+
+        // Fonction pour vérifier si la carte est en plein écran
+        function checkFullscreenStatus() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                document.querySelector('.search-map-container').classList.remove('fullscreen');
+            } else {
+                document.querySelector('.search-map-container').classList.add('fullscreen');
+            }
+        }
+    </script>
+    <script>
+        var map = L.map('map').setView([-18.922647647936802, 47.46631766551795], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        map.zoomControl.setPosition('bottomleft');
+
+        // Ajout du bouton plein écran
+        L.control.fullscreen({
+            position: 'bottomleft',
+            title: 'Plein écran',
+            titleCancel: 'Quitter le plein écran'
+        }).addTo(map);
+
+        // Écouter l'événement 'fullscreenchange' au niveau du document
+        document.addEventListener('fullscreenchange', checkFullscreenStatus);
+        document.addEventListener('webkitfullscreenchange', checkFullscreenStatus); // Pour compatibilité avec certains navigateurs
+
+        // Ajouter les contrôles Geoman à la carte
+        const options = {
+            position: "topleft", // Position de la barre d'outils
+            drawMarker: true, // adds button to draw markers
+            drawRectangle: false, // adds button to draw a polygon
+            drawPolygon: false, // adds button to draw a polygon
+            drawPolyline: false, // adds button to draw a polyline
+            drawCircle: false, // adds button to draw a cricle
+            drawCircleMarker: false, // adds button to draw a cricle
+            editPolygon: false, // adds button to toggle global edit mode
+            deleteLayer: true, // adds a button to delete layers
+        };
+
+        map.pm.addControls(options);
+
+        
+        let currentMarker = null;
+
+        // Événement lors de la création d'un marqueur
+        map.on('pm:create', function(e) {
+            // Vérifier si un marqueur existe déjà
+            if (currentMarker) {
+                // Supprimer le marqueur précédent
+                map.removeLayer(currentMarker);
+            }
+            // Ajouter le nouveau marqueur
+            currentMarker = e.layer;
+            document.getElementById('coord').value = currentMarker.getLatLng();
+
+            console.log('Marqueur ajouté: ' +  currentMarker.getLatLng());
+        });
+    </script>
+{% endblock %}
+

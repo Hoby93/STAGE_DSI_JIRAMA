@@ -1,0 +1,429 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Envoye email{% endblock %}
+
+{% block menuactive %}com{% endblock %}
+
+{% block othercss %}
+    <link rel="stylesheet" href="{{ asset('css/style.own.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Communication</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Email</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">Envoye email</h1>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="">
+                <div class="row">
+                    <div class="card-body tab-content p-2">
+                        <form method="post" action="{{ path('insert_zone') }}">
+                            <div class="modal-body">
+                                <div class="col-md-12">
+                                    <div class="form-row">
+                                        <div class="form-group col-12 col-md-6">
+                                            <label for="reference">Email</label>
+                                            <input type="email" value="{{ email.email }}" class="form-control form-control-onfocus-inherit bg-transparent" id="email" name="email" readonly>
+                                        </div>
+                                        <div class="form-group col-12 col-md-6">
+                                            <label for="reference">Objet</label>
+                                            <input type="text" placeholder="Objet de l'email" value="{{ email.objet }}" class="form-control form-control-onfocus-inherit bg-transparent" id="objet" name="objet" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-12 col-md-12">
+                                            <label for="motif">Contenue</label>
+                                            <textarea class="form-control form-control-onfocus-inherit bg-transparent" name="contenue" id="contenue" rows="3" readonly>{{ email.contenu }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        {# <div class="form-group col-12 col-md-12">
+                                            <label for="motif">Piece jointe</label>
+                                            <input type="file" class="form-control b-none" id="email-file" required>
+                                        </div> #}
+                                        <div class="form-group col-12 col-md-12 custom-file2-container">
+                                            <input type="file" class="custom-file2-input" id="email-file">
+                                            Piece jointe
+                                            <label for="email-file" class="custom-file2-label">
+                                                <img src="{{ asset('img/icon/attachement.png') }}" alt="Piece jointe" class="custom-file2-icon">
+                                            </label>
+                                            <span class="selected-file-name ml-4">Aucun fichier sélectionné</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-12 col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6 d-flex align-items-center">
+                                                    Contact
+                                                    <div class="position-relative ml-3 mr-md-4">
+                                                        <a id="dropDown11Invoker" class="unfold-invoker-text d-flex align-items-center mb-0" href="#" aria-controls="dropDown11" aria-haspopup="true" aria-expanded="false"
+                                                        data-unfold-target="#dropDown11"
+                                                        data-unfold-event="click"
+                                                        data-unfold-type="css-animation"
+                                                        data-unfold-duration="300"
+                                                        data-unfold-animation-in="fadeIn"
+                                                        data-unfold-animation-out="fadeOut">
+                                                            <i class="gd-search icon-text icon-text-xs mr-2"></i>
+                                                        </a>
+
+                                                        <div id="dropDown11" class="unfold unfold-light unfold-top unfold-left position-absolute p-2 mt-2" aria-labelledby="dropDown11Invoker" style="min-width: 250px;">
+                                                            <input class="form-control" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 p-0">
+                                                    <a class="btn btn-soft-light float-right ml-3 bg-transparent link-dark pointer" data-toggle="modal" data-target="#add-contact">
+                                                        <i class="gd-plus mr-1"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div id="contact-list" class="row scroll-y-perfect mt-2" style="overflow-y: scroll;height: 300px;">
+                                                <div class="col-md-12 d-flex justify-content-center">
+                                                    <div class="spinner-border spinner-border-sm text-danger" role="status">
+                                                        <span class="sr-only">Loading...</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Envoyer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                       
+</div>
+{% endblock %}
+
+
+{% block modals %}
+{{ parent() }}
+
+<!-- Ajout Contact - Modal -->
+<div id="add-contact" class="modal fade" role="dialog" aria-labelledby="addPost" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('new_post_do') }}">
+                <div class="modal-header ml-3">
+                    <h5 class="modal-title" id="exampleModalLabel">Ajout Contact</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-12 with-border-text">
+                        <label class="border-text-label" for="name">Nom</label>
+                        <input type="text" class="form-control" value="" id="nom" name="nom">
+                    </div>
+                    <div class="form-group col-12 with-border-text">
+                        <label class="border-text-label" for="name">Prénom</label>
+                        <input type="text" class="form-control" value="" id="prenom" name="prenom">
+                    </div>
+                    <div class="form-group col-12 with-border-text">
+                        <label class="border-text-label" for="name">Email</label>
+                        <input type="text" class="form-control" value="" id="email" name="email">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Confirmer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script>
+    const customFileInput = document.querySelector('.custom-file2-input');
+    const fileNameDisplay = document.querySelector('.selected-file-name');
+
+    customFileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const fileName = file.name;
+        fileNameDisplay.textContent = fileName;
+    } else {
+        fileNameDisplay.textContent = 'Fichier non sélectionné';
+    }
+    });
+</script>
+
+<script>
+    var contacts = null;
+
+    function reload_contact() {
+        contacts = null;
+        load_contact();
+    }
+
+    function on_process(btnId, btnText, process) {
+        let btn = document.getElementById(btnId);
+        if(process) {
+            btn.innerHTML = `
+                <div id="spinner" class="spinner-border spinner-border-sm text-white" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            `;
+        } else {
+            btn.innerHTML = btnText;
+        }
+    }
+
+    function load_contact_content() {
+        let ctn_contact = document.getElementById('contact-list');
+
+        var contact_selected = get_contact_selected(); // Les contacts deja selectionnee pour le trie
+        
+        var all_contact = '';
+        contacts.forEach(contact => {
+            var isSelected = contact_selected.includes(`${contact.id}`);
+            var itm_contact = `
+                <div class="col-md-6">
+                    <div class="border-top p-3 px-md-4 mx-0">
+                        <div class="row justify-content-between small mb-2">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="badge badge-sm badge-danger rounded-circle ml-2">
+                                        ${contact.nom.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="ml-2" style="margin-top: -2%;">${contact.nom} ${contact.prenom}</div>
+                                    <div class="ml-2 text-muted text-12" style="margin-top: -5%;">
+                                        <em>${contact.email}</em>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-auto text-muted">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input checkbox-contact" id="contact-${contact.id}" ${isSelected ? 'checked' : ''}>
+                                    <label class="custom-control-label" for="contact-${contact.id}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            all_contact += itm_contact;
+        });
+
+        ctn_contact.innerHTML = all_contact;
+    }
+
+    async function add_contact() {
+        var data = {
+            nom: document.getElementById('contact-nom').value,
+            prenom: document.getElementById('contact-prenom').value,
+            fonction: document.getElementById('contact-fonction').value,
+            email: document.getElementById('contact-email').value
+        };
+        $.ajax({
+            url: "{{ path('new_contact') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                on_process('btn-add-contact', 'Ajouter', true);
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                console.log(data);
+                on_process('btn-add-contact', 'Ajouter', false);
+                reload_contact();
+            },
+            error: function() {
+                on_process('btn-add-contact', 'Ajouter', false);
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+            }
+        });
+        //document.getElementById('loading-on-map').style.display = "none";
+    }
+
+    async function load_contact() {
+        if(!contacts) {
+            $.ajax({
+                url: "{{ path('list_contact') }}",
+                method: 'GET',
+                contentType: 'application/json',
+                dataType: 'json',
+                beforeSend: function() {
+                    //
+                },
+                success: function(response) {
+                    let data = JSON.parse(response);
+                    console.log(data)
+                    contacts = data.contacts;
+                    // Convertissez la chaîne JSON en objet JavaScript
+
+                    load_contact_content();
+                },
+                error: function() {
+                    // Masquer le spinner en cas d'erreur de la requête AJAX
+                }
+            });
+        } else {
+            load_contact_content();
+        }
+
+        //document.getElementById('loading-on-map').style.display = "none";
+    }
+
+    function get_contact_selected() {
+        // Initialiser un tableau pour stocker les identifiants des coupures sélectionnées
+        var selected_contact = [];
+
+        var count = 0;
+        // Parcourir toutes les cases à cocher qui sont cochées
+        $('input.checkbox-contact:checked').each(function() {
+            // Extraire l'ID de la coupure à partir de l'attribut `id` de la case à cocher
+            var contactId = $(this).attr('id').split('-')[1];
+
+            // Ajouter l'ID de la contact au tableau
+            selected_contact.push(contactId);
+        });
+
+        return selected_contact;
+    }
+
+    function getEmailsFromContactSelected() {
+        var ids = get_contact_selected();
+        return ids.map(id => {
+            const contact = contacts.find(c => `${c.id}` === id);
+            return contact ? contact.email : null;
+        }).filter(email => email !== null);
+    }
+
+    function sort_contacts() {
+        var search = document.getElementById('contact-search').value;
+        contacts.sort((a, b) => {
+            const aName = `${a.nom} ${a.prenom}`.toLowerCase();
+            const bName = `${b.nom} ${b.prenom}`.toLowerCase();
+
+            const aMatch = aName.includes(search.toLowerCase());
+            const bMatch = bName.includes(search.toLowerCase());
+
+            if (aMatch && bMatch) {
+                return aName.localeCompare(bName);
+            }
+
+            if (aMatch) return -1;
+            if (bMatch) return 1;
+
+            return 0;
+        });
+
+        load_contact();
+    }
+
+    function getEmailFileBase64() {
+        return new Promise((resolve, reject) => {
+            const fileInput = document.getElementById('email-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                reject(new Error('Aucun fichier sélectionné'));
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                resolve({
+                    base64: e.target.result,
+                    name: file.name,
+                    type: file.type
+                });
+            };
+            
+            reader.onerror = function(error) {
+                reject(error);
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    }
+
+
+    function sendEmails() {
+        getEmailFileBase64().then(data => {
+            const email = getEmailsFromContactSelected();
+
+            var data = {
+                email: email,
+                file: {
+                    name: data.name,
+                    type: data.type,
+                    base64: data.base64.split(',')[1]
+                }
+            };
+
+            $.ajax({
+                url: "{{ path('send_email') }}",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                beforeSend: function() {
+                    on_process('btn-send-email', 'Envoyer', true);
+                },
+                success: function(response) {
+                    let responseData = JSON.parse(response);
+                    console.log(responseData);
+
+                    on_process('btn-send-email', 'Envoyer', false);
+
+                    if (responseData.status === 1) {
+                        document.getElementById('send-email-message').classList.add('d-none');
+                    } else {
+                        document.getElementById('send-email-message').classList.remove('d-none');
+                        document.getElementById('send-email-fail').setAttribute('title', responseData.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    on_process('btn-send-email', 'Envoyer', false);
+                    console.error('Erreur lors de l\'envoi des emails:', error);
+                }
+            });
+        }).catch(error => {
+            console.error('Erreur lors de la lecture du fichier:', error);
+        });
+    }
+
+    load_contact();
+</script>
+
+{% endblock %}

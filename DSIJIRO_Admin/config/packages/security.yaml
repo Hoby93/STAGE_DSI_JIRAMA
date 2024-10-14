@@ -1,0 +1,32 @@
+# config/packages/security.yaml
+security:
+    enable_authenticator_manager: true
+    password_hashers:
+        App\Entity\Employe:
+            algorithm: auto
+    providers:
+        database_users:
+            entity:
+                class: App\Entity\Employe
+                property: email
+
+    firewalls:
+        main:
+            lazy: true
+            provider: database_users
+            form_login:
+                login_path: to_login
+                check_path: login
+                default_target_path: app_home
+            logout:
+                path: logout
+                target: to_login
+            stateless: false
+
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/officer, roles: ROLE_OFFICER }
+        - { path: ^/consultant, roles: ROLE_CONSULTANT }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+    access_denied_url: /access-refusee

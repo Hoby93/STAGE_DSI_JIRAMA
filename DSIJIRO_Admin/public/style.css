@@ -1,0 +1,95 @@
+.pointer {
+    cursor: pointer;
+}
+
+.select2-container--default .select2-selection--single {
+    display: inline-block !important;
+    width: 100% !important;
+    /* padding: .63rem 2rem .63rem 1rem !important; */
+    padding-top: 2px !important;
+    padding-bottom: 5px !important;
+    height: 45px !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    color: #1e2022 !important;
+    vertical-align: middle !important;
+    background-color: #fff !important;
+    border: 1px solid #eeeef1 !important;
+    border-radius: .125rem !important;
+    /* -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important; */
+}
+
+
+.checkbox-container .form-check {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+/* Cacher l'input réel */
+.form-check-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+  
+/* Style pour le label qui agira comme notre switch */
+.form-check-label {
+    cursor: pointer;
+    /* display: inline-block; */
+}
+
+/* Création du track (fond) du switch */
+.form-check-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 52px;
+    height: 26px;
+    border-radius: 13px;
+    background-color: #ccc;
+}
+  
+/* Création du curseur (thumb) du switch */
+.form-check-label::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: white;
+    transition: transform 0.3s ease-in-out;
+}
+  
+/* Animer le curseur lorsque le switch est activé */
+.form-check-input:checked + .form-check-label::after {
+    transform: translateX(26px);
+}
+  
+/* Changer la couleur du track lorsque le switch est activé */
+.form-check-input:checked + .form-check-label::before {
+    background-color: orange; /* Bleu par défaut */
+}
+
+/* Switch plus petit */
+.form-check-sm .form-check-label::before {
+    width: 26px;
+    height: 14px;
+    border-radius: 7px;
+}
+
+.form-check-sm .form-check-label::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.form-check-sm .form-check-input:checked + .form-check-label::after {
+    transform: translateX(12px);
+}

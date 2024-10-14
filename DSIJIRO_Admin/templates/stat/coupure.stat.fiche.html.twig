@@ -1,0 +1,489 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Effectif générale{% endblock %}
+
+{% block menuactive %}stat{% endblock %}
+
+{% block othercss %}
+    <link rel="stylesheet" href="{{ asset('demo/chartist.css') }}">
+    <link rel="stylesheet" href="{{ asset('demo/chartist-plugin-tooltip.css') }}">
+{% endblock %}
+
+{% block body %}
+
+
+<div class="py-4 px-3 px-md-4">
+    <div class="mb-md-0 d-flex justify-content-between">
+        <h1 class="h3 mb-2">Tableau de bord</h1>
+    </div>
+    {# <div class="mb-5 text-muted">
+        <h5>
+            Consultez le Tableau de Bord Administrateur pour Gérer les Constructions Immobilières, <br>
+            Visualiser les Profits et les Propriétés Liées à la Construction.
+        </h5>
+    </div> #}
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card mb-md-4">
+            <div class="row">
+                <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                    <!-- Breadcrumb -->
+                    <nav class="d-md-block" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a>Tableau de bord</a>
+                            </li>
+                            <li class="breadcrumb-item" aria-current="page">
+                                <a class="text-muted" href="{{ path('stat_coupure') }}">Rapport de coupure</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Fiche</li>
+                        </ol>
+                    </nav>
+                    <!-- End Breadcrumb -->
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="tab-pane show" id="litecoin" role="tabpanel">
+                            <div class="toolbar row mb-3">
+                                <div class="card-header">
+                                    <h5 class="h6 text-uppercase font-weight-semi-bold mb-0">{{ gpniv }} {{niv}}</h5>
+                                </div>
+                                <div class="col ml-auto">
+                                    <div class="dropdown float-right">
+                                        <label class="border-text-label">Date</label>
+                                        <input type="month" id="date-selector" name="date-selector" value="2024-08" class="form-control form-inline" style="text-transform: capitalize;width: unset !important; display: unset;">
+                                        <button style="width: 125px;" class="btn btn-facebook dropdown-toggle mb-1" type="button" id="month-selector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="text-capitalize" id="date-group-label">Date</span>
+                                            <i class="gd-angle-down icon-text icon-text-xs align-middle ml-3"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="month-selector">
+                                            <li><a class="dropdown-item date-group jour" onclick="setDateGroupe('jour')">Jour</a></li>
+                                            <li><a class="dropdown-item date-group mois" onclick="setDateGroupe('mois')">Mois</a></li>
+                                            <li><a class="dropdown-item date-group annee" onclick="setDateGroupe('annee')">Année</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="float-right mr-2">
+                                        <button type="button" class="btn ml-auto" onclick="refresh()">
+                                            <i class="gd-reload" id="btn-refresh"></i>
+                                            <div class="spinner-border spinner-border-sm text-info" role="status" id="list-stat-spinner">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center mt-4 mb-4 mb-md-5 mb-2">
+                                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                                    <div class="h4 mb-1">
+                                        <span id="total-coupure">158</span><sup class="h5"></sup>
+                                    </div>
+                                    <small class="text-muted">Heure total de coupure</small>
+                                </div>
+
+                                <div class="col-6 col-md-3 mb-3 mb-md-0 border-left">
+                                    <div class="h3 mb-0">
+                                        <span id="freq-coupure">12</span>
+                                    </div>
+                                    <small class="text-muted">Frequence de coupure</small>
+                                </div>
+
+                                <div class="col-12 col-md-3 border-left">
+                                    <div class="h4 mb-1">
+                                        <span id="heure-freq-coupure">10h00 - 12h00</span>
+                                    </div>
+                                    <small class="text-muted">Heure frequent</small>
+                                </div>
+
+                                <div class="col-12 col-md-3 border-left">
+                                    <div class="h4 mb-1">
+                                        <span id="avg-duree-coupure">3h30</span>
+                                    </div>
+                                    <small class="text-muted">AVG duree de coupure</small>
+                                </div>
+                            </div>
+
+                            <!-- Line Chart -->
+                            <div id="lineChart"></div>
+                            <!-- End Line Chart -->
+
+                            <style>
+                                .d-none { display: none !important; };
+                            </style>
+                            <div class="mb-0 pt-10 pb-10 d-flex justify-content-center d-none" id="no-chart">
+                                <div class="card-body text-center">
+                                    Pas de représentation graphique
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-3 mb-md-4">
+                <div class="card-header">
+                    <h5 class="h6 text-uppercase font-weight-semi-bold mb-0">Liste Coupures</h5>
+                </div>
+
+                <div class="card-body pt-0 pl-2">
+                    <div class="col-md-12 mt-4">
+                        <table class="table table-responsive-xl scroll-x-perfect table-bordered text-nowrap mb-0">
+                            <thead>
+                            <tr>
+                                <th class="font-weight-semi-bold border-top-0 py-2" id="tab-niv-col" style="text-transform: capitalize;">
+                                    <!-- Niveau --> Du
+                                </th>
+                                <th class="font-weight-semi-bold border-top-0 py-2">
+                                    Heure total coupure
+                                </th>
+                                <th class="font-weight-semi-bold border-top-0 py-2">
+                                    Freq. coupure
+                                </th>
+                                <th class="font-weight-semi-bold border-top-0 py-2">
+                                    Heure freq. coupure 
+                                </th>
+                                <th class="font-weight-semi-bold border-top-0 py-2">
+                                    AVG Duree coupure (h)
+                                </th>
+                                <th class="font-weight-semi-bold border-top-0 py-2">
+                                    Detail
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="stat-table-body">
+                            </tbody>
+                        </table>
+                    <div>
+                    <div class="mb-0 pt-2 text-center d-none" id="no-result">
+                        <div class="card-body text-muted"> Aucun élément trouvée</div>
+                    </div>
+                    {# <div class="col-md-12">
+                        <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                            <div class="row">
+                                <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                <div class="col-md-6">
+                                    <ul class="pagination justify-content-end mb-0">
+                                        <!-- Pagination items will be dynamically inserted here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </div> #}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('js/session.js') }}"></script>
+
+    <script>
+        window.onload = function() {
+            initFilter();
+            refresh();
+        };
+
+        let chart;
+        var dategroup = 'mois';
+
+        var gpniv = '{{ gpniv }}';
+        var niv = '{{ niv }}';
+
+        const months = ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        const dateType = new Map([
+            ['jour', 'date'],
+            ['mois', 'month'],
+            ['annee', 'number']
+        ]);
+
+        function initFilter() {
+            var filter = getFilterFromSession();
+            if(filter) {
+                setDateGroupe(filter.gpdate);
+                document.getElementById('date-selector').value = filter.date;
+                console.log(filter);
+            } else {
+                console.log('no filter found');
+            }
+        }
+
+        function getDateGroupAxis(dateGroup, dateValue) {
+            switch (dateGroup) {
+                case 'mois':
+                    const year = parseInt(dateValue.slice(0, 4));
+                    const month = parseInt(dateValue.slice(5, 7)) - 1;
+                    
+                    const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+                    return Array(lastDayOfMonth).fill().map((_, i) => `${i + 1}`);
+                case 'annee':
+                    return months;
+                default:
+                    // throw new Error('Invalid dateGroup parameter');
+                    return []
+            }
+        }
+
+        // Fonction pour formater la date du jour selon le format choisi
+        function currentDateGroupFormat(selectedOption) {
+            // Obtenir la date actuelle
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Mois avec zéro au début
+            const day = ('0' + currentDate.getDate()).slice(-2); // Jour avec zéro au début
+
+            if (selectedOption === 'jour') {
+                return year + '-' + month + '-' + day; // Format 'YYYY-MM-DD' pour jour
+            } else if (selectedOption === 'mois') {
+                return year + '-' + month; // Format 'YYYY-MM' pour mois
+            } else if (selectedOption === 'annee') {
+                return year; // Format 'YYYY' pour année
+            }
+            return '';
+        }
+
+        // Fonction pour mettre à jour le groupe de date
+        function setDateGroupe(group) {
+            // Supprimer la classe .d-none de tous les éléments .date-group
+            $('.date-group').removeClass('d-none');
+            document.getElementById('date-group-label').innerHTML = group;
+
+            // Ajouter la classe .d-none à tous les éléments sauf celui avec la classe .jour
+            $(`.${group}`).addClass('d-none');
+
+
+            // Mettre à jour la valeur de dategroup
+            dategroup = group;
+
+            var inputElement = $('#date-selector');
+            inputElement.attr('type', dateType.get(group));
+            inputElement.val(currentDateGroupFormat(group)); // Initialiser la valeur de l'input avec la date formatée
+        }
+
+        function matchDateGroupFromData(dategroup, mydata, dateaxis) {
+            var hcoupures = [];
+            var fqcoupures = [];
+
+            for (var i = 0; i < dateaxis.length; i++) {
+                var coupureMatch = mydata.find(coupure => { // Parcourir les donnees chargees
+                    // comparer et completer les dates qui ont une valeur
+                    if(dategroup === 'mois') {
+                        return coupure.niv_date.split('-')[2] === dateaxis[i].toString().padStart(2, '0')
+                    } else {
+                        return months[parseInt(coupure.niv_date.split('-')[1]) - 1] === dateaxis[i]
+                    }
+                });
+
+                if (coupureMatch) {
+                    // Convertir heure_total_coupure en format décimal
+                    var hours = parseFloat(coupureMatch.heure_total_coupure.split(':')[0]);
+                    var minutes = parseFloat(coupureMatch.heure_total_coupure.split(':')[1]);
+                    var decimalTime = hours + (minutes / 60);
+                    hcoupures.push(decimalTime);
+                    fqcoupures.push(coupureMatch.frequence_coupure);
+                } else {
+                    hcoupures.push(0);
+                    fqcoupures.push(0);
+                }
+            }
+
+            return {
+                hcoupures: hcoupures,
+                fqcoupures: fqcoupures
+            };
+        }
+
+        function updateChartContent(xaxis, yaxis) {
+            document.querySelector("#no-chart").classList.add('d-none');
+            // Assurez-vous que l'élément du chart existe
+            const chartElement = document.querySelector("#lineChart");
+            if (!chartElement) {
+                console.error("Le chart n'est pas trouvé dans le DOM.");
+                return;
+            }
+
+            // Supprimez le chart existant
+            if (chart) {
+                chart.destroy();
+            }
+
+            if(xaxis.length == 0) {
+                document.querySelector("#no-chart").classList.remove('d-none');
+                return;
+            }
+
+            // Créez un nouveau chart avec les nouvelles données
+            chart = new ApexCharts(chartElement, {
+                series: [
+                    {
+                        name: "Heures coupure",
+                        data: yaxis.hcoupures
+                    },
+                    {
+                        name: "Frequence coupure",
+                        data: yaxis.fqcoupures
+                    }
+                ],
+                chart: {
+                    height: 400,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: xaxis,
+                },
+                yaxis: {
+                    // max: 10
+                },
+                markers: {
+                    size: 5,
+                    strokeColors: '#fff',
+                    strokeWidth: 2,
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'center',
+                    offsetY: 10,
+                }
+            });
+
+            // Redessiner le chart
+            chart.render();
+        }
+
+
+
+        function refresh() {
+            fetchStatCoupure();
+            //console.log(axis);
+        }
+
+        function setPageLoading(isLoad) {
+            var spinner = document.getElementById('list-stat-spinner');
+            var refresh = document.getElementById('btn-refresh');
+            if(isLoad) {
+                spinner.style.display = "block";
+                refresh.style.display = "none";
+            } else {
+                spinner.style.display = "none";
+                refresh.style.display = "block";
+            }
+        }
+
+        function setStatGeneralContent(gen) {
+            document.getElementById('total-coupure').innerHTML = gen ? gen['heure_total_coupure'] : '00:00:00';
+            document.getElementById('freq-coupure').innerHTML = gen ? gen['frequence_coupure'] : '0';
+            document.getElementById('heure-freq-coupure').innerHTML = gen ? gen['heure_coupure_frequent'] : '-';
+            document.getElementById('avg-duree-coupure').innerHTML = gen ? gen['duree_moyenne_coupure'].substring(0, 8) : '00:00:00';
+        }
+
+        function fetchStatCoupure() {
+            let datevalue = document.getElementById('date-selector').value;
+            var data = {
+                niv: gpniv,
+                motclee: niv,
+                dategroupe: dategroup,
+                datevalue: datevalue
+            };
+
+            //console.log(data);
+
+            $.ajax({
+                url: "{{ path('fiche_stat_coupure_data') }}",
+                method: 'POST',
+                contentType: 'application/json',  // Ajout du type de contenu JSON
+                data: JSON.stringify(data),  // Conversion en JSON
+                beforeSend: function() {
+                    setPageLoading(true);
+                },
+                success: function(response) {
+                    //console.log(response);
+
+                    // Convertissez la chaîne JSON en objet JavaScript
+                    let res = JSON.parse(response);
+
+
+                    data = res.stats;
+                    console.log(data);
+
+                    // Obtenir l'élément tbody du tableau
+                    let tbody = document.getElementById('stat-table-body');
+                    // document.getElementById('tab-niv-col').innerHTML = niv;
+                    tbody.innerHTML = ""; // Vider le contenu existant du tableau
+
+
+                    var xaxis = getDateGroupAxis(dategroup, datevalue);
+
+                    var yaxis = matchDateGroupFromData(dategroup, data.results, xaxis);
+
+                    updateChartContent(xaxis, yaxis);
+                    // timeChart();
+
+                    console.log(yaxis);
+
+                    // Parcourir les résultats et remplir le tableau
+                    if(data.results.length == 0) {
+                        setStatGeneralContent(null);
+                        document.getElementById('no-result').classList.remove('d-none');
+                    } else {
+                        setStatGeneralContent(data.general[0]);
+                        document.getElementById('no-result').classList.add('d-none');
+
+                        data.results.forEach(function(result) {
+                            let row = `
+                                <tr>
+                                    <td class="py-3">${result['niv_date']}</td>
+                                    <td class="py-3 text-center">${result['heure_total_coupure']}</td>
+                                    <td class="py-3 text-right">${result['frequence_coupure']}</td>
+                                    <td class="py-3 text-center">${result['heure_coupure_frequent']}</td>
+                                    <td class="py-3 text-center">${result['duree_moyenne_coupure'].substring(0, 8)}</td>
+                                    <td class="p-0 py-3">
+                                        <a class="unfold-link media align-items-center text-nowrap ml-3 p-0" href="{{ path('fiche_stat_coupure') }}">
+                                            <i class="gd-info-alt unfold-item-icon mr-3"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                            tbody.insertAdjacentHTML('beforeend', row);
+                        });
+                    }
+
+                    // updatePaginationIndication();
+
+                    //console.log(coupures);
+                    setPageLoading(false);
+                },
+                error: function() {
+                    // Masquer le spinner en cas d'erreur de la requête AJAX
+                    setPageLoading(false);
+                }
+            });
+        }
+    </script>
+{% endblock %}

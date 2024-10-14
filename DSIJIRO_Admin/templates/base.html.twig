@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Title -->
+    <title>{% block title %}Jirama Admin{% endblock %}</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('img/logo-jirama.png') }}">
+
+
+    <!-- DEMO CHARTS -->
+    <link rel="stylesheet" href="{{ asset('demo/chartist.css') }}">
+    <link rel="stylesheet" href="{{ asset('demo/chartist-plugin-tooltip.css') }}">
+
+    <!-- Template -->
+    <link rel="stylesheet" href="{{ asset('graindashboard/css/graindashboard.css') }}">
+    
+    <!-- Own css -->
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.own.css') }}">
+
+    {% block othercss %}{% endblock %}
+    
+    <style>
+        .{% block menuactive %}{% endblock %} .target {
+            color: #265df1;
+        }
+    </style>
+
+</head>
+
+
+<body class="has-sidebar has-fixed-sidebar-and-header">
+    <!-- Header -->    
+<header class="header bg-body">
+    <nav class="navbar flex-nowrap p-0">
+        <div class="navbar-brand-wrapper d-flex align-items-center col-auto">
+            <!-- Logo For Mobile View -->
+            <a class="navbar-brand navbar-brand-mobile" href="/">
+                <img class="img-fluid" src="{{ asset('img/logo-jirama.png') }}" alt="Graindashboard" height="55">
+            </a>
+            <!-- End Logo For Mobile View -->
+
+            <!-- Logo For Desktop View -->
+            <a class="navbar-brand navbar-brand-desktop" href="/">
+                <img class="side-nav-show-on-closed" src="{{ asset('img/logo-jirama.png') }}" alt="Graindashboard" height="55">
+                <img class="side-nav-hide-on-closed" src="{{ asset('img/logo-jirama-text.png') }}" alt="Graindashboard" height="55">
+            </a>
+            <!-- End Logo For Desktop View -->
+        </div>
+
+        <div class="header-content col px-md-3">
+            <div class="d-flex align-items-center">
+                <!-- Side Nav Toggle -->
+                <a  class="js-side-nav header-invoker d-flex mr-md-2" href="#"
+                    data-close-invoker="#sidebarClose"
+                    data-target="#sidebar"
+                    data-target-wrapper="body">
+                    <i class="gd-align-left"></i>
+                </a>
+                <!-- End Side Nav Toggle -->
+
+                <!-- User Notifications -->
+                <div class="dropdown ml-auto">
+                    <a id="notificationsInvoker" class="header-invoker" href="#" aria-controls="notifications" aria-haspopup="true" aria-expanded="false" data-unfold-event="click" data-unfold-target="#notifications" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
+                        <span class="indicator indicator-bordered indicator-top-right indicator-primary rounded-circle"></span>
+                        <i class="gd-bell"></i>
+                    </a>
+
+                    <div id="notifications" class="dropdown-menu dropdown-menu-center py-0 mt-4 w-18_75rem w-md-22_5rem unfold-css-animation unfold-hidden" aria-labelledby="notificationsInvoker" style="animation-duration: 300ms;">
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center border-bottom py-3">
+                                <h5 class="mb-0">Notifications</h5>
+                                <a class="link small ml-auto" href="#">Effacer</a>
+                            </div>
+
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item list-group-item-action">
+                                        <div class="text-center p-2"> Aucun élément</div>
+                                        {# <a class="list-group-item-closer text-muted" href="#"><i class="gd-close"></i></a> #}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End User Notifications -->
+                <!-- User Avatar -->
+                <div class="dropdown mx-3 dropdown ml-2">
+                    <a id="profileMenuInvoker" class="header-complex-invoker" href="#" aria-controls="profileMenu" aria-haspopup="true" aria-expanded="false" data-unfold-event="click" data-unfold-target="#profileMenu" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
+                        <span class="mr-md-2 avatar-placeholder">{{ app.user.nom|first }}</span>
+                        <span class="d-md-block">{{ app.user.nom }} {{ app.user.prenom }}</span>
+                        <i class="gd-angle-down d-md-block ml-2"></i>
+                    </a>
+
+                    <ul id="profileMenu" class="unfold unfold-user unfold-light unfold-top unfold-centered position-absolute pt-2 pb-1 mt-4 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="profileMenuInvoker" style="animation-duration: 300ms;">
+                        <li class="unfold-item">
+                            <a class="unfold-link d-flex align-items-center text-nowrap" href="{{ path('setting_account') }}">
+                                <span class="unfold-item-icon mr-3">
+                                <i class="gd-user"></i>
+                                </span>
+                                Mon profil
+                            </a>
+                        </li>
+                        <li class="unfold-item">
+                            <a class="unfold-link link d-flex align-items-center text-nowrap" href="#" onclick="show_preference_modal()">
+                                <span class="unfold-item-icon mr-3">
+                                    <i class="gd-palette"></i>
+                                </span>
+                                Préférence
+                            </a>
+                        </li>
+                        <li class="unfold-item unfold-item-has-divider">
+                            <a class="unfold-link d-flex align-items-center text-nowrap" href="{{ path('logout') }}">
+                                <span class="unfold-item-icon mr-3">
+                                <i class="gd-power-off"></i>
+                                </span>
+                                Deconnecter
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End User Avatar -->
+            </div>
+        </div>
+    </nav>
+</header>
+<!-- End Header -->
+
+<main class="main">
+    <!-- Sidebar Nav -->
+    <aside id="sidebar" class="js-custom-scroll side-nav">
+        <ul id="sideNav" class="side-nav-menu side-nav-menu-top-level mb-0">
+            <!-- Title -->
+            <li class="sidebar-heading h6">Basic</li>
+            <!-- End Title -->
+
+            <!-- Home -->
+            <li class="side-nav-menu-item accueil">
+                <a class="side-nav-menu-link media align-items-center" href="/accueil">
+              <span class="side-nav-menu-icon d-flex mr-3">
+                <i class="gd-home target"></i>
+              </span>
+                    <span class="side-nav-fadeout-on-closed target media-body">Accueil</span>
+                </a>
+            </li>
+            <!-- End Home -->
+
+            {% if is_granted('ROLE_CONSULTANT') %}
+            <!-- Stat -->
+            <li class="side-nav-menu-item side-nav-has-menu stat">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                    data-target="#subStat">
+                    <span class="side-nav-menu-icon d-flex mr-3">
+                        <i class="gd-stats-up target"></i>
+                    </span>
+                    <span class="side-nav-fadeout-on-closed target media-body">Statistique</span>
+                    <span class="side-nav-control-icon d-flex">
+                        <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+                    </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Stat: subStat -->
+                <ul id="subStat" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('effectif') }}">Site</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('stat_coupure') }}">Coupure</a>
+                    </li>
+                </ul>
+                <!-- End Stat: subStat -->
+            </li>
+            <!-- End Stat -->
+            {% endif %}
+
+            {% if is_granted('ROLE_OFFICER') %}
+            <!-- Infra -->
+            <li class="side-nav-menu-item side-nav-has-menu infra">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                    data-target="#subInfra">
+                    <span class="side-nav-menu-icon d-flex mr-3">
+                        <i class="gd-map-alt target"></i>
+                    </span>
+                    <span class="side-nav-fadeout-on-closed target media-body">Site</span>
+                    <span class="side-nav-control-icon d-flex">
+                        <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+                    </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Users: subInfra -->
+                <ul id="subInfra" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_infra') }}">Liste</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('map_infra') }}">Carte</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('new_infra') }}">Nouveau</a>
+                    </li>
+                </ul>
+                <!-- End infra: subInfra -->
+            </li>
+            <!-- End infra -->
+            {% endif %}
+
+            {% if is_granted('ROLE_OFFICER') %}
+            <!-- Parametre -->
+            <li class="side-nav-menu-item side-nav-has-menu parametre">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                    data-target="#parametre-adm">
+                    <span class="side-nav-menu-icon d-flex mr-3">
+                            <i class="gd-plug target"></i>
+                        </span>
+                            <span class="side-nav-fadeout-on-closed media-body target">Parametrage</span>
+                            <span class="side-nav-control-icon d-flex">
+                        <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+                    </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Parametre: subparametre -->
+                <ul id="parametre-adm" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_secteur') }}">Secteur éléctrique</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_zone') }}">Zone géographique</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_post') }}">Poste éléctrique</a>
+                    </li>
+                </ul>
+                <!-- End devis-adm: subParams -->
+            </li>
+            <!-- End Parametre -->
+            {% endif %}
+
+            {% if is_granted('ROLE_OFFICER') %}
+            <!-- Coupure -->
+            <li class="side-nav-menu-item side-nav-has-menu coupure">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                    data-target="#subCoupure">
+                    <span class="side-nav-menu-icon d-flex mr-3">
+                        <i class="gd-light-bulb target"></i>
+                    </span>
+                    <span class="side-nav-fadeout-on-closed target media-body">Coupure</span>
+                    <span class="side-nav-control-icon d-flex">
+                        <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+                    </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Users: subCoupure -->
+                <ul id="subCoupure" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_coupure') }}">Liste</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('map_coupure') }}">Carte</a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_zone') }}">Nouvelle</a>
+                    </li>
+                </ul>
+                <!-- End Users: subCoupure -->
+            </li>
+            <!-- End Coupure -->
+            {% endif %}
+
+            <!-- Title -->
+            <li class="sidebar-heading h6">Autre</li>
+            <!-- End Title -->
+
+            {% if is_granted('ROLE_OFFICER') %}
+            <!-- Com -->
+            <li class="side-nav-menu-item side-nav-has-menu com">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                   data-target="#subCom">
+                  <span class="side-nav-menu-icon d-flex mr-3">
+                    <i class="gd-headphone-alt target"></i>
+                  </span>
+                    <span class="side-nav-fadeout-on-closed media-body target">Communication</span>
+                    <span class="side-nav-control-icon d-flex">
+                <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+              </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Com: subCom -->
+                <ul id="subCom" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('to_send_email') }}">Email</a>
+                    </li>
+                </ul>
+                <!-- End Com: subCom -->
+            </li>
+            <!-- End Com -->
+            {% endif %}
+            
+            {% if is_granted('ROLE_ADMIN') %}
+            <!-- Users -->
+            <li class="side-nav-menu-item side-nav-has-menu user">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                   data-target="#subUsers">
+                  <span class="side-nav-menu-icon d-flex mr-3">
+                    <i class="gd-user target"></i>
+                  </span>
+                    <span class="side-nav-fadeout-on-closed media-body target">Utilisateur</span>
+                    <span class="side-nav-control-icon d-flex">
+                <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+              </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Users: subUsers -->
+                <ul id="subUsers" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('list_user') }}">Liste</a>
+                    </li>
+                </ul>
+                <!-- End Users: subUsers -->
+            </li>
+            <!-- End Users -->
+            {% endif %}
+
+            <!-- Settings -->
+            <li class="side-nav-menu-item side-nav-has-menu config">
+                <a class="side-nav-menu-link media align-items-center" href="#"
+                   data-target="#subSettings">
+                    <span class="side-nav-menu-icon d-flex mr-3">
+                            <i class="gd-settings target"></i>
+                        </span>
+                            <span class="side-nav-fadeout-on-closed target media-body">Configuration</span>
+                            <span class="side-nav-control-icon d-flex">
+                        <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
+                    </span>
+                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
+                </a>
+
+                <!-- Settings: subSettings -->
+                <ul id="subSettings" class="side-nav-menu side-nav-menu-second-level mb-0">
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link" href="{{ path('setting_email') }}">Email</a>
+                    </li>
+                </ul>
+                <!-- End Settings: subSettings -->
+            </li>
+            <!-- End Settings -->
+
+            <!-- Security -->
+            <li class="side-nav-menu-item">
+                <a class="side-nav-menu-link media align-items-center" href="/">
+              <span class="side-nav-menu-icon d-flex mr-3">
+                <i class="gd-shield"></i>
+              </span>
+                    <span class="side-nav-fadeout-on-closed media-body">Securité</span>
+                </a>
+            </li>
+            <!-- End Security -->
+
+        </ul>
+    </aside>
+    <!-- End Sidebar Nav -->
+    
+    <div class="content">
+        {% block body %}{% endblock %} <!-- Content here -->
+
+        <!-- Footer -->
+        <footer class="small p-3 px-md-4 mt-auto">
+            <div class="row justify-content-between">
+                <div class="col-lg text-center text-lg-left mb-3 mb-lg-0">
+                    <ul class="list-dot list-inline mb-0">
+                        <li class="list-dot-item list-dot-item-not list-inline-item mr-lg-2"><a class="link-dark" href="#">FAQ</a></li>
+                        <li class="list-dot-item list-inline-item mr-lg-2"><a class="link-dark" href="#">Support</a></li>
+                        <li class="list-dot-item list-inline-item mr-lg-2"><a class="link-dark" href="#">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg text-center mb-3 mb-lg-0">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-twitter-alt"></i></a></li>
+                        <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-facebook"></i></a></li>
+                        <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-github"></i></a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg text-center text-lg-right">
+                    &copy; 2023 Graindashboard. Tout droit reservee.
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+    </div>
+    
+    
+    <div class="row">
+        
+    </div>
+</main>
+
+{% block modals %}
+<a class="" id="show-exception" data-toggle="modal" data-target="#exception">
+    {# #BUTTON_HIDDEN_FOR_HANDLE_EXCEPTION #}
+</a>
+<!-- modal-exception -->
+<div id="exception" class="modal fade" role="dialog" aria-labelledby="exception" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="error">
+                    {# Message exception ici! #}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /exception -->
+
+<a class="" id="show-preference" data-toggle="modal" data-target="#preference">
+    {# #BUTTON_HIDDEN_FOR_HANDLE_PREFERENCE #}
+</a>
+<!-- modal-preference -->
+<div id="preference" class="modal fade" role="dialog" aria-labelledby="preference" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Préférence Utilisateur</h5>
+                <button type="button" id="close-preference" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body scroll-y-perfect" style="height: 300px;">  
+                <div class="px-3">
+                    <ul id="tabs2" class="nav nav-tabs nav-v2 nav-primary mb-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link px-2 pb-2 active" href="#tabs2-tab1" role="tab" aria-selected="true"
+                            data-toggle="tab">Liste
+                            </a>
+                        </li>
+                        <li class="nav-item ml-4">
+                            <a class="nav-link px-2 pb-2" href="#tabs2-tab2" role="tab" aria-selected="false"
+                            data-toggle="tab">Carte
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="tabsContent2" class="card-body tab-content p-0">
+                        <div class="tab-pane fade show active" id="tabs2-tab1" role="tabpanel">
+                            <div class="list-group mb-5">
+                                <div class="border-bottom pt-2 pb-2">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <strong class="mb-2">Pagination</strong>
+                                            <p class="text-muted mb-0">Limiter les éléments chargés pour chaque liste ou table.</p>
+                                        </div> <!-- .col -->
+                                        <div class="col-auto">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="paginated" checked>
+                                                <label class="custom-control-label" for="paginated-not"></label>
+                                            </div>
+                                        </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .list-group-item -->
+                                <div class="border-bottom pt-2 pb-2">
+                                    <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <strong class="mb-2">Éléments affichés</strong>
+                                        <p class="text-muted mb-0">Nombre de ligne(s) chargée(s) par page.</p>
+                                    </div> <!-- .col -->
+                                    <div class="col-4">
+                                        <div class="relative flex items-center">
+                                            <button type="button" class="btn-page" id="decrement-button" data-input-counter-decrement="counter-input">
+                                                <i class="gd-minus"></i>
+                                            </button>
+                                            <input type="text" id="counter-input" data-input-counter class="counter-input" value="10" required />
+                                            <button type="button" class="btn-page" id="increment-button" data-input-counter-increment="counter-input">
+                                                <i class="gd-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .list-group-item -->
+                            </div> <!-- .list-group -->
+                        </div>
+
+                        <div class="tab-pane fade" id="tabs2-tab2" role="tabpanel">
+                            <div class="list-group mb-5">
+                                <div class="border-bottom pt-2 pb-2">
+                                    <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-2">Légende</strong>
+                                        <p class="text-muted mb-0">Description détaillée des différents éléments représentés sur la carte.</p>
+                                    </div> <!-- .col -->
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="with-legend">
+                                            <label class="custom-control-label" for="with-legend"></label>
+                                        </div>
+                                    </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .list-group-item -->
+                                <div class="border-bottom pt-2 pb-2">
+                                    <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-2">Filtre</strong>
+                                        <p class="text-muted mb-0">Recherche et autres options pour interagir avec la carte.</p>
+                                    </div> <!-- .col -->
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="with-filter" checked>
+                                            <label class="custom-control-label" for="with-filter"></label>
+                                        </div>
+                                    </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .list-group-item -->
+                            </div> <!-- .list-group -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="set_user_preference()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /preference -->
+{% endblock %}
+
+
+{% block javascripts %}
+<script src="{{ asset('graindashboard/js/graindashboard.js') }}"></script>
+<script src="{{ asset('graindashboard/js/graindashboard.vendor.js') }}"></script>
+<script src="{{ asset('js/session.js') }}"></script>
+<script src="{{ asset('js/utils.js') }}"></script>
+<script>
+    function show_exception_modal(message) {
+        document.getElementById("error").innerHTML = message;
+        document.getElementById("show-exception").click();
+    }
+
+    function show_preference_modal() {
+        document.getElementById("show-preference").click();
+    }
+
+    function set_user_preference() {
+        var nbelt = counterInput.value;
+        var legend = document.getElementById("with-legend").checked;
+        var filter = document.getElementById("with-filter").checked;
+
+        savePreferenceOnSession(true, nbelt, legend, filter);
+    }
+
+    function set_user_preference() {
+        var nbelt = counterInput.value;
+        var legend = document.getElementById("with-legend").checked;
+        var filter = document.getElementById("with-filter").checked;
+
+        savePreferenceOnSession(true, nbelt, legend, filter);
+        document.getElementById("close-preference").click();
+    }
+
+    function init_user_preference() {
+        var preference = getPreferenceFromSession();
+
+        if(preference) {
+            counterInput.value = preference.nbelt;
+        }
+    }
+
+    // Sélectionner les éléments du DOM
+    const decrementButton = document.getElementById('decrement-button');
+    const incrementButton = document.getElementById('increment-button');
+    const counterInput = document.getElementById('counter-input');
+
+    // Fonction pour décrémenter la valeur du compteur
+    decrementButton.addEventListener('click', function() {
+        let currentValue = parseInt(counterInput.value, 10); // Convertir la valeur en entier
+        if (currentValue > 5) { // S'assurer que le compteur ne soit pas négatif
+            counterInput.value = currentValue - 1;
+        }
+    });
+
+    // Fonction pour incrémenter la valeur du compteur
+    incrementButton.addEventListener('click', function() {
+        let currentValue = parseInt(counterInput.value, 10); // Convertir la valeur en entier
+        counterInput.value = currentValue + 1; // Incrémenter la valeur
+    });
+
+    // Optionnel: Empêcher d'entrer des valeurs non numériques dans l'input
+    counterInput.addEventListener('input', function() {
+        if (isNaN(counterInput.value) || counterInput.value < 5) {
+            counterInput.value = 5; // Remettre à 1 si l'entrée est invalide
+        }
+    });
+
+    function getPreferenceLimitPerPage() {
+        return counterInput.value;
+    }
+
+    init_user_preference();
+
+</script>
+{% endblock %}
+</body>

@@ -1,0 +1,12 @@
+{
+    "1": {
+        "iconUrl": "/leaflet/images/cart-icon.png",
+        "iconSize": [25, 25],
+        "legend": "Boutique Jirama"
+    },
+    "2": {
+        "iconUrl": "/leaflet/images/agence-icon.png",
+        "iconSize": [30, 30],
+        "legend": "Agence Jirama"
+    }
+}

@@ -1,0 +1,490 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Liste zones{% endblock %}
+
+{% block menuactive %}parametre{% endblock %}
+
+{% block othercss %}
+    <link rel="stylesheet" href="{{ asset('css/style.map.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.map.floating.css') }}">
+    <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-fullscreen/dist/leaflet.fullscreen.css" />
+{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Paramètre</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Zone géographique</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">List des Zones géographique</h1>
+                        </div>
+                        {# <div class="mb-3 text-muted">
+                            <h5>Consultez la Liste des Types de finition Disponibles pour la Construction Immobilière.</h5>
+                        </div> #}
+                        
+                    </div>
+                </div>
+
+                {# {% if message %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endif %} #}
+
+            <div class="card-body pt-0">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="mt-5" id="list-stock">
+                            <div class="toolbar row mb-3 mt-4">
+                                <div class="col">
+                                    <a class="btn btn-light" style="width: 150px;" data-toggle="collapse" href="#recherche-employe" aria-expanded="false" aria-controls="form-elements">
+                                        <span class="menu-title">Filtre</span>
+                                        <sub><i class="gd-filter ml-1"></i></sub>
+                                    </a>
+                                    <div class="spinner-border spinner-border-sm text-info ml-4 d-none" role="status" id="zone-table-spinner">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="col ml-auto">
+                                    <div class="dropdown float-right">
+                                        <a href="{{ path('new_zone') }}" class="btn btn-primary float-right ml-3" type="button"><i class="gd-plus text-white mr-1"></i></a>
+                                        <a class="btn btn-primary float-right pointer ml-3"  data-toggle="modal" data-target="#carte"><i class="gd-map-alt text-white mr-1"></i></a>
+                                        <button class="btn btn-secondary mr-3" type="button" id="actionMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Action <i class="gd-angle-down icon-text icon-text-xs align-middle ml-3"></i></button>
+                                        <div class="dropdown-menu" aria-labelledby="actionMenuButton">
+                                            <a class="dropdown-item pointer" id="btn-addCoupure" data-toggle="modal" data-target="#addCoupure">Coupure</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="collapse mt-2" id="recherche-employe">
+                                        <div class="row">
+                                            <div class="col-md-4 with-border-text">
+                                                <label class="border-text-label">Recherche</label>
+                                                <input type="text" id="search-value" placeholder="" class="form-control">
+                                            </div>
+                                            <div class="col-md-4 with-border-text">
+                                                <button type="button" class="btn btn-soft-light" onclick="search()">
+                                                    <i class="gd-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-hover table-bordered table-responsive-xl scroll-x-perfect text-nowrap mb-0">
+                                <thead>
+                                <tr class="text-center">
+                                    <th colspan="2" class="font-weight-semi-bold border-top-0 py-2">
+                                        Ref
+                                    </th>
+                                     <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Lieux
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Postes
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Specificitee
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Priorite
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="zone-table-body">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mb-0 text-center" id="no-result">
+                            <div class="card-body text-muted"> Aucun élément</div>
+                        </div>
+                        <div class="col-md-12">
+                            <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                                <div class="row">
+                                    <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <!-- Pagination items will be dynamically inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                     
+</div>
+
+<!-- mini-map -->
+<details>
+	<summary id="drag-mini-map">
+        <i class="gd-close"></i>
+    </summary>
+	<div class="map-floating">
+		<div id="map" style="height: 150px;">
+            <!-- Div de la carte -->
+            <!-- Bouton de fermeture -->
+            <button class="map-close-btn" onclick="openMiniMap(false)">
+                <i class="gd-close"></i>
+            </button>
+        </div>
+	</div>
+</details>
+<!-- /mini-map -->
+
+{% endblock %}
+
+{% block modals %}
+{{ parent() }}
+
+<!-- Coupure - Modal -->
+<div id="addCoupure" class="modal fade" role="dialog" aria-labelledby="addCoupure" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('new_multi_coupure_do') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nouvelle prévision de coupure</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-6">
+                            <label for="datedebut">Date début</label>
+                            <input type="datetime-local" class="form-control" id="datedebut" name="datedebut">
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label for="datefin">Date fin</label>
+                            <input type="datetime-local" class="form-control" id="datefin" name="datefin">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-6">
+                            <label for="division">Division</label>
+                            <input type="text" class="form-control" id="division" name="division">
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label for="sa">SA</label>
+                            <input type="text" class="form-control" id="sa" name="sa">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-12">
+                            <label for="motif">Motif</label>
+                            <textarea class="form-control" name="motif" id="motif" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group hidden">
+                        <input type="text" class="form-control" id="idzones" name="idzones">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary pointer text-white" data-dismiss="modal">Annuler</a>
+                    <a id="addCoupure-submit" class="btn btn-primary text-white pointer" onclick="submit()">Confirmer</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('js/pagination.js') }}"></script>
+<script src="{{ asset('js/session.js') }}"></script>
+<script src="{{ asset('leaflet/leaflet.js') }}"></script>
+<script src="https://unpkg.com/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+
+<script>
+    {% if message %}
+        document.getElementById('btn-addCoupure').click();
+    {% endif %}
+</script>
+<script>
+    var page = 1;  // Page actuelle
+    var count = 1; // Nombre total de pages
+
+    var zones_added = getLastZoneAdded();
+    var zone_checked = false;
+
+    function submit() {
+        zones_selected = get_zone_selected();
+        document.getElementById('idzones').value = zones_selected.join(',');
+        document.querySelector('form').submit();
+    }
+    
+    function addMultiInputElement(input, bg, group) {
+        var input = document.querySelector(`.${input}`);
+        var inputValue = input.value.trim();
+
+        if (inputValue) {
+            createInputElement(inputValue, bg, group);
+            input.value = ''; // Réinitialiser l'input après l'ajout
+        }
+    }
+
+    function createInputElement(value, bg, group) {
+        var input = document.getElementById(`${group}-value`);
+        var currentValue = input.value;
+        var inputs = document.getElementById(`${group}-container`);
+        
+        // Ajouter la nouvelle valeur au champ caché
+        if (currentValue) {
+            input.value = `${currentValue}-${value}`;
+        } else {
+            input.value = value;
+        }
+
+        var new_input = document.createElement('span');
+        new_input.className = `badge badge-pill badge-complex bg-semi-soft-${bg} text-white mr-1 mt-1`;
+        new_input.innerHTML = `
+            <span class="badge badge-sm badge-${bg} rounded-circle mr-2 pointer ${group}-close"><i class="gd-close" style="font-size: 0.7em"></i></span>
+            <span>${value}</span>
+        `;
+
+        var closeIcon = new_input.querySelector(`.${group}-close`);
+        closeIcon.addEventListener('click', function() {
+            // Supprimer l'élément du conteneur
+            inputs.removeChild(new_input);
+
+            // Mettre à jour la valeur du champ caché en supprimant la valeur correspondante
+            var updatedValue = input.value.split('-').filter(item => item !== value).join('-');
+            input.value = updatedValue;
+        });
+
+        //console.log();
+
+        inputs.appendChild(new_input);
+    }
+
+    function get_zone_selected() {
+        // Initialiser un tableau pour stocker les identifiants des zones sélectionnées
+        var selectedzones = [];
+
+        // Parcourir toutes les cases à cocher qui sont cochées
+        $('input.checkbox-zone:checked').each(function() {
+            // Extraire l'ID de la zone à partir de l'attribut `id` de la case à cocher
+            var zoneId = $(this).attr('id').split('-')[1];
+
+            // Ajouter l'ID de la zone au tableau
+            selectedzones.push(zoneId);
+        });
+
+        return selectedzones;
+    }
+
+    function removePolygonOnMap() {
+        // Supprimer tous les polygones de la carte
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Polygon) {
+                map.removeLayer(layer);
+            }
+        });
+    }
+
+    function updateTableContent(zones) {
+        // Obtenir l'élément tbody du tableau
+        let tbody = document.getElementById('zone-table-body');
+
+        function createRow(zone, isChecked, isNew) {
+            var tr = document.createElement('tr');
+            tr.className = "pointer text-center";
+            tr.innerHTML = `
+                <td id="checkbox">
+                    <div class="custom-control custom-checkbox pointer">
+                        <input type="checkbox" class="custom-control-input checkbox-zone" id="zone-${zone.id}" data-date="${zone.id}" ${isChecked ? 'checked' : ''}>
+                        <label class="custom-control-label" for="zone-${zone.id}"></label>
+                    </div>
+                </td>
+                <td class="py-3">
+                    ${zone.refZone || '-'}
+                    ${isNew ?
+                        '<span class="d-inline-block position-relative p-2"><span class="indicator indicator-warning indicator-bordered indicator-top-right rounded-circle"></span></span>'
+                    : ''}
+                </td>
+                <td class="py-3">${zone.lieux || '-'}</td>
+                <td class="py-3">${zone.postes || '-'}</td>
+                <td class="py-3">${zone.specificite || '-'}</td>
+                <td class="py-3">${zone.degree || '-'}</td>
+                <td id="action" class="py-3">
+                    <div class="position-relative">
+                        <a class="link-dark d-inline-block" href="modifier-zone/${zone.id}">
+                            <i class="gd-pencil icon-text"></i>
+                        </a>
+                        <a class="link-dark d-inline-block" href="#">
+                            <i class="gd-trash icon-text"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+
+            // Sélectionner tous les <td> sauf celui avec l'ID "checkbox"
+            var tdElements = tr.querySelectorAll('td:not(#checkbox):not(#action)');
+
+            // Ajouter un événement 'click' à chaque <td> sauf celui du checkbox
+            tdElements.forEach(td => {
+                td.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openMiniMap(true);
+                    removePolygonOnMap();
+
+                    var coords = zone.coord.map(coord => [coord.longitude, coord.latitude]);
+                    // Créer un nouveau polygone avec les coordonnées
+                    drawnPolygon = L.polygon(coords).addTo(map);
+
+                    // Ajuster la vue de la carte pour cadrer le polygone
+                    map.fitBounds(drawnPolygon.getBounds());
+                });
+            });
+
+            return tr;
+        }
+        
+        // Vérifier chaque ligne existante et la conserver si nécessaire
+        Array.from(tbody.querySelectorAll('tr')).forEach(tr => {
+            const checkbox = tr.querySelector('.checkbox-zone');
+            if (!checkbox || !checkbox.checked) {
+                tr.remove();
+            }
+        });
+
+        zones_selected = get_zone_selected();
+
+        // Parcourir les résultats et remplir le tableau
+        if(zones_added && !zone_checked) {
+            zone_checked = true;
+            zones_added.forEach(function(new_zone) {
+                tbody.appendChild(createRow(new_zone, true, true));
+            });
+        }
+        if(zones.length == 0 && !zones_added) {
+            document.getElementById('no-result').classList.remove('d-none');
+        } 
+        else {
+            document.getElementById('no-result').classList.add('d-none');
+            zones.forEach(function(zone) {
+                if(!zones_selected.includes(`${zone.id}`)) { // Verifier si la zone est deja selectionnee
+                    var isNew = zones_added && zones_added.some(zone_added => zone_added.id === zone.id);
+                    var tr = createRow(zone, false, isNew);
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+    }
+
+    function search() {
+        var motclee = document.getElementById('search-value').value;
+        motclee_triee = motclee.split('-')
+            .sort()
+            .join('-');
+
+        var data = {
+            page: page,
+            limit: getPreferenceLimitPerPage(),
+            ref: motclee,
+            group: motclee_triee
+        };
+        fetchZone(data);
+    }
+
+    function fetchZone(data) {
+        $.ajax({
+            url: "{{ path('search_zone') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('zone-table-spinner').classList.remove('d-none');
+            },
+            success: function(response) {
+                //console.log(response);
+                zones_loaded = [];
+
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                zones_loaded = data.zones;
+                // console.log(zones_loaded);
+
+                count = zones_loaded.totalPages;
+
+                // Parcourir les résultats et remplir le tableau
+                updateTableContent(zones_loaded.results);
+
+                // Generer la pagination
+                generatePagination(page, count);
+                updatePaginationIndication(page, count);
+
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            }
+        });
+        //document.getElementById('zone-table-spinner').style.display = "none";
+    }
+
+    function loadDataOfPage() {
+        search();
+    }
+
+    function openMiniMap(open) {
+        var btn_map = document.querySelector('#drag-mini-map'); // Sélection correcte
+        var ctn_map = document.querySelector('.map-floating'); // Ajout du 'document.'
+        var is_opened = ctn_map.classList.contains('open'); // Correction de 'oepn' en 'open'
+        
+        if (open && !is_opened) {
+            btn_map.click();
+            ctn_map.classList.add('open'); // Ajout de la classe 'open' pour ouvrir la carte
+        } else if (!open && is_opened) {
+            btn_map.click();
+            ctn_map.classList.remove('open'); // Utilisation de 'remove' pour fermer la carte
+        }
+    }
+
+
+    search();
+</script>
+<script>
+    var map = L.map('map', {
+        zoomControl: false // Désactiver le contrôle de zoom par défaut
+    }).setView([-18.922647647936802, 47.46631766551795], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data ©'
+    }).addTo(map);
+
+    var drawnPolygon;
+
+    document.querySelector('details').addEventListener('toggle', function(event) {
+        if (event.target.open) {
+            setTimeout(function() {
+                map.invalidateSize();  // Forcer le redimensionnement de la carte Leaflet
+            }, 500);  // Délai pour garantir le bon rendu
+        }
+    });
+</script>
+{% endblock %}

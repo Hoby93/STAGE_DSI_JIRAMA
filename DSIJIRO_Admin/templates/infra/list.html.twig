@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Liste infrastructure{% endblock %}
+
+{% block menuactive %}infra{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Sites</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Liste</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">Liste des sites</h1>
+                        </div>
+                        {# <div class="mb-3 text-muted">
+                            <h5>Consultez la Liste des infrastructures.</h5>
+                        </div> #}
+                        
+                    </div>
+                </div>
+
+            <div class="card-body pt-2">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="toolbar row mb-3 mt-4">
+                            <div class="col">
+                                <a class="btn btn-light" style="width: 150px;" data-toggle="collapse" href="#recherche-employe" aria-expanded="false" aria-controls="form-elements">
+                                    <span class="menu-title">Filtre</span>
+                                    <sub><i class="gd-filter ml-1"></i></sub>
+                                </a>
+                                <div class="spinner-border spinner-border-sm text-info ml-4 d-none" role="status" id="zone-table-spinner">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="col ml-auto">
+                                <div class="dropdown float-right">
+                                    <a href="{{ path('map_infra')}}" class="btn btn-secondary float-right ml-3"><i class="gd-map-alt text-white mr-1"></i></a>
+                                    <a href="{{ path('new_infra') }}" class="btn btn-primary float-right ml-3" type="button"><i class="gd-plus text-white mr-1"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="collapse mt-2" id="recherche-employe">
+                                    <div class="row">
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label">Recherche</label>
+                                            <input type="text" id="mot-clee" placeholder="" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <button type="button" class="btn btn-soft-light" onclick="search()">
+                                                <i class="gd-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5" id="list-stock">
+                            <table class="table table-bordered scroll-x-perfect text-nowrap mb-0">
+                                <thead>
+                                <tr>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Ref
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Type
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Libelle 
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2">
+                                        Adresse
+                                    </th>
+                                    <th class="font-weight-semi-bold border-top-0 py-2"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="infra-table-body">
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mb-0 text-center" id="no-result">
+                            <div class="card-body text-muted"> Aucun élément</div>
+                        </div>
+                        <div class="col-md-12">
+                            <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                                <div class="row">
+                                    <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <!-- Pagination items will be dynamically inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                            
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script src="{{ asset('js/pagination.js') }}"></script>
+
+<script>
+    var page = 1;  // Page actuelle
+    var count = 1; // Nombre total de pages
+
+    function updateTableContent(infras) {
+        // Obtenir l'élément tbody du tableau
+        let tbody = document.getElementById('infra-table-body');
+        tbody.innerHTML = "";
+
+        function createRow(infra) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="py-3">${infra.refInfra}</td>
+                <td class="py-3">${infra.typeInfra}</td>
+                <td class="py-3">${infra.libelle}</td>
+                <td class="py-3">${infra.adresse}</td>
+                <td class="py-3">
+                    <div class="position-relative">
+                        <a class="link-dark d-inline-block" href="modifier-site/${infra.id}">
+                            <i class="gd-pencil icon-text"></i>
+                        </a>
+                        <a class="link-dark d-inline-block" href="#">
+                            <i class="gd-trash icon-text"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+            return tr;
+        }
+
+        if(infras.length == 0) {
+            document.getElementById('no-result').classList.remove('d-none');
+        } 
+        else {
+            document.getElementById('no-result').classList.add('d-none');
+            infras.forEach(function(infra) {
+                var tr = createRow(infra);
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function search() {
+        var data = {
+            page: page,
+            limit: getPreferenceLimitPerPage(),
+            motclee: document.getElementById('mot-clee').value
+        };
+        fetchZone(data);
+    }
+
+    function fetchZone(data) {
+        $.ajax({
+            url: "{{ path('search_infra_on_liste') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('zone-table-spinner').classList.remove('d-none');
+            },
+            success: function(response) {
+
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                var infras_loaded = data.infras;
+                console.log(infras_loaded);
+
+                count = infras_loaded.totalPages;
+
+                // Parcourir les résultats et remplir le tableau
+                updateTableContent(infras_loaded.results);
+
+                // Generer la pagination
+                generatePagination(page, count);
+                updatePaginationIndication(page, count);
+
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('zone-table-spinner').classList.add('d-none');
+            }
+        });
+        //document.getElementById('zone-table-spinner').style.display = "none";
+    }
+
+    function loadDataOfPage() {
+        search();
+    }
+
+    search();
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+.demo-style-switch-right {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #ffff;
+    border-color: #eeeeeee3;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    overflow: visible; /* Permet de rendre visible ce qui dépasse du conteneur */
+}
+
+.demo-style-switch-right:hover {
+    opacity: 1 !important;
+}
+
+.demo-style-switch-right .switched-options {
+    position: relative;
+}
+
+.demo-style-switch-right .switch-button {
+    opacity: 1 !important;
+    background: rgba(255, 255, 255, 0.9);;
+    padding: 10px;
+    font-size: 15px;
+    color: #222222 !important;
+    position: absolute;
+    left: -30px; /* Position en dehors du conteneur */
+    border-top-left-radius: 24%;
+    border-bottom-left-radius: 24%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    top: 40%;
+    z-index: 2000;
+    overflow: hidden; /* Cet overflow s'applique à l'intérieur du bouton */
+}
+
+.demo-style-switch-right .switch-button:hover {
+    color: #008ed6;
+    cursor: pointer;
+    text-decoration: none;
+}

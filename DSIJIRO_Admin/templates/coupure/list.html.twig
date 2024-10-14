@@ -1,0 +1,1139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jirama | Liste coupure{% endblock %}
+
+{% block menuactive %}coupure{% endblock %}
+
+{% block body %}
+
+<div class="py-4 px-3 px-md-4">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-md-4">
+                <div class="row">
+                    <div class="col-md-6 card-header ml-3 pb-0 mb-0">
+                        <!-- Breadcrumb -->
+                        <nav class="d-none d-md-block" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a>Coupure</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Liste</li>
+                            </ol>
+                        </nav>
+                        <!-- End Breadcrumb -->
+
+                        <div class="mb-md-2 d-flex justify-content-between">
+                            <h1 class="h3 mb-0">Prévision de coupure d'éléctricité</h1>
+                        </div>
+                        <div class="mb-3 text-muted">
+                            {# <h5>Consultez la Liste des infrastructures.</h5> #}
+                        </div>
+                        
+                    </div>
+                </div>
+
+            <div class="card-body pt-2 mt-2">
+                <div class="row">
+                    <div class="col-md-12 table-xl">
+                        <div class="toolbar row mb-3 mt-4">
+                            <div class="col">
+                                <a class="btn btn-light" style="width: 150px;" data-toggle="collapse" href="#recherche-employe" aria-expanded="false" aria-controls="form-elements">
+                                    <span class="menu-title">Filtre</span>
+                                    <sub><i class="gd-filter ml-1"></i></sub>
+                                </a>
+                                <div class="spinner-border spinner-border-sm text-info ml-4" role="status" id="list-coupures-spinner">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="col ml-auto">
+                                <div class="dropdown float-right">
+                                    <a class="btn btn-primary float-right ml-3" href="{{ path('list_zone') }}"><i class="gd-plus text-white mr-1"></i></a>
+                                    <a class="btn btn-primary float-right ml-3" href="{{ path('map_coupure') }}"><i class="gd-map-alt text-white mr-1"></i></a>
+                                    <button class="btn btn-secondary mr-3" type="button" id="actionMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Partager <i class="gd-sharethis icon-text icon-text-xs align-middle ml-3"></i></button>
+                                    <div class="dropdown-menu w-25" aria-labelledby="actionMenuButton">
+                                        {# <a class="dropdown-item" href="#" onclick="show_confirmation_popup()">Supprimer</a> #}
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#contact" onclick="load_contact()">Email</a>
+                                    </div>
+                                    <span class="dropdown">
+                                        <button class="btn btn-danger" type="button" id="actionMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="gd-import icon-text icon-text-xs align-middle"></i></button>
+                                        <div class="dropdown-menu" aria-labelledby="actionMenuButton2">
+                                            <a class="dropdown-item pointer" onclick="toPDF()">PDF</a>
+                                            <a class="dropdown-item pointer" onclick="setPdfCoupureContent()">PDF?</a>
+                                            <a class="dropdown-item" href="#">CSV</a>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="collapse mt-2" id="recherche-employe">
+                                    <div class="row">
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label">Niveau</label>
+                                            <select class="custom-select" id="niveau">
+                                                <option value="ref_zone">Secteur</option>
+                                                <option value="postes">Post</option>
+                                                <option value="lieux">Lieu</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label">Recherche</label>
+                                            <input type="text" id="motclee" placeholder="" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label" id="date">Date Debut</label>
+                                            <input type="date" id="date-debut" value="" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <label class="border-text-label" id="date">Date Fin</label>
+                                            <input type="date" id="date-fin" value="" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 with-border-text">
+                                            <button type="button" class="btn btn-soft-light" onclick="search()">
+                                                <i class="gd-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- table -->
+                        <table class="table table-responsive scroll-x-perfect scroll-y-perfect table-bordered">
+                            <thead>
+                                <tr role="row">
+                                    <th colspan="3">
+                                        Date
+                                        <a class='link-dark pointer' onclick="filter('desc')">&#8593;</a>
+                                        <a class='link-dark pointer' onclick="filter('asc')">&#8595;</a>
+                                    </th>
+                                    <th colspan="3">Localisation</th>
+                                    <th colspan="6">Propriété</th>
+                                </tr>
+                                <tr role="row">
+                                    <th></th>
+                                    <th>Début</th>
+                                    <th>Fin</th>
+                                    <th>Secteur</th>
+                                    <th>Postes coupes</th>
+                                    <th>Lieu</th>
+                                    <th>Motif</th>
+                                    <th>Abonnées importantes</th>
+                                    <th>Division</th>
+                                    <th>SA</th>
+                                    <th>Etat</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-table-body">
+                            </tbody>
+                        </table>
+
+                        <div class="mb-0 pt-2 text-center d-none" id="no-result">
+                            <div class="card-body text-muted"> Aucun élément trouvée</div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <nav aria-label="Table Paging" class="mb-0 mt-4 text-muted" id="pagination">
+                                <div class="row">
+                                    <div class="col-md-6 text-muted">Page <span id="curr-page">1</span> sur <span id="count-page">1</span></div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <!-- Pagination items will be dynamically inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model-Pdf content -->
+            <div class="card mb-3 mb-md-4">
+                <div class="card-body" id="root">
+                <div id="lipsum">
+                    <div class="row mb-4">
+                        <div class="d-flex ml-3 mt-4 text-12" style="margin-bottom: -5%;">
+                        <strong>RA L&M Voltage</strong>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="col-md-12" style="height: 20px;"></div>
+                            <div class="text-uppercase text-12"> <strong>Prévision de coupure d'éléctricitée</strong> </div>
+                            <div class="text-12"> 
+                            <span id="intervalle-coupure" class="text-light ml-1"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex ml-auto" style="margin-top: -5%;">
+                            <img src="{{ asset('img/logo-jirama-text.png') }}" height="50" alt="logo"/>
+                        </div>
+                    </div>
+                    <!-- table -->
+                    <table class="table table-min table-bordered">
+                        <thead>
+                            <tr role="row">
+                                <th rowspan="2">Date</th>
+                                <th colspan="2">Heure</th>
+                                <th rowspan="2"> Secteur</th>
+                                <th rowspan="2"> Postes coupes</th>
+                                <th rowspan="2"> Lieu</th>
+                                <th rowspan="2"> Motif</th>
+                                <th rowspan="2"> Abonnées importantes <br> ou Entreprises</th>
+                                <th rowspan="2"> Division</th>
+                                <th rowspan="2"> SA</th>
+                            </tr>
+                            <tr role="row">
+                                <th> Début</th>
+                                <th> Fin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-pdf-body">
+                            <!-- Liste des coupures selectionnees ici -->
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+            <!-- End Model-Pdf Content -->
+        </div>
+    </div>                            
+</div>
+{% endblock %}
+
+{% block modals %}
+{{ parent() }}
+
+
+<!-- Contact-Modal -->
+<div id="contact" class="modal fade" role="dialog" aria-labelledby="contact" aria-hidden="true" data-modal-size="xl">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Envoye email</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 input-group">
+                        <div class="input-group-append" onclick="sort_contacts()">
+                            <i class="gd-search icon-text mr-2 icon-text-sm"></i>
+                        </div>
+                        <input id="contact-search" class="form-control form-control-icon-text" placeholder="Entrez votre recherche..." type="text">
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn btn-soft-light float-right ml-3" data-toggle="collapse" href="#recherche-contact" aria-expanded="false" aria-controls="form-elements">
+                            <i class="gd-plus mr-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="collapse mt-2 ml-3" id="recherche-contact">
+                        <div class="row">
+                            <div class="col-md-6 with-border-text">
+                                <label class="border-text-label">Nom</label>
+                                <input type="text" id="contact-nom" placeholder="" class="form-control">
+                            </div>
+                            <div class="col-md-6 with-border-text">
+                                <label class="border-text-label">Prénom</label>
+                                <input type="text" id="contact-prenom" placeholder="" class="form-control">
+                            </div>
+                            <div class="col-md-6 with-border-text">
+                                <label class="border-text-label">Fonction</label>
+                                <input type="text" id="contact-fonction" placeholder="" class="form-control">
+                            </div>
+                            <div class="col-md-6 with-border-text">
+                                <label class="border-text-label">Adresse email</label>
+                                <input type="email" id="contact-email" placeholder="" class="form-control">
+                            </div>
+                            <div class="col-md-2 with-border-text">
+                                <button type="button" class="btn btn-primary" id="btn-add-contact" onclick="add_contact()" style="width: 82px;">
+                                    Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div id="contact-list" class="row scroll-y-perfect" style="overflow-y: scroll;height: 300px;">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="spinner-border spinner-border-sm text-danger" role="status">
+                                <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="send-email-message" class="col-md-8 text-danger text-center d-none">
+                    Echec de l'envoie de l'email
+                    <i id="send-email-fail" class="gd-help-alt icon-sm2 ml-2" data-toggle="tooltip" data-placement="top" title="Verifier votre connexion internet et assurez vous que les emails existent"></i>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-light pointer mr-2 text-white" data-dismiss="modal">Annuler</a>
+                    <a id="btn-send-email" class="btn btn-danger text-white pointer" onclick="sendEmails()" style="width: 88px;">Envoyer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Contact-Modal -->
+
+<!-- Confirmation-Modal -->
+<div id="confirmation" class="modal fade" role="dialog" aria-labelledby="confirmation" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div id="processing-icon">
+                        <div id="processing-result-info">
+                            <i class="gd-help icon-text icon-text-xxl d-block text-info mb-3 mb-md-4"></i>
+                        </div>
+                        <div class="d-none" id="processing-result-success">
+                            <i class="gd-check icon-text icon-text-xxl d-block text-success mb-3 mb-md-4"></i>
+                        </div>
+                        <div class="d-none" id="processing-result-error">
+                            <i class="gd-close icon-text icon-text-xxl d-block text-danger mb-3 mb-md-4"></i>
+                        </div>
+                        {# <i class="gd-check icon-text icon-text-xxl d-block text-success mb-3 mb-md-4 d-none"></i> #}
+                        <div class="spinner-border text-info mb-3 mb-md-4 d-none" role="status" id="processing-on">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="h5 font-weight-semi-bold mb-2">Etes-vous sûr ?</div>
+                    <p class="mb-3 mb-md-4">L'opération peut être irréversible</p>
+
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-light" href="#" data-dismiss="modal" id="hidde-confirmation">Annuler</a>
+                        <a id="confirm-link" class="btn btn-success ml-2" href="#" onclick="delete_coupure()">Confirmer</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Confirmation-Modal -->
+
+
+<!-- Coupure - Modal -->
+<div id="setCoupure" class="modal fade" role="dialog" aria-labelledby="setCoupure" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="{{ path('update_coupure') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        Modifier la prévision de coupure
+                        <i class="gd-info-alt icon-sm2 ml-2" data-toggle="tooltip" data-placement="bottom" title="Cette information de coupure peut être attachée à d'autres zones géographiques."></i>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-6">
+                            <label for="datedebut">Date début</label>
+                            <input type="datetime-local" class="form-control" id="cdatedebut" name="datedebut">
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label for="datefin">Date fin</label>
+                            <input type="datetime-local" class="form-control" id="cdatefin" name="datefin">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-6">
+                            <label for="division">Division</label>
+                            <input type="text" class="form-control" id="cdivision" name="division">
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label for="sa">SA</label>
+                            <input type="text" class="form-control" id="csa" name="sa">
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: -5%;">
+                        <div class="form-group col-12 col-md-12">
+                            <label for="motif">Motif</label>
+                            <textarea class="form-control" name="motif" id="cmotif" rows="3"></textarea>
+                            <div class="text-right mt-1">
+                                <a href="#" id="update-zone-link" class="small">
+                                    Modifier la zone gographique?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group hidden">
+                        <input type="text" class="form-control" id="cidcoupure" name="idcoupure">
+                        <input type="text" class="form-control" id="cemployeid" name="employeid">
+                        <input type="text" class="form-control" id="cetat" name="etat">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary pointer text-white" data-dismiss="modal">Annuler</a>
+                    <button type="submit" class="btn btn-primary text-white pointer" onclick="submit()">Confirmer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+<a class="" id="show-confirmation" data-toggle="modal" data-target="#confirmation">
+    <!-- -->
+</a>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('js/pagination.js') }}"></script>
+<script src="{{ asset('js/html2pdf.bundle.js') }}"></script>
+<script>
+    var page = 1;  // Page actuelle
+    var count = 1; // Nombre total de pages
+
+    var orderby = 'date_debut';
+    var orderinc = 'desc';
+
+    var contacts = null;
+
+    var coupures_loaded = null;
+
+    // Fonction pour gérer les changements des cases à cocher
+    function toggleCheckboxes() {
+        $('.select-all').on('change', function() {
+            var date = $(this).data('date');
+            $('.custom-control-input.' + date).prop('checked', $(this).prop('checked'));
+        });
+    }
+
+    function show_confirmation_popup() {
+        set_processing_icon(false, false, false);
+        document.getElementById("show-confirmation").click();
+    }
+
+    function get_coupure_selected() {
+        // Initialiser un tableau pour stocker les identifiants des coupures sélectionnées
+        var selectedCoupures = [];
+
+        var idZonesCoupee = '';
+        // Parcourir toutes les cases à cocher qui sont cochées
+        $('input.checkbox-coupure:checked').not('.select-all').each(function() {
+            // Extraire les donees coupure à partir de l'attribut `zonecoupee` de la case à cocher
+            var zonecoupee = $(this).data('zonecoupee');
+
+            console.log(zonecoupee);
+            // Ajouter l'ID de la coupure au tableau
+            selectedCoupures.push(zonecoupee);
+            // console.log(zonecoupee);
+            
+            // Ajouter l'ID à la chaîne
+            idZonesCoupee += `${zonecoupee.id},`;
+        });
+
+        if(selectedCoupures.length === 0) {
+            throw new Error('Aucun élément sélectionné');
+        }
+
+        return {
+            count: selectedCoupures.length,
+            list: selectedCoupures,
+            value: idZonesCoupee.slice(0, -1) // Enlever le dernier virgule
+        };
+    }
+
+    function toPDF() {
+        var selected = get_coupure_selected();
+
+        if(selected.count > 0) {
+            window.location.href = `/list-coupure/pdf/${selected.value}`;
+        } else {
+            show_exception_modal('Aucun élément séléctinnée');
+        }
+    }
+
+    function reload_contact() {
+        contacts = null;
+        load_contact();
+    }
+
+    function on_process(btnId, btnText, process) {
+        let btn = document.getElementById(btnId);
+        if(process) {
+            btn.innerHTML = `
+                <div id="spinner" class="spinner-border spinner-border-sm text-white" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            `;
+        } else {
+            btn.innerHTML = btnText;
+        }
+    }
+
+    function load_contact_content() {
+        let ctn_contact = document.getElementById('contact-list');
+
+        var contact_selected = get_contact_selected(); // Les contacts deja selectionnee pour le trie
+        
+        var all_contact = '';
+        contacts.forEach(contact => {
+            var isSelected = contact_selected.includes(`${contact.id}`);
+            var itm_contact = `
+                <div class="col-md-6">
+                    <div class="border-top p-3 px-md-4 mx-0">
+                        <div class="row justify-content-between small mb-2">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="badge badge-sm badge-danger rounded-circle ml-2">
+                                        ${contact.nom.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="ml-2" style="margin-top: -2%;">${contact.nom} ${contact.prenom}</div>
+                                    <div class="ml-2 text-muted text-12" style="margin-top: -5%;">
+                                        <em>${contact.email}</em>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-auto text-muted">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="checkbox-contact custom-control-input" id="contact-${contact.id}" ${isSelected ? 'checked' : ''}>
+                                    <label class="custom-control-label" for="contact-${contact.id}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            all_contact += itm_contact;
+        });
+
+        ctn_contact.innerHTML = all_contact;
+    }
+
+    function set_processing_icon(onprocess, success, error) {
+        var iconsuccess = document.getElementById("processing-result-success");
+        var iconinfo = document.getElementById("processing-result-info");
+        var icondanger = document.getElementById("processing-result-error");
+        var iconload = document.getElementById("processing-on");
+        if(onprocess) {
+            iconsuccess.classList.add("d-none");
+            iconinfo.classList.add("d-none");
+            icondanger.classList.add("d-none");
+            iconload.classList.remove("d-none");
+        } else {
+            iconload.classList.add("d-none");
+            if(success) {
+                iconsuccess.classList.remove("d-none");
+                iconinfo.classList.add("d-none");
+                icondanger.classList.add("d-none");
+            } else if(error) {
+                icondanger.classList.remove("d-none");
+                iconinfo.classList.add("d-none");
+                iconsuccess.classList.add("d-none");
+            } else {
+                iconinfo.classList.remove("d-none");
+                icondanger.classList.add("d-none");
+                iconsuccess.classList.add("d-none");
+            }
+        }
+    }
+
+    function delete_coupure() {
+        var selected = get_coupure_selected();
+
+        // Afficher ou traiter le JSON des coupures sélectionnées
+        console.log(selected);
+
+        // Vous pouvez maintenant envoyer ce JSON à votre serveur pour traiter la suppression
+        // Par exemple, via une requête AJAX :
+        $.ajax({
+            url: "{{ path('delete_coupure') }}",
+            method: 'POST',
+            data: {
+                coupures: selected
+            },
+            beforeSend: function() {
+                set_processing_icon(true, false, false);
+            },
+            success: function(response) {
+                // Traiter la réponse du serveur
+                console.log('Suppression réussie');
+                set_processing_icon(false, true, false);
+                //document.getElementById("hidde-confirmation").click();
+            },
+            error: function(error) {
+                // Gérer les erreurs
+                console.error('Erreur lors de la suppression');
+                set_processing_icon(false, false, true);
+            }
+        });
+    }
+
+    function search() {
+        page = 1;
+        orderinc = 'desc';
+        fetchListCoupure();
+    }
+
+    function filter(_orderinc) {
+        page = 1;
+        orderinc = _orderinc;
+        fetchListCoupure();
+    }
+
+    function setModalCoupureContent(zonecoupee) {
+        // Si zonecoupee est un string JSON, désérialiser
+        if (typeof zonecoupee === 'string') {
+            zonecoupee = JSON.parse(zonecoupee);
+        }
+
+        const date_debut = new Date(zonecoupee.coupure.dateDebut.timestamp * 1000);
+        const date_fin = new Date(zonecoupee.coupure.dateFin.timestamp * 1000);
+
+        document.getElementById('cdatedebut').value = date_debut.toISOString().slice(0,16);
+        document.getElementById('cdatefin').value = date_fin.toISOString().slice(0,16);
+        document.getElementById('cdivision').value = zonecoupee.coupure.division;
+        document.getElementById('csa').value = zonecoupee.coupure.sa;
+        document.getElementById('cmotif').value = zonecoupee.coupure.motif;
+        document.getElementById('cidcoupure').value = zonecoupee.coupure.id;
+        document.getElementById('cemployeid').value = zonecoupee.coupure.employeId;
+        document.getElementById('cetat').value = zonecoupee.coupure.etat;
+        document.getElementById('update-zone-link').href = `modifier-zone/${zonecoupee.zone.id}`;
+
+        // console.log('namana', zonecoupee.coupure.employeId, zonecoupee.coupure.etat);
+    }
+
+    function fetchListCoupure() {
+        let niv = document.getElementById('niveau').value;
+        var data = {
+            page: page,
+            limit: getPreferenceLimitPerPage(),
+            niv: niv,
+            motclee: document.getElementById('motclee').value,
+            orderby: orderby,
+            orderinc: orderinc,
+            datedebut: document.getElementById('date-debut').value,
+            datefin: document.getElementById('date-fin').value
+        };
+        //console.log(data);
+
+        $.ajax({
+            url: "{{ path('list_coupure_json') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                document.getElementById('list-coupures-spinner').classList.remove('d-none');
+            },
+            success: function(response) {
+                //console.log(response);
+
+                // Convertissez la chaîne JSON en objet JavaScript
+                let data = JSON.parse(response);
+
+                console.log(data.coupures); 
+
+                var coupures = data.coupures;
+                var zonescoupee = coupures.results;
+
+                coupures_loaded = zonescoupee;
+
+                // Obtenir l'élément tbody du tableau
+                let tbody = document.getElementById('list-table-body');
+                tbody.innerHTML = ""; // Vider le contenu existant du tableau
+
+                // Parcourir les résultats et remplir le tableau
+                if(coupures.results.length == 0) {
+                    document.getElementById('no-result').classList.remove('d-none');
+                } else {
+                    document.getElementById('no-result').classList.add('d-none');
+                    const currentDate = null;
+                    let previousDate = null;
+                    let row = 0;
+
+                    zonescoupee.forEach(function(zonecoupee) {
+                        // console.log(zonecoupee);
+                        const date_debut = new Date(zonecoupee.coupure.dateDebut.timestamp * 1000);
+                        const date_fin = new Date(zonecoupee.coupure.dateFin.timestamp * 1000);
+
+                        date_debut.setHours(date_debut.getHours() - 3);
+                        date_fin.setHours(date_fin.getHours() - 3);
+
+                        if (date_debut.toISOString().slice(0, 10) !== previousDate) {
+                            // Créer une nouvelle ligne pour la date
+                            const dateRow = `
+                                <tr role="group" class="bg-light text-white">
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input select-all" id="all-${date_debut.toISOString().slice(0,10)}" data-date="${date_debut.toISOString().slice(0,10)}">
+                                            <label class="custom-control-label" for="all-${date_debut.toISOString().slice(0,10)}"></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-capitalize" colspan="11"><strong>${date_debut.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</strong></td>
+                                </tr>
+                            `;
+                            
+                            tbody.insertAdjacentHTML('beforeend', dateRow);
+                            
+                            // Mettre à jour la date précédente
+                            previousDate = date_debut.toISOString().slice(0, 10);
+                        }
+
+                        // Créer une nouvelle ligne pour la zone coupée
+                        const zoneCoupeeRow = `
+                            <tr>
+                                <td>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input checkbox-coupure ${date_debut.toISOString().slice(0,10)}" 
+                                            id="zone-${zonecoupee.id}" 
+                                            data-date="${date_debut.toISOString().slice(0,10)}" 
+                                            data-zonecoupee='${JSON.stringify(zonecoupee)}'>
+                                        <label class="custom-control-label" for="zone-${zonecoupee.id}"></label>
+                                    </div>
+                                </td>
+                                <td>${date_debut.toLocaleTimeString().slice(0, 5)}</td>
+                                <td>${date_fin.toLocaleTimeString().slice(0, 5)}</td>
+                                <td>${zonecoupee.zone.refSecteur || ''}</td>
+                                <td>${zonecoupee.zone.postes}</td>
+                                <td>${zonecoupee.zone.lieux}</td>
+                                <td>${zonecoupee.coupure.motif}</td>
+                                <td></td>
+                                <td>${zonecoupee.coupure.division || ''}</td>
+                                <td>${zonecoupee.coupure.sa || ''}</td>
+                                <td><span class="badge badge-success">${zonecoupee.coupure.etat}</span></td>
+                                <td class="py-3">
+                                    <div class="position-relative">
+                                        <a class="link-dark d-inline-block pointer" data-toggle="modal" data-target="#setCoupure" onclick='setModalCoupureContent(${JSON.stringify(zonecoupee)})'>
+                                            <i class="gd-pencil icon-text"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        
+                        tbody.insertAdjacentHTML('beforeend', zoneCoupeeRow);
+                        
+                        // Incrermenter le nombre de ligne
+                        row++;
+                    });
+                    toggleCheckboxes();
+                }
+
+                count = coupures.totalPages;
+
+                // updatePaginationIndication();
+
+                //console.log(coupures);
+                document.getElementById('list-coupures-spinner').classList.add('d-none');
+
+                generatePagination(page, count);
+                updatePaginationIndication(page, count);
+            },
+            error: function() {
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+                document.getElementById('list-coupures-spinner').classList.add('d-none');
+            }
+        });
+    }
+
+    async function add_contact() {
+        var data = {
+            nom: document.getElementById('contact-nom').value,
+            prenom: document.getElementById('contact-prenom').value,
+            fonction: document.getElementById('contact-fonction').value,
+            email: document.getElementById('contact-email').value
+        };
+        $.ajax({
+            url: "{{ path('new_contact') }}",
+            method: 'POST',
+            contentType: 'application/json',  // Ajout du type de contenu JSON
+            data: JSON.stringify(data),  // Conversion en JSON
+            beforeSend: function() {
+                on_process('btn-add-contact', 'Ajouter', true);
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                console.log(data);
+                on_process('btn-add-contact', 'Ajouter', false);
+                reload_contact();
+            },
+            error: function() {
+                on_process('btn-add-contact', 'Ajouter', false);
+                // Masquer le spinner en cas d'erreur de la requête AJAX
+            }
+        });
+        //document.getElementById('loading-on-map').style.display = "none";
+    }
+
+    async function load_contact() {
+        if(!contacts) {
+            $.ajax({
+                url: "{{ path('list_contact') }}",
+                method: 'GET',
+                contentType: 'application/json',
+                dataType: 'json',
+                beforeSend: function() {
+                    //
+                },
+                success: function(response) {
+                    let data = JSON.parse(response);
+                    console.log(data)
+                    contacts = data.contacts;
+                    // Convertissez la chaîne JSON en objet JavaScript
+
+                    load_contact_content();
+                },
+                error: function() {
+                    // Masquer le spinner en cas d'erreur de la requête AJAX
+                }
+            });
+        } else {
+            load_contact_content();
+        }
+
+        //document.getElementById('loading-on-map').style.display = "none";
+    }
+
+    function get_contact_selected() {
+        // Initialiser un tableau pour stocker les identifiants des coupures sélectionnées
+        var selected_contact = [];
+
+        var count = 0;
+        // Parcourir toutes les cases à cocher qui sont cochées
+        $('input.checkbox-contact:checked').each(function() {
+            // Extraire l'ID de la coupure à partir de l'attribut `id` de la case à cocher
+            var contactId = $(this).attr('id').split('-')[1];
+
+            // Ajouter l'ID de la contact au tableau
+            selected_contact.push(contactId);
+        });
+
+        return selected_contact;
+    }
+
+    function getEmailsFromContactSelected() {
+        var ids = get_contact_selected();
+        return ids.map(id => {
+            const contact = contacts.find(c => `${c.id}` === id);
+            return contact ? contact.email : null;
+        }).filter(email => email !== null);
+    }
+
+    function sort_contacts() {
+        var search = document.getElementById('contact-search').value;
+        contacts.sort((a, b) => {
+            const aName = `${a.nom} ${a.prenom}`.toLowerCase();
+            const bName = `${b.nom} ${b.prenom}`.toLowerCase();
+
+            const aMatch = aName.includes(search.toLowerCase());
+            const bMatch = bName.includes(search.toLowerCase());
+
+            if (aMatch && bMatch) {
+                return aName.localeCompare(bName);
+            }
+
+            if (aMatch) return -1;
+            if (bMatch) return 1;
+
+            return 0;
+        });
+
+        load_contact();
+    }
+
+    function getIntervalleCoupureSelected(zonescoupee) {
+        const dateMin = new Date(zonescoupee.list[0].coupure.dateDebut.timestamp * 1000);
+        const dateMax = new Date(zonescoupee.list[zonescoupee.list.length - 1].coupure.dateDebut.timestamp * 1000);
+
+        // Options pour formater la date avec le jour et le mois en français
+        const optionsDayMonthYear = { day: 'numeric', month: 'long', year: 'numeric' };
+        const optionsDay = { day: 'numeric' };
+
+        // Comparer mois et année entre dateMin et dateMax
+        const sameMonth = dateMin.getMonth() === dateMax.getMonth();
+        const sameYear = dateMin.getFullYear() === dateMax.getFullYear();
+
+        // Capitaliser entièrement le mois
+        const capitalizeMonth = (date, options) => {
+            const formattedDate = date.toLocaleDateString('fr-FR', options);
+            return formattedDate.replace(
+                /([a-zA-Z]+)/,  // Remplacer le mois par sa version capitalisée
+                match => match.charAt(0).toUpperCase() + match.slice(1).toLowerCase()
+            );
+        };
+
+        let dateMinFormatted, dateMaxFormatted;
+
+        // Si même mois et même année, n'afficher que le jour pour la date de début
+        if (sameMonth && sameYear) {
+            dateMinFormatted = dateMin.toLocaleDateString('fr-FR', optionsDay);
+            dateMaxFormatted = capitalizeMonth(dateMax, optionsDayMonthYear);
+        } 
+        // Si même année mais mois différent, afficher jour et mois pour la date de début
+        else if (sameYear) {
+            dateMinFormatted = capitalizeMonth(dateMin, { day: 'numeric', month: 'long' });
+            dateMaxFormatted = capitalizeMonth(dateMax, optionsDayMonthYear);
+        } 
+        // Sinon, afficher toute la date
+        else {
+            dateMinFormatted = capitalizeMonth(dateMin, optionsDayMonthYear);
+            dateMaxFormatted = capitalizeMonth(dateMax, optionsDayMonthYear);
+        }
+
+        // Générer le texte d'intervalle
+        const intervalText = `${dateMinFormatted} au ${dateMaxFormatted}`;
+
+        return intervalText;
+    }
+
+    function setPdfCoupureContent() {
+        const zonescoupee = get_coupure_selected();
+        console.log(zonescoupee);
+        let tbody = document.getElementById('table-pdf-body');
+        tbody.innerHTML = ""; // Inialiser la table
+
+        zonescoupee.list.sort(function(a, b) {
+            return a.coupure.dateDebut.timestamp - b.coupure.dateDebut.timestamp;
+        });
+
+        const intervalle_coupure = getIntervalleCoupureSelected( zonescoupee);
+        document.getElementById('intervalle-coupure').innerHTML = `Du ${intervalle_coupure}`;
+ 
+        // Regrouper les zones par dateDebut
+        const groupedByDateDebut = {};
+
+        zonescoupee.list.forEach(function(zonecoupee) {
+            const dateDebutCoupure = new Date(zonecoupee.coupure.dateDebut.timestamp * 1000).toLocaleDateString('fr-FR');
+            
+            if (!groupedByDateDebut[dateDebutCoupure]) {
+                groupedByDateDebut[dateDebutCoupure] = [];
+            }
+            
+            groupedByDateDebut[dateDebutCoupure].push(zonecoupee);
+        });
+
+        // Parcourir les groupes et générer le tableau
+        Object.keys(groupedByDateDebut).forEach(function(dateDebutCoupure) {
+            const zonesForDate = groupedByDateDebut[dateDebutCoupure];
+            const rowspan = zonesForDate.length; // Nombre de lignes à fusionner
+
+            zonesForDate.forEach(function(zonecoupee, index) {
+                const dateDebut = new Date(zonecoupee.coupure.dateDebut.timestamp * 1000);
+                const dateFin = new Date(zonecoupee.coupure.dateFin.timestamp * 1000);
+
+                // Si c'est la première zone pour cette date, ajouter la cellule avec rowspan
+                const dateDebutCell = (index === 0) ? `
+                    <td class="text-center" rowspan="${rowspan}">
+                        ${capitalizeFirstLetter(dateDebut.toLocaleDateString('fr-FR', { weekday: 'long'}))} <br>
+                        ${dateDebut.toLocaleDateString('fr-FR')}
+                    </td>` : '';
+
+                // Créer une nouvelle ligne pour la zone coupée
+                const zoneCoupeeRow = `
+                    <tr>
+                        ${dateDebutCell}
+                        <td>${dateDebut.toLocaleTimeString().slice(0, 5)}</td>
+                        <td>${dateFin.toLocaleTimeString().slice(0, 5)}</td>
+                        <td>S5</td>
+                        <td>${zonecoupee.zone.postes}</td>
+                        <td>${zonecoupee.zone.lieux || '-'}</td>
+                        <td>${zonecoupee.coupure.motif}</td>
+                        <td></td>
+                        <td>${zonecoupee.coupure.division || ''}</td>
+                        <td>${zonecoupee.coupure.sa || ''}</td>
+                    </tr>
+                `;
+                
+                tbody.insertAdjacentHTML('beforeend', zoneCoupeeRow);
+            });
+        });
+    }
+
+    function getEmailFileBase64() {
+        return new Promise((resolve, reject) => {
+            const fileInput = document.getElementById('email-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                reject(new Error('Aucun fichier sélectionné'));
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                resolve({
+                    base64: e.target.result,
+                    name: file.name,
+                    type: file.type
+                });
+            };
+            
+            reader.onerror = function(error) {
+                reject(error);
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    }
+
+
+    function sendEmails1() {
+        getEmailFileBase64().then(data => {
+            const email = getEmailsFromContactSelected();
+
+            var data = {
+                email: email,
+                file: {
+                    name: data.name,
+                    type: data.type,
+                    base64: data.base64.split(',')[1]
+                }
+            };
+
+            $.ajax({
+                url: "{{ path('send_email') }}",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                beforeSend: function() {
+                    on_process('btn-send-email', 'Envoyer', true);
+                },
+                success: function(response) {
+                    let responseData = JSON.parse(response);
+                    console.log(responseData);
+
+                    on_process('btn-send-email', 'Envoyer', false);
+
+                    if (responseData.status === 1) {
+                        document.getElementById('send-email-message').classList.add('d-none');
+                    } else {
+                        document.getElementById('send-email-message').classList.remove('d-none');
+                        document.getElementById('send-email-fail').setAttribute('title', responseData.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    on_process('btn-send-email', 'Envoyer', false);
+                    console.error('Erreur lors de l\'envoi des emails:', error);
+                }
+            });
+        }).catch(error => {
+            console.error('Erreur lors de la lecture du fichier:', error);
+        });
+    }
+
+    async function sendEmails() {
+        on_process('btn-send-email', 'Envoyer', true);
+
+        try {
+            setPdfCoupureContent();
+
+            const email = getEmailsFromContactSelected();
+            const filePdf = await exportToPDFBase64('prevision-coupure-2024');
+
+            var data = {
+                email: email,
+                file: {
+                    name: filePdf.name,
+                    type: filePdf.type,
+                    base64: filePdf.base64
+                }
+            };
+
+            $.ajax({
+                url: "{{ path('send_email') }}",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    let responseData = JSON.parse(response);
+                    console.log(responseData);
+
+                    on_process('btn-send-email', 'Envoyer', false);
+
+                    if (responseData.status === 1) {
+                        document.getElementById('send-email-message').classList.add('d-none');
+                    } else {
+                        document.getElementById('send-email-message').classList.remove('d-none');
+                        document.getElementById('send-email-fail').setAttribute('title', responseData.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    on_process('btn-send-email', 'Envoyer', false);
+                    console.error('Erreur lors de l\'envoi des emails:', error);
+                }
+            });//*/
+        } catch(error) {
+            document.getElementById('send-email-message').classList.remove('d-none');
+            document.getElementById('send-email-message').innerHTML = error.message;
+            on_process('btn-send-email', 'Envoyer', false);
+
+            console.error('Erreur lors de l\'envoi des emails:', error);
+        }
+    }
+
+
+    function loadDataOfPage() {
+        fetchListCoupure();
+    }
+
+    function exportToPDF(name) {
+        // Get the element.
+        var element = document.getElementById('root');
+
+        // Generate the PDF.
+        html2pdf()
+            .from(element)
+            .set({
+                margin: 0,
+                filename: name,
+                html2canvas: { scale: 2 },
+                pagebreak: {mode: 'avoid all'},
+                jsPDF: {orientation: 'landscape', unit: 'in', format: 'letter', compressPDF: true}
+        }).save();
+    }
+
+    async function exportToPDFBase64(name) {
+        try {
+            // Get the element.
+            var element = document.getElementById('root');
+
+            // Generate the PDF and return it in Base64 format.
+            const pdfBase64 = await html2pdf().from(element).set({
+                margin: 0,
+                filename: name,
+                html2canvas: { scale: 2 },
+                pagebreak: { mode: 'avoid-all' },
+                jsPDF: { orientation: 'landscape', unit: 'in', format: 'letter', compressPDF: true }
+            }).output('datauristring');
+
+            // Return an object containing the PDF details
+            return {
+                type: 'application/pdf',
+                name: `${name}.pdf`,
+                base64: pdfBase64.split(',')[1] // Remove the prefix 'data:application/pdf;base64,'
+            };
+        } catch (error) {
+            console.error('Error generating PDF: ', error);
+            throw error;
+        }
+    }
+
+    search();
+
+</script>
+{% endblock %}

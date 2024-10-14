@@ -1,0 +1,14 @@
+{
+    "3": {
+        "Profil": "Admin",
+        "Roles": ["ROLE_ADMIN", "ROLE_OFFICER", "ROLE_CONSULTANT"]
+    },
+    "2": {
+        "Profil": "Officer",
+        "Roles": ["ROLE_OFFICER"]
+    },
+    "1": {
+        "Profil": "Consultant",
+        "Roles": ["ROLE_CONSULTANT"]
+    }
+}
