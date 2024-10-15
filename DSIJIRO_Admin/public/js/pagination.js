@@ -1,11 +1,11 @@
 function updatePaginationIndication(page, count) {
-    if(count == 0) { return; }
+    if(count == 0) { count = 1; }
     document.getElementById('curr-page').innerHTML = page;
     document.getElementById('count-page').innerHTML = count;
 }
 
 function generatePagination(page, count) {
-    if(count == 0) { return; }
+    if(count == 0) { count = 1; }
     var paginationContainer = document.querySelector('#pagination .pagination');
     paginationContainer.innerHTML = ''; // Réinitialiser le contenu
 

@@ -22,10 +22,12 @@
             <!-- Widget -->
             <div class="card flex-row align-items-center p-3 p-md-4">
                 <div class="icon icon-lg bg-soft-secondary rounded-circle mr-3">
-                    <span class="icon-text d-inline-block text-secondary word-icon">S</span>
+                    <span class="icon-text d-inline-block text-secondary word-icon">
+                        <img src="{{ asset('img/icon/map.svg') }}" height="20"/>
+                    </span>
                 </div>
                 <div>
-                    <h4 id="format-xxxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_secteur'] }}</h4>
+                    <h4 id="format-xxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_secteur'] }}</h4>
                     <h6 class="mb-0">Secteur éléctrique</h6>
                 </div>
                 <i class="gd-info-alt icon-text d-flex ml-auto text-muted pointer"></i>
@@ -37,10 +39,12 @@
             <!-- Widget -->
             <div class="card flex-row align-items-center p-3 p-md-4">
                 <div class="icon icon-lg bg-soft-warning rounded-circle mr-3">
-                    <span class="icon-text d-inline-block text-warning word-icon">P</span>
+                    <span class="icon-text d-inline-block text-warning word-icon">
+                        <img src="{{ asset('img/icon/map-pin.svg') }}" height="20"/>
+                    </span>
                 </div>
                 <div>
-                    <h4 id="format-xxxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_post'] }}</h4>
+                    <h4 id="format-xxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_post'] }}</h4>
                     <h6 class="mb-0">Poste éléctrique</h6>
                 </div>
                 <i class="gd-info-alt icon-text d-flex ml-auto text-muted pointer"></i>
@@ -52,10 +56,12 @@
             <!-- Widget -->
             <div class="card flex-row align-items-center p-3 p-md-4">
                 <div class="icon icon-lg bg-soft-danger rounded-circle mr-3">
-                    <span class="icon-text d-inline-block text-danger word-icon">A</span>
+                    <span class="icon-text d-inline-block text-danger word-icon">
+                        <img src="{{ asset('img/icon/agence.svg') }}" height="20"/>
+                    </span>
                 </div>
                 <div>
-                    <h4 id="format-xxxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_agence'] }}</h4>
+                    <h4 id="format-xxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_agence'] }}</h4>
                     <h6 class="mb-0">Agence</h6>
                 </div>
                 <i class="gd-info-alt icon-text d-flex ml-auto text-muted pointer"></i>
@@ -67,10 +73,12 @@
             <!-- Widget -->
             <div class="card flex-row align-items-center p-3 p-md-4">
                 <div class="icon icon-lg bg-soft-info rounded-circle mr-3">
-                    <span class="icon-text d-inline-block text-info word-icon">S</span>
+                    <span class="icon-text d-inline-block text-info word-icon">
+                        <img src="{{ asset('img/icon/shop.svg') }}" height="20"/>
+                    </span>
                 </div>
                 <div>
-                    <h4 id="format-xxxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_shop'] }}</h4>
+                    <h4 id="format-xxx" class="lh-1 mb-1">{{ statEffectif.tous['nb_shop'] }}</h4>
                     <h6 class="mb-0">Shop</h6>
                 </div>
                 <i class="gd-info-alt icon-text d-flex ml-auto text-muted pointer"></i>
@@ -194,12 +202,12 @@
     var orderinc = '';
 
     window.onload = function() {
-        let elements = document.querySelectorAll('[id^="format-xxxx"]');
+        let elements = document.querySelectorAll('[id^="format-xxx"]');
         elements.forEach(element => {
             let originalText = element.textContent;
             let number = parseInt(originalText.replace(/\D/g, ''));
 
-            let formattedNumber = number.toString().padStart(4, '0');
+            let formattedNumber = number.toString().padStart(3, '0');
             element.textContent = formattedNumber;
         });
 

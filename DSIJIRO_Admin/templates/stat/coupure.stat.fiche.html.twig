@@ -10,8 +10,6 @@
 {% endblock %}
 
 {% block body %}
-
-
 <div class="py-4 px-3 px-md-4">
     <div class="mb-md-0 d-flex justify-content-between">
         <h1 class="h3 mb-2">Tableau de bord</h1>
@@ -106,18 +104,20 @@
                                 </div>
                             </div>
 
-                            <!-- Line Chart -->
-                            <div id="lineChart"></div>
-                            <!-- End Line Chart -->
-
-                            <style>
-                                .d-none { display: none !important; };
-                            </style>
-                            <div class="mb-0 pt-10 pb-10 d-flex justify-content-center d-none" id="no-chart">
-                                <div class="card-body text-center">
-                                    Pas de représentation graphique
-                                </div>
+                            <div class="card-body text-center mb-4">
+                                <a class="link switch-chart hcoupure d-inline-block mr-4 active" onclick="switchChartType('hcoupure')">
+                                    Heure de coupure <i class="gd-pulse icon-text ml-1" style="color: #8069f2"></i>
+                                </a>
+                                <a class="link switch-chart fcoupure d-inline-block ml-4" onclick="switchChartType('fcoupure')">
+                                    Frequence de coupure <i class="gd-pulse icon-text ml-1" style="color: #0cdcB9"></i>
+                                </a>
                             </div>
+                            <!-- Demo Chart -->
+                            <div id="chart-container" style="margin-left: -2%;">
+                                <!-- Chart Graphique ici -->
+                            </div>
+                            <!-- End Demo Chart -->
+                            <hr>
                         </div>
                     </div>
                 </div>
@@ -187,6 +187,13 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('demo/chartist.js') }}"></script>
+    <script src="{{ asset('demo/chartist-plugin-tooltip.js') }}"></script>
+    <script src="{{ asset('demo/resizeSensor.js') }}"></script>
+    <script src="{{ asset('demo/gd.chartist-area.js') }}"></script>
+    <script src="{{ asset('demo/gd.chartist-bar.js') }}"></script>
+    <script src="{{ asset('demo/gd.chartist-donut.js') }}"></script>
+
     <script src="{{ asset('js/session.js') }}"></script>
 
     <script>
@@ -209,6 +216,8 @@
             ['annee', 'number']
         ]);
 
+        var chart_data = {};
+
         function initFilter() {
             var filter = getFilterFromSession();
             if(filter) {
@@ -220,14 +229,14 @@
             }
         }
 
-        function getDateGroupAxis(dateGroup, dateValue) {
+        function getDateGroupAxis2(dateGroup, dateValue) {
             switch (dateGroup) {
                 case 'mois':
                     const year = parseInt(dateValue.slice(0, 4));
                     const month = parseInt(dateValue.slice(5, 7)) - 1;
                     
                     const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
-                    return Array(lastDayOfMonth).fill().map((_, i) => `${i + 1}`);
+                    return Array(lastDayOfMonth).fill().map((_, i) => `${(i + 1).toString().padStart(2, '0')}/10/2024`); 
                 case 'annee':
                     return months;
                 default:
@@ -272,15 +281,16 @@
             inputElement.val(currentDateGroupFormat(group)); // Initialiser la valeur de l'input avec la date formatée
         }
 
-        function matchDateGroupFromData(dategroup, mydata, dateaxis) {
+        function matchDateGroupFromData2(dategroup, mydata, dateaxis) {
             var hcoupures = [];
             var fqcoupures = [];
 
             for (var i = 0; i < dateaxis.length; i++) {
                 var coupureMatch = mydata.find(coupure => { // Parcourir les donnees chargees
                     // comparer et completer les dates qui ont une valeur
+                    // console.log(coupure.niv_date);
                     if(dategroup === 'mois') {
-                        return coupure.niv_date.split('-')[2] === dateaxis[i].toString().padStart(2, '0')
+                        return coupure.niv_date.split('-')[2] === dateaxis[i].split('/')[0]
                     } else {
                         return months[parseInt(coupure.niv_date.split('-')[1]) - 1] === dateaxis[i]
                     }
@@ -291,11 +301,11 @@
                     var hours = parseFloat(coupureMatch.heure_total_coupure.split(':')[0]);
                     var minutes = parseFloat(coupureMatch.heure_total_coupure.split(':')[1]);
                     var decimalTime = hours + (minutes / 60);
-                    hcoupures.push(decimalTime);
-                    fqcoupures.push(coupureMatch.frequence_coupure);
+                    hcoupures.push({"meta":dateaxis[i],"value":decimalTime.toFixed(2)});
+                    fqcoupures.push({"meta":dateaxis[i],"value":coupureMatch.frequence_coupure});
                 } else {
-                    hcoupures.push(0);
-                    fqcoupures.push(0);
+                    hcoupures.push({"meta":dateaxis[i],"value":0});
+                    fqcoupures.push({"meta":dateaxis[i],"value":0});
                 }
             }
 
@@ -305,79 +315,107 @@
             };
         }
 
-        function updateChartContent(xaxis, yaxis) {
-            document.querySelector("#no-chart").classList.add('d-none');
-            // Assurez-vous que l'élément du chart existe
-            const chartElement = document.querySelector("#lineChart");
-            if (!chartElement) {
-                console.error("Le chart n'est pas trouvé dans le DOM.");
-                return;
+        function switchChartType(type) {
+            // Supprimer la classe active de tous les liens
+            document.querySelector('.link.switch-chart.active').classList.remove('active');
+            document.querySelector(`.link.switch-chart.${type}`).classList.add('active');
+
+            if(type === 'hcoupure') {
+                createDemoChart(chart_data.xaxis, chart_data.yaxis.hcoupures, type);
+            } else {
+                createDemoChart(chart_data.xaxis, chart_data.yaxis.fqcoupures, type);
             }
-
-            // Supprimez le chart existant
-            if (chart) {
-                chart.destroy();
-            }
-
-            if(xaxis.length == 0) {
-                document.querySelector("#no-chart").classList.remove('d-none');
-                return;
-            }
-
-            // Créez un nouveau chart avec les nouvelles données
-            chart = new ApexCharts(chartElement, {
-                series: [
-                    {
-                        name: "Heures coupure",
-                        data: yaxis.hcoupures
-                    },
-                    {
-                        name: "Frequence coupure",
-                        data: yaxis.fqcoupures
-                    }
-                ],
-                chart: {
-                    height: 400,
-                    type: 'line',
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'],
-                        opacity: 0.5
-                    },
-                },
-                xaxis: {
-                    categories: xaxis,
-                },
-                yaxis: {
-                    // max: 10
-                },
-                markers: {
-                    size: 5,
-                    strokeColors: '#fff',
-                    strokeWidth: 2,
-                },
-                legend: {
-                    position: 'top',
-                    horizontalAlign: 'center',
-                    offsetY: 10,
-                }
-            });
-
-            // Redessiner le chart
-            chart.render();
         }
 
+        // Parametre du chart en fonction du type et date
+        function chartCustomizedData(xaxis, yaxis, type) {
+            var high, labels, series, qty, lineColor, fillColor, unite;
 
+            if (dategroup === 'mois') {
+                // Créer xaxis_label avec format 'Mon DD'
+                const xaxis_label = xaxis.map(dateStr => {
+                    const [day, month, year] = dateStr.split('/');
+                    const monthAbbrev = months[parseInt(month) - 1]; 
+                    return `${monthAbbrev}. ${parseInt(day)}`;
+                });
+                high = 30, labels = xaxis_label, series = yaxis, qty = 7;
+                if (type === 'fcoupure') {
+                    high = 10;
+                }
+            } else {
+                let datevalue = document.getElementById('date-selector').value;
+                const yaxis_series = yaxis.map(value => ({
+                    "meta": `${value.meta}. ${datevalue}`,
+                    "value": value.value
+                }));
+                high = 50, labels = xaxis, series = yaxis_series, qty = 12;
+                if (type === 'fcoupure') {
+                    high = 20;
+                }
+            }
+
+            if(type === 'fcoupure') {
+                lineColor = ["#0cdcB9"], fillColor = ["rgba(28,240,221,.6)","rgba(255,255,255,.6)"], unite = "x";
+            } else {
+                lineColor = ["#8069f2"], fillColor = ["rgba(128,105,242,.7)","rgba(255,255,255,.6)"], unite = "h";
+            }
+
+            return {
+                high: high, labels: labels, series: series, unite: unite,
+                qty: qty, lineColor: lineColor, fillColor: fillColor
+            };
+        }
+
+        function createDemoChart(xaxis, yaxis, type) {
+            var chart_ctn = document.getElementById('chart-container');
+            chart_ctn.innerHTML = ""; // Effacer l'ancienne chart
+            
+            const cst_data = chartCustomizedData(xaxis, yaxis, type);
+
+            // Création de la nouvelle chart
+            var chart_div = `
+                <div class="js-area-chart chart chart--axis-x--nowrap chart--points-invisible position-relative mh-15_6 safari-overflow-hidden pt-4 pt-md-5 pb-1"
+                    data-series='${JSON.stringify([[...cst_data.series]])}'
+                    data-labels='${JSON.stringify(cst_data.labels)}'
+                    data-labels-qty="${JSON.stringify(cst_data.qty)}"
+                    data-labels-start-from="1"
+                    data-height="325"
+                    data-mobile-height="75"
+                    data-high="${JSON.stringify(cst_data.high)}"
+                    data-low="1000"
+                    data-offset-x="30"
+                    data-offset-y="60"
+                    data-is-line-smooth='[false]'
+                    data-line-width='["1px"]'
+                    data-line-colors='${JSON.stringify(cst_data.lineColor)}'
+                    data-fill-opacity=".4"
+                    data-is-fill-colors-gradient="true"
+                    data-fill-colors='${JSON.stringify([cst_data.fillColor])}'
+                    data-text-size-x="14px"
+                    data-text-color-x="#4a4e69"
+                    data-text-offset-top-x="10"
+                    data-text-align-axis-x="center"
+                    data-text-size-y="14px"
+                    data-text-color-y="#868e96"
+                    data-is-show-tooltips="true"
+                    data-is-tooltip-divided="true"
+                    data-tooltip-custom-class="chart-tooltip--divided chart-tooltip__value--bg-black chart-tooltip__meta--bg-primary small text-white"
+                    data-tooltip-currency="${cst_data.unite}"
+                    data-is-tooltip-currency-reverse="true"
+                    data-is-show-points="true"
+                    data-point-custom-class='chart__point--donut chart__point--has-line-helper chart__point--border-xxs border-primary rounded-circle'
+                    data-point-dimensions='{"width":8,"height":8}'>
+                    <div class="card-body text-center ct-no-result">
+                        ${xaxis.length === 0 ? "Pas de chart graphique" : ""}
+                    </div>
+                </div>
+            `;
+
+            chart_ctn.innerHTML = chart_div;
+
+            // Initialiser le graphique avec les nouvelles données
+            $.GDCore.components.GDChartistArea.init('.js-area-chart');
+        }
 
         function refresh() {
             fetchStatCoupure();
@@ -427,25 +465,22 @@
 
                     // Convertissez la chaîne JSON en objet JavaScript
                     let res = JSON.parse(response);
-
-
                     data = res.stats;
-                    console.log(data);
 
                     // Obtenir l'élément tbody du tableau
                     let tbody = document.getElementById('stat-table-body');
                     // document.getElementById('tab-niv-col').innerHTML = niv;
                     tbody.innerHTML = ""; // Vider le contenu existant du tableau
 
+                    var _xaxis = getDateGroupAxis2(dategroup, datevalue);
+                    var _yaxis = matchDateGroupFromData2(dategroup, data.results, _xaxis);
 
-                    var xaxis = getDateGroupAxis(dategroup, datevalue);
-
-                    var yaxis = matchDateGroupFromData(dategroup, data.results, xaxis);
-
-                    updateChartContent(xaxis, yaxis);
+                    chart_data = {
+                        xaxis: _xaxis,
+                        yaxis: _yaxis
+                    };
+                    createDemoChart(_xaxis, _yaxis.hcoupures, 'hcoupure');
                     // timeChart();
-
-                    console.log(yaxis);
 
                     // Parcourir les résultats et remplir le tableau
                     if(data.results.length == 0) {
@@ -485,5 +520,10 @@
                 }
             });
         }
+    </script>
+    <script>
+        $.GDCore.components.GDChartistArea.init('.js-area-chart');
+        $.GDCore.components.GDChartistBar.init('.js-bar-chart');
+        $.GDCore.components.GDChartistDonut.init('.js-donut-chart');
     </script>
 {% endblock %}

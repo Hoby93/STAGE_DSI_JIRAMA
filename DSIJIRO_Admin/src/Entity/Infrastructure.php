@@ -56,6 +56,13 @@ class Infrastructure
         return $this->id_infra;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id_infra = $id;
+
+        return $this;
+    }
+
     public function getRefInfra(): ?string
     {
         return $this->refInfra;

@@ -431,16 +431,18 @@
         var idZonesCoupee = '';
         // Parcourir toutes les cases à cocher qui sont cochées
         $('input.checkbox-coupure:checked').not('.select-all').each(function() {
-            // Extraire les donees coupure à partir de l'attribut `zonecoupee` de la case à cocher
-            var zonecoupee = $(this).data('zonecoupee');
+            var idcoupurezone = $(this).data('idcoupurezone');
+            // Rechercher l'élément avec l'ID
+            var zonecoupee = coupures_loaded.find(function(coupurezone) {
+                return coupurezone.id === idcoupurezone;
+            });
 
-            console.log(zonecoupee);
             // Ajouter l'ID de la coupure au tableau
             selectedCoupures.push(zonecoupee);
             // console.log(zonecoupee);
             
             // Ajouter l'ID à la chaîne
-            idZonesCoupee += `${zonecoupee.id},`;
+            idZonesCoupee += `${idcoupurezone},`;
         });
 
         if(selectedCoupures.length === 0) {
@@ -701,7 +703,8 @@
                                         <input type="checkbox" class="custom-control-input checkbox-coupure ${date_debut.toISOString().slice(0,10)}" 
                                             id="zone-${zonecoupee.id}" 
                                             data-date="${date_debut.toISOString().slice(0,10)}" 
-                                            data-zonecoupee='${JSON.stringify(zonecoupee)}'>
+                                            data-zonecoupee='${JSON.stringify(zonecoupee)}'
+                                            data-idcoupurezone='${zonecoupee.id}'>
                                         <label class="custom-control-label" for="zone-${zonecoupee.id}"></label>
                                     </div>
                                 </td>
@@ -864,6 +867,7 @@
         const optionsDay = { day: 'numeric' };
 
         // Comparer mois et année entre dateMin et dateMax
+        const sameDay = dateMin.getDay() === dateMax.getDay();
         const sameMonth = dateMin.getMonth() === dateMax.getMonth();
         const sameYear = dateMin.getFullYear() === dateMax.getFullYear();
 
@@ -878,8 +882,11 @@
 
         let dateMinFormatted, dateMaxFormatted;
 
+        if (sameDay && sameMonth && sameYear) {
+            return `${dateMinFormatted = capitalizeMonth(dateMax, optionsDayMonthYear)}`;
+        }
         // Si même mois et même année, n'afficher que le jour pour la date de début
-        if (sameMonth && sameYear) {
+        else if (sameMonth && sameYear) {
             dateMinFormatted = dateMin.toLocaleDateString('fr-FR', optionsDay);
             dateMaxFormatted = capitalizeMonth(dateMax, optionsDayMonthYear);
         } 

@@ -4,6 +4,12 @@
   font-size: 0.75rem;
   line-height: 1; }
 
+.ct-no-result {
+  margin-bottom: -20% !important;
+  color: #6c757d;
+  height: 75px;
+}
+
 .ct-chart-line .ct-label,
 .ct-chart-bar .ct-label {
   display: block;

@@ -115,6 +115,7 @@ class InfraController extends AbstractController
 
         $infra = new Infrastructure();
         $infra->setRefInfra($request->request->get('refInfra'))
+                       ->setId($request->request->get('idinfra'))
                        ->setTypeInfra($typeInfraId)
                        ->setFktId($request->request->get('fktId'))
                        ->setLibelle($request->request->get('libelle'))
@@ -135,16 +136,11 @@ class InfraController extends AbstractController
                          "ven:{$horaire['ven']['ouverture']}-{$horaire['ven']['fermeture']};";
         $infra->setHoraire($horaireString);
 
-        // $em->getRepository(Infrastructure::class)->save($infra); // Inserer le site
+        $em->getRepository(Infrastructure::class)->update($infra); // Modifier le site
 
         // var_dump($infra);
 
-        // return $this->redirectToRoute('new_infra'); // Modifier cette route selon vos besoins
-        $tinfras = $em->getRepository(TypeInfrastructure::class)->findAll();
-        return $this->render('infra/new.html.twig', [
-            'controller_name' => 'InfraController',
-            'typeinfras' => $tinfras,
-        ]);
+        return $this->redirectToRoute('list_infra'); // Modifier cette route selon vos besoins
     }
 
     #[Route('/infrastructure/liste/recherche', name: 'search_infra_on_liste', methods: ['POST'])]

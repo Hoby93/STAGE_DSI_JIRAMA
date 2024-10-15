@@ -420,7 +420,7 @@
 
 .word-icon {
     font-size: 1.8em !important;
-    margin-top: -2px;
+    margin-top: -5px;
 }
 
 .btn-form {
@@ -668,4 +668,18 @@
 .counter-input:focus {
     outline: none;
     border-color: #999;
+}
+
+.link.switch-chart {
+    color: #999;
+    border-bottom: 2px solid #99999900;
+    cursor: pointer;
+}
+
+.link.switch-chart:hover {
+    border-bottom: 2px solid #999;
+}
+
+.link.switch-chart.active {
+    border-bottom: 2px solid #999;
 }

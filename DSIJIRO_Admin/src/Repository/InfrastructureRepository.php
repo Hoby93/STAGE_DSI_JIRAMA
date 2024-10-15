@@ -44,6 +44,30 @@ class InfrastructureRepository extends ServiceEntityRepository
         ]);
     }
 
+    public function update($site): void
+    {
+        $query = "
+            UPDATE infrastructure set 
+                ref_infra = :ref, type_infra = :type, fkt_id = :fkt, libelle = :libelle, 
+                adresse = :adresse, contact = :contact, descr = :descr, horaire = :horaire, coord = ST_GeomFromText(:point)
+            Where id_infra = :id
+        ";
+
+        // Exécution de la requête avec executeStatement pour obtenir le nombre de lignes affectées
+        $this->getEntityManager()->getConnection()->executeStatement($query, [
+            'ref' => $site->getRefInfra(),
+            'type' => $site->getTypeInfra(),
+            'fkt' => $site->getFktId(),
+            'libelle' => $site->getLibelle(),
+            'adresse' => $site->getAdresse(),
+            'contact' => $site->getContact(),
+            'descr' => $site->getDescr(),
+            'horaire' => $site->getHoraire(),
+            'point' => $site->getCoordToPoint(),
+            'id' => $site->getId(),
+        ]);
+    }
+
     public function countResult($sql, $limit) {
         $countSql = "
             SELECT 

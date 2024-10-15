@@ -409,12 +409,12 @@
         fetchZone(data);
     }
 
-    function fetchZone(data) {
+    function fetchZone(rq_data) {
         $.ajax({
             url: "{{ path('search_zone') }}",
             method: 'POST',
             contentType: 'application/json',  // Ajout du type de contenu JSON
-            data: JSON.stringify(data),  // Conversion en JSON
+            data: JSON.stringify(rq_data),  // Conversion en JSON
             beforeSend: function() {
                 document.getElementById('zone-table-spinner').classList.remove('d-none');
             },
@@ -423,9 +423,9 @@
                 zones_loaded = [];
 
                 // Convertissez la chaîne JSON en objet JavaScript
-                let data = JSON.parse(response);
+                let data_loaded = JSON.parse(response);
 
-                zones_loaded = data.zones;
+                zones_loaded = data_loaded.zones;
                 // console.log(zones_loaded);
 
                 count = zones_loaded.totalPages;
@@ -434,8 +434,10 @@
                 updateTableContent(zones_loaded.results);
 
                 // Generer la pagination
-                generatePagination(page, count);
-                updatePaginationIndication(page, count);
+                generatePagination(rq_data.page, count);
+                updatePaginationIndication(rq_data.page, count);
+
+                console.log(`On est a page ${rq_data.page} sur ${count} `);
 
                 document.getElementById('zone-table-spinner').classList.add('d-none');
             },
