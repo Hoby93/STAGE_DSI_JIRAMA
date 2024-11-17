@@ -70,7 +70,7 @@
                                 <div class="collapse mt-2" id="recherche-employe">
                                     <div class="row">
                                         <div class="col-md-4 with-border-text">
-                                            <label class="border-text-label">Niveau</label>
+                                            <label class="border-text-label">Recherche par</label>
                                             <select class="custom-select" id="niveau">
                                                 <option value="ref_zone">Secteur</option>
                                                 <option value="postes">Post</option>
@@ -78,7 +78,7 @@
                                             </select>
                                         </div>
                                         <div class="col-md-4 with-border-text">
-                                            <label class="border-text-label">Recherche</label>
+                                            <label class="border-text-label">Recherche de</label>
                                             <input type="text" id="motclee" placeholder="" class="form-control">
                                         </div>
                                         <div class="col-md-4 with-border-text">
@@ -153,7 +153,7 @@
             </div>
 
             <!-- Model-Pdf content -->
-            <div class="card mb-3 mb-md-4">
+            <div class="card mb-3 mb-md-4 d-none">
                 <div class="card-body" id="root">
                 <div id="lipsum">
                     <div class="row mb-4">
@@ -370,7 +370,7 @@
                             <textarea class="form-control" name="motif" id="cmotif" rows="3"></textarea>
                             <div class="text-right mt-1">
                                 <a href="#" id="update-zone-link" class="small">
-                                    Modifier la zone gographique?
+                                    Modifier la zone géographique?
                                 </a>
                             </div>
                         </div>
@@ -917,8 +917,8 @@
             return a.coupure.dateDebut.timestamp - b.coupure.dateDebut.timestamp;
         });
 
-        const intervalle_coupure = getIntervalleCoupureSelected( zonescoupee);
-        document.getElementById('intervalle-coupure').innerHTML = `Du ${intervalle_coupure}`;
+        window.dateIntCoup = getIntervalleCoupureSelected( zonescoupee);
+        document.getElementById('intervalle-coupure').innerHTML = `Du ${window.dateIntCoup}`;
  
         // Regrouper les zones par dateDebut
         const groupedByDateDebut = {};
@@ -1045,12 +1045,11 @@
 
     async function sendEmails() {
         on_process('btn-send-email', 'Envoyer', true);
-
         try {
             setPdfCoupureContent();
 
             const email = getEmailsFromContactSelected();
-            const filePdf = await exportToPDFBase64('prevision-coupure-2024');
+            const filePdf = await exportToPDFBase64('Prevision-Coupure-' + window.dateIntCoup);
 
             var data = {
                 email: email,

@@ -107,7 +107,7 @@
                                                             <div class="nav flex-column nav-pills" id="v-pills-tab3" role="tablist" aria-orientation="vertical">
                                                                 <a class="nav-link py-3 active" id="v-pills-home-tab3" data-toggle="pill" href="#v-site-info" role="tab" aria-controls="v-site-info" aria-selected="true"><i class="gd-info"></i></span></a>
                                                                 <a class="nav-link py-3" id="v-pills-profile-tab3" data-toggle="pill" href="#v-site-horaire" role="tab" aria-controls="v-site-horaire" aria-selected="false"><i class="gd-calendar"></i></span></a>
-                                                                <a class="nav-link py-3" id="v-pills-messages-tab3" data-toggle="pill" href="#v-site-autre" role="tab" aria-controls="v-site-autre" aria-selected="false"><i class="gd-stats-up"></i></a>
+                                                                <a class="nav-link py-3" id="v-pills-messages-tab3" data-toggle="pill" href="#v-site-autre" role="tab" aria-controls="v-site-autre" aria-selected="false"><i class="gd-archive"></i></a>
                                                             </div>
                                                             <div class="tab-content tab-icon-content scroll-x-perfect scroll-y-perfect ml-1" id="v-pills-tabContent3" style="width: 500px !important;">
                                                                 <div class="tab-pane fade show active" id="v-site-info" role="tabpanel" aria-labelledby="v-pills-home-tab3">
@@ -123,7 +123,7 @@
                                                                                 <span class="text-right" id="site-adresse">Anosizato, 145Bis</span>
                                                                             </div>
                                                                             <div class="col-md-12 card-desc d-flex justify-content-between">
-                                                                                <span class="text-left"><i class="gd-crown"></i></span>
+                                                                                <span class="text-left"><i class="gd-bookmark"></i></span>
                                                                                 <span class="text-right" id="site-type" data-number="5">Shop</span>
                                                                             </div>
                                                                             <div class="col-md-12 card-desc d-flex justify-content-between">
@@ -154,7 +154,7 @@
                                                                         {# <dt class="mb-2"><em>Post coupee</em></dt> #}
                                                                         <div class="mb-2">
                                                                             <h6 class="text-uppercase text-muted">
-                                                                                <strong style="font-size: 0.8em">Statistique</strong>
+                                                                                <strong style="font-size: 0.8em">Archives</strong>
                                                                             </h6>
                                                                         </div>
                                                                         <div id="site-stat">
@@ -261,6 +261,13 @@
             document.getElementById('search-map-spinner').classList.add('d-none');
         }
 
+        function getTypeSiteTitle(type) {
+            if(type === 1) {
+                return "<span class='badge text-uppercase'>Shop</span>";
+            }
+            return "<span class='badge text-uppercase'>Agence</span>";
+        }
+
         // Fonction pour vérifier si la carte est en plein écran
         function checkFullscreenStatus() {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -279,7 +286,7 @@
 
 
     <script>
-        var map = L.map('map').setView([-18.922647647936802, 47.46631766551795], 12);
+        var map = L.map('map').setView([-18.90807288872151, 47.53393650054932], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
@@ -306,5 +313,10 @@
 
         // Charger les sites sur la vue du carte
         loadSiteOnView("{{ path('visible_infra') }}");
+
+        // Rafraîchir les sites visibles lors du déplacement de la carte
+        map.on('moveend', function() {
+            loadSiteOnView("{{ path('visible_infra') }}");
+        });
     </script>
 {% endblock %}

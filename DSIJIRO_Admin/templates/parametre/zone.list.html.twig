@@ -31,7 +31,7 @@
                         <!-- End Breadcrumb -->
 
                         <div class="mb-md-2 d-flex justify-content-between">
-                            <h1 class="h3 mb-0">List des Zones géographique</h1>
+                            <h1 class="h3 mb-0">Liste des Zones géographique</h1>
                         </div>
                         {# <div class="mb-3 text-muted">
                             <h5>Consultez la Liste des Types de finition Disponibles pour la Construction Immobilière.</h5>
@@ -63,7 +63,6 @@
                                 <div class="col ml-auto">
                                     <div class="dropdown float-right">
                                         <a href="{{ path('new_zone') }}" class="btn btn-primary float-right ml-3" type="button"><i class="gd-plus text-white mr-1"></i></a>
-                                        <a class="btn btn-primary float-right pointer ml-3"  data-toggle="modal" data-target="#carte"><i class="gd-map-alt text-white mr-1"></i></a>
                                         <button class="btn btn-secondary mr-3" type="button" id="actionMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Action <i class="gd-angle-down icon-text icon-text-xs align-middle ml-3"></i></button>
                                         <div class="dropdown-menu" aria-labelledby="actionMenuButton">
                                             <a class="dropdown-item pointer" id="btn-addCoupure" data-toggle="modal" data-target="#addCoupure">Coupure</a>
@@ -96,13 +95,13 @@
                                         Lieux
                                     </th>
                                     <th class="font-weight-semi-bold border-top-0 py-2">
-                                        Postes
+                                        Poste(s) éléctrique(s)
                                     </th>
                                     <th class="font-weight-semi-bold border-top-0 py-2">
-                                        Specificitee
+                                        Spécificité
                                     </th>
                                     <th class="font-weight-semi-bold border-top-0 py-2">
-                                        Priorite
+                                        Priorité
                                     </th>
                                     <th class="font-weight-semi-bold border-top-0 py-2"></th>
                                 </tr>
@@ -308,6 +307,42 @@
         // Obtenir l'élément tbody du tableau
         let tbody = document.getElementById('zone-table-body');
 
+        function formatLieux(lieux, maxPartLength) {
+            // Diviser la chaîne en un tableau d'éléments séparés par des tirets
+            const lieuArray = lieux.split('-');
+            
+            // Compter le nombre total de caractères
+            let totalChars = lieuArray.reduce((sum, item) => sum + item.length, 0);
+            
+            if (totalChars <= maxPartLength) {
+                return lieux;
+            }
+            
+            // Découper le texte en parties de maxPartLength caractères maximum
+            const parts = [];
+            let currentPart = '';
+            let currentCharCount = 0;
+            
+            for (let i = 0; i < lieuArray.length; i++) {
+                const part = lieuArray[i];
+                if (currentCharCount + part.length + 1 <= maxPartLength) {
+                    currentPart += (currentPart ? '-' : '') + part;
+                    currentCharCount += part.length + (currentPart ? 1 : 0);
+                } else {
+                    parts.push('-' + currentPart);
+                    currentPart = part;
+                    currentCharCount = part.length;
+                }
+            }
+            
+            if (currentPart) {
+                parts.push('-' + currentPart);
+            }
+            
+            // Reformater le texte avec des sauts de ligne
+            return parts.map(part => `<span>${part}</span>`).join('<br>');
+        }
+
         function createRow(zone, isChecked, isNew) {
             var tr = document.createElement('tr');
             tr.className = "pointer text-center";
@@ -324,10 +359,12 @@
                         '<span class="d-inline-block position-relative p-2"><span class="indicator indicator-warning indicator-bordered indicator-top-right rounded-circle"></span></span>'
                     : ''}
                 </td>
-                <td class="py-3">${zone.lieux || '-'}</td>
+                <td class="py-3">
+                    <div class="show-all-part">${formatLieux(zone.lieux, 40) || '-'}</div>
+                </td>
                 <td class="py-3">${zone.postes || '-'}</td>
                 <td class="py-3">${zone.specificite || '-'}</td>
-                <td class="py-3">${zone.degree || '-'}</td>
+                <td class="py-3">${getDegreeStyle(zone.degree)}</span></td>
                 <td id="action" class="py-3">
                     <div class="position-relative">
                         <a class="link-dark d-inline-block" href="modifier-zone/${zone.id}">
@@ -392,6 +429,13 @@
                 }
             });
         }
+    }
+
+    function getDegreeStyle(degree) {
+        if(degree > 1) {
+            return `<span class='badge badge-warning'>${degree}</span>`;
+        }
+        return `<span class='badge badge-primary'>${degree}</span>`;
     }
 
     function search() {

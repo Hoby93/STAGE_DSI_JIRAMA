@@ -64,7 +64,7 @@ class CoupureController extends AbstractController
     {
         // Décoder le contenu JSON du requette
         $data = json_decode($request->getContent());
-        $filtre = new Filtre($data->page, $data->limit, $data->niv, '', $data->orderby, $data->orderinc, '?', '?');
+        $filtre = new Filtre($data->page, $data->limit, $data->niv, $data->motclee, $data->orderby, $data->orderinc, '?', '?');
         $filtre->setDateInterval($data->datedebut, $data->datefin);
 
         $zonesCoupee = $this->zoneCoupeeService->fetchZoneCoupeeByFilter($filtre);
@@ -106,7 +106,7 @@ class CoupureController extends AbstractController
         $coupure->init(
             null, // id
             null, // ref
-            1,
+            null, // confid
             null, // date_saisie
             null, // date_annonce
             \DateTime::createFromFormat('Y-m-d\TH:i', $request->request->get('datedebut')),
@@ -140,7 +140,7 @@ class CoupureController extends AbstractController
         $coupure->init(
             null, // id
             null, // ref
-            1,
+            null, // confidentialitee
             null, // date_saisie
             null, // date_annonce
             \DateTime::createFromFormat('Y-m-d\TH:i', $request->request->get('datedebut')),
@@ -288,6 +288,7 @@ class CoupureController extends AbstractController
         $data = json_decode($request->getContent()); // il y a {message: "hello world"} mais comment l extraire
         $jsoncoords = json_encode($data->coord);
 
+        $map_bounds = PolygonType::convertJsonToPolygonWKT($jsoncoords);
         // $zoneCoupee = new zoneCoupee();
         // $zoneCoupee->setCoordByJson($jsoncoords);
 

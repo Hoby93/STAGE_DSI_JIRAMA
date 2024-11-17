@@ -182,8 +182,11 @@ async function loadZoneCoupeeOnMap() {
     document.getElementById('loading-on-map').style.display = "none";
 }
 
-function loadZoneCoupeeOnView(api) {
+function loadZoneCoupeeOnView(api, move) {
     var boundsview = getBoundsView();
+    if(!move && !boundsview) {
+        boundsview = window.rectangle.getLatLngs();
+    }
     if(boundsview) {
         const startTime = flatpickrInstance1.formatDate(flatpickrInstanceToDate(flatpickrInstance1), 'Y-m-d H:i:ss');
         const endTime = flatpickrInstance2.formatDate(flatpickrInstanceToDate(flatpickrInstance2), 'Y-m-d H:i:ss');
@@ -196,7 +199,6 @@ function loadZoneCoupeeOnView(api) {
         // console.log(boundsview);
         var data = {
             coord: boundsview,
-            date: "2024-08-16",
             debut: startTime,
             fin: endTime
         };

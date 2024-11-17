@@ -107,6 +107,13 @@ function loadSiteOnView(api) {
     }
 }
 
+function getTypeSiteTitle(type) {
+    if(type === 1) {
+        return "<span class='badge text-uppercase'>Shop</span>";
+    }
+    return "<span class='badge text-uppercase'>Agence</span>";
+}
+
 
 async function fetchSiteNearestOfUser(api, user_coord) {
     $.ajax({

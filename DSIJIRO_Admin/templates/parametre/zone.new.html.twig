@@ -61,7 +61,7 @@
                                 <div class="col-md-12">
                                     <div class="form-row">
                                         <div class="form-group col-12 col-md-6">
-                                            <label for="secteur">Secteur</label>
+                                            <label for="secteur">Secteur éléctrique</label>
                                             <select class="custom-select" id="secteur" name="refsecteur">
                                                 <option value="">Choisissez...</option>
                                             </select>
@@ -82,9 +82,9 @@
                                                 <i class="gd-location-pin accordion-icon icon-text mr-2"></i>
                                                 <h5 class="mb-0">Lieu(x)</h5>
 
-                                                <div class="ml-40">
+                                                <div class="ml-4">
                                                     <i class="gd-location-arrow accordion-icon icon-text mr-2 ml-auto"></i>
-                                                    <input class="b-none h5 mb-0 col-6" id="ref-zone" name="refZone" type="text" placeholder="Référence du zone..." required>
+                                                    <input class="b-none h5 mb-0 col-8" style="width: 300px;" id="ref-zone" name="refZone" type="text" placeholder="Référence du zone..." required>
                                                 </div>
                                                 <i class="accordion-control gd-angle-down icon-text ml-auto"></i>
                                             </header>
@@ -118,7 +118,7 @@
                                                 data-toggle="collapse"
                                                 data-target="#borderedAccordion-2">
                                                 <i class="gd-location-pin accordion-icon icon-text mr-2"></i>
-                                                <h5 class="mb-0">Poste electrique</h5>
+                                                <h5 class="mb-0">Poste(s) éléctrique(s)</h5>
                                                 <i class="accordion-control gd-angle-down icon-text ml-auto"></i>
                                             </header>
 
@@ -180,7 +180,7 @@
                                                 <div>
                                                     <strong class="d-block mb-1">
                                                         Information
-                                                        <i class="gd-files icon-text ml-2 icon-size-sm link link-primary pointer" onclick="setMapAlertInfoSpecInput()"></i>
+                                                        <i class="gd-files icon-text ml-2 icon-size-sm link link-primary pointer" id="copy-spec" onclick="setMapAlertInfoSpecInput()"></i>
                                                     </strong>
                                                     <p class="mb-1" id="map-info-spec">
                                                         <span class="alert-left-bordered-sm border-primary-darker pl-1">Hopital: <strong>00</strong></span>
@@ -199,7 +199,7 @@
                                                 <div>
                                                     <strong class="d-block mb-1">
                                                         Lieu(x) trouvé
-                                                        <i class="gd-files icon-text ml-2 icon-size-sm link text-success pointer" onclick="setMapAlertInfoLieuInput()"></i>
+                                                        <i class="gd-files icon-text ml-2 icon-size-sm link text-success pointer" id="copy-place" onclick="setMapAlertInfoLieuInput()"></i>
                                                     </strong>
                                                     <p class="mb-1" id="map-info-lieu">
                                                         <!-- List de lieu ici -->
@@ -413,8 +413,15 @@
         fetchZoneProperty();
     }
 
+    function checkCopyLink(_id, _add, _remove) {
+        var cp = document.getElementById(_id);
+        cp.classList.remove(_remove);
+        cp.classList.add(_add);
+    }
+
     function setMapAlertInfoSpecInput() {
         document.getElementById('spec').value = info_spec;
+        checkCopyLink('copy-spec', 'gd-check', 'gd-files');
     }
 
     function setMapAlertInfoLieuInput() {
@@ -422,11 +429,14 @@
         info_lieu.forEach(lieu => {
             createInputElement(lieu.name, 'primary', 'lieu-list');
         });
+        checkCopyLink('copy-place', 'gd-check', 'gd-files');
     }
 
     function setMapAlertInfoSpecContent(spec) {
+        if(!spec) {
+            spec = 'hopital:0;prison:0;abonnee:0';
+        }
         info_spec = spec;
-        var spec = 'hopital:1;prison:0;abonnee:0';
         var infoSpec = document.getElementById('map-info-spec');
 
         var items = spec.split(';');

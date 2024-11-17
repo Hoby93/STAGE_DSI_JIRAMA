@@ -88,7 +88,7 @@
                 <!-- User Avatar -->
                 <div class="dropdown mx-3 dropdown ml-2">
                     <a id="profileMenuInvoker" class="header-complex-invoker" href="#" aria-controls="profileMenu" aria-haspopup="true" aria-expanded="false" data-unfold-event="click" data-unfold-target="#profileMenu" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                        <span class="mr-md-2 avatar-placeholder">{{ app.user.nom|first }}</span>
+                        <span class="mr-md-2 avatar-placeholder">{{ app.user.prenom|first }}</span>
                         <span class="d-md-block">{{ app.user.nom }} {{ app.user.prenom }}</span>
                         <i class="gd-angle-down d-md-block ml-2"></i>
                     </a>
@@ -132,7 +132,7 @@
     <aside id="sidebar" class="js-custom-scroll side-nav">
         <ul id="sideNav" class="side-nav-menu side-nav-menu-top-level mb-0">
             <!-- Title -->
-            <li class="sidebar-heading h6">Basic</li>
+            <li class="sidebar-heading h6">Basique</li>
             <!-- End Title -->
 
             <!-- Home -->
@@ -199,7 +199,7 @@
                         <a class="side-nav-menu-link" href="{{ path('map_infra') }}">Carte</a>
                     </li>
                     <li class="side-nav-menu-item">
-                        <a class="side-nav-menu-link" href="{{ path('new_infra') }}">Nouveau</a>
+                        <a class="side-nav-menu-link" href="{{ path('new_infra') }}">Insertion</a>
                     </li>
                 </ul>
                 <!-- End infra: subInfra -->
@@ -215,7 +215,7 @@
                     <span class="side-nav-menu-icon d-flex mr-3">
                             <i class="gd-plug target"></i>
                         </span>
-                            <span class="side-nav-fadeout-on-closed media-body target">Parametrage</span>
+                            <span class="side-nav-fadeout-on-closed media-body target">Paramétrage</span>
                             <span class="side-nav-control-icon d-flex">
                         <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
                     </span>
@@ -262,9 +262,6 @@
                     <li class="side-nav-menu-item">
                         <a class="side-nav-menu-link" href="{{ path('map_coupure') }}">Carte</a>
                     </li>
-                    <li class="side-nav-menu-item">
-                        <a class="side-nav-menu-link" href="{{ path('list_zone') }}">Nouvelle</a>
-                    </li>
                 </ul>
                 <!-- End Users: subCoupure -->
             </li>
@@ -274,32 +271,6 @@
             <!-- Title -->
             <li class="sidebar-heading h6">Autre</li>
             <!-- End Title -->
-
-            {% if is_granted('ROLE_OFFICER') %}
-            <!-- Com -->
-            <li class="side-nav-menu-item side-nav-has-menu com">
-                <a class="side-nav-menu-link media align-items-center" href="#"
-                   data-target="#subCom">
-                  <span class="side-nav-menu-icon d-flex mr-3">
-                    <i class="gd-headphone-alt target"></i>
-                  </span>
-                    <span class="side-nav-fadeout-on-closed media-body target">Communication</span>
-                    <span class="side-nav-control-icon d-flex">
-                <i class="gd-angle-right side-nav-fadeout-on-closed"></i>
-              </span>
-                    <span class="side-nav__indicator side-nav-fadeout-on-closed"></span>
-                </a>
-
-                <!-- Com: subCom -->
-                <ul id="subCom" class="side-nav-menu side-nav-menu-second-level mb-0">
-                    <li class="side-nav-menu-item">
-                        <a class="side-nav-menu-link" href="{{ path('to_send_email') }}">Email</a>
-                    </li>
-                </ul>
-                <!-- End Com: subCom -->
-            </li>
-            <!-- End Com -->
-            {% endif %}
             
             {% if is_granted('ROLE_ADMIN') %}
             <!-- Users -->
@@ -325,7 +296,6 @@
                 <!-- End Users: subUsers -->
             </li>
             <!-- End Users -->
-            {% endif %}
 
             <!-- Settings -->
             <li class="side-nav-menu-item side-nav-has-menu config">
@@ -350,14 +320,15 @@
                 <!-- End Settings: subSettings -->
             </li>
             <!-- End Settings -->
+            {% endif %}
 
             <!-- Security -->
             <li class="side-nav-menu-item">
                 <a class="side-nav-menu-link media align-items-center" href="/">
               <span class="side-nav-menu-icon d-flex mr-3">
-                <i class="gd-shield"></i>
+                <i class="gd-headphone-alt"></i>
               </span>
-                    <span class="side-nav-fadeout-on-closed media-body">Securité</span>
+                    <span class="side-nav-fadeout-on-closed media-body">Support Tech.</span>
                 </a>
             </li>
             <!-- End Security -->
@@ -389,7 +360,7 @@
                 </div>
 
                 <div class="col-lg text-center text-lg-right">
-                    &copy; 2023 Graindashboard. Tout droit reservee.
+                    &copy; 2024 Jiro sy Rano Malagasy. Admin App.
                 </div>
             </div>
         </footer>

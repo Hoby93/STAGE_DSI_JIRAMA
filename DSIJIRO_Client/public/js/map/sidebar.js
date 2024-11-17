@@ -185,7 +185,7 @@ function set_sidebar_content_by_site(site) {
     document.getElementById("site-libelle").innerHTML = site.libelle;
     document.getElementById("site-descr").innerHTML = site.descr;
     document.getElementById("site-adresse").innerHTML = site.adresse;
-    document.getElementById("site-type").innerHTML = site.typeInfra;
+    document.getElementById("site-type").innerHTML = getTypeSiteTitle(site.typeInfra);
     document.getElementById("site-distance").innerHTML = site.distance + " km";
     document.getElementById("site-contact").innerHTML = site.contact;
 

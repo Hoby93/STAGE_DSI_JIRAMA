@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Doctrine\PolygonType;
 use App\Entity\Filtre;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -154,7 +155,7 @@ class InfraController extends AbstractController
         
         // Combinaison des données dans une structure de données associative
         $data = [
-            'infras' => $infras
+            'infras' => $infras,
         ];
 
         // echo(new JsonResponse($zonesCoupee));
@@ -166,18 +167,18 @@ class InfraController extends AbstractController
     public function getVisibleinfra(Request $request, EntityManagerInterface $em): JsonResponse
     {
         // Décoder le contenu JSON du requette
-        // $data = json_decode($request->getContent()); // il y a {message: "hello world"} mais comment l extraire
-        // $jsoncoords = json_encode($data->coord);
+        $data = json_decode($request->getContent()); // il y a {message: "hello world"} mais comment l extraire
+        $jsoncoords = json_encode($data->coord);
 
-        // $infra = new infra();
-        // $infra->setCoordByJson($jsoncoords);
+        $map_bounds = PolygonType::convertJsonToPolygonWKT($jsoncoords);
 
-        // $infras = $em->getRepository(infra::class)->getAllIntersect($infra);
-        $infras = $em->getRepository(Infrastructure::class)->findAll();
+        $infras = $em->getRepository(Infrastructure::class)->getAllIntersect($map_bounds);
+        //$infras = $em->getRepository(Infrastructure::class)->findAll();
 
         // Combinaison des données dans une structure de données associative
         $data = [
-            'infras' => $infras
+            'infras' => $infras,
+            'bounds' => $map_bounds
         ];
 
         // echo(new JsonResponse($infras));

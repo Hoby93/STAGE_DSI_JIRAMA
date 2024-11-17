@@ -23,6 +23,28 @@ class InfrastructureRepository extends ServiceEntityRepository
         parent::__construct($registry, Infrastructure::class);
     }
 
+    public function getAllIntersect($wkt_coord)
+    {
+        // Définissez votre requête SQL
+        $sql = "SELECT i.* FROM infrastructure i  WHERE ST_Within(coord, ST_GeomFromText(:polygon))";
+    
+        // Créez un ResultSetMapping
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+
+        // Ajoutez le mapping pour l'entité ZoneVente
+        $rsm->addRootEntityFromClassMetadata('App\Entity\Infrastructure', 'i');
+
+        // Préparez la requête native
+        $nativeQuery = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $nativeQuery->setParameter('polygon', $wkt_coord);
+
+        // Exécutez la requête et obtenez le résultat
+        $results = $nativeQuery->getResult();
+
+        // Retournez le résultat
+        return $results;
+    }
+
     public function save($site): void
     {
         $query = "

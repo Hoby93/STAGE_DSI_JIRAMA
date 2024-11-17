@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Jirama | Nouveau infrastructure{% endblock %}
+{% block title %}Jirama | Midifier Site{% endblock %}
 
 {% block othercss %}
     <link rel="stylesheet" href="{{ asset('leaflet/leaflet.css') }}">
@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-12 col-md-6">
-                                                <label for="reference">Reference</label>
+                                                <label for="reference">Référence</label>
                                                 <input type="text" class="form-control" value="{{ infra.refInfra }}" id="reference" name="refInfra">
                                             </div>
                                             <div class="form-group col-12 col-md-6">
@@ -65,7 +65,7 @@
                                         </div>
                                          <div class="form-row">
                                             <div class="form-group col-12 col-md-12">
-                                                <label for="description">Description(s)</label>
+                                                <label for="description">Description</label>
                                                 <textarea class="form-control" name="descr" id="description" rows="3">{{ infra.descr }}</textarea>
                                             </div>
                                         </div>

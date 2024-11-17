@@ -467,6 +467,30 @@
     overflow-x: scroll;
 }
 
+.td-adjusted {
+    max-width: 300px;       /* Limite la largeur maximale */
+    word-wrap: break-word;  /* Permet de couper les mots longs pour aller à la ligne */
+    word-break: break-word; /* Force la coupure de mots si nécessaire */
+    overflow: hidden;       /* Cache tout contenu qui dépasse la hauteur maximale */
+}
+
+.td-adjusted .show-all-part {
+    position: relative;      /* Nécessaire pour le positionnement de l'animation */
+    animation: scroll 10s linear infinite; /* Ajoute une animation infinie */
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
 .text-capitalize {
     text-transform: capitalize;
 }
@@ -682,4 +706,24 @@
 
 .link.switch-chart.active {
     border-bottom: 2px solid #999;
+}
+
+.icon-slashed {
+    position: relative;
+}
+
+.icon-slashed::after {
+    content: '';
+    position: absolute;
+    margin-top: 5%;
+    top: 20%;
+    left: 5%;
+    width: 150%;
+    height: 100%;
+    border-top: 0.05px solid #6c757d; /* La couleur et l'épaisseur de la ligne barrée */
+    transform: rotate(-45deg);
+}
+
+.side-nav-menu-link:hover .icon-slashed::after {
+    border-top: 0.05px solid #265df1;
 }

@@ -11,7 +11,7 @@ function getBoundsView() {
     var movedoutside = updateStoredBounds(visibleBounds.north, visibleBounds.south, visibleBounds.east, visibleBounds.west);
 
     // Vérifier si storedBounds est vide ou si la vue de la carte va à l'extérieur du rectangle tracé
-    if (movedoutside || true) {
+    if (movedoutside) {
         var north = visibleBounds.north;
         var south = visibleBounds.south;
         var east = visibleBounds.east;
@@ -22,27 +22,16 @@ function getBoundsView() {
             [north, east]  // Coin nord-est
         ];
 
-        // Tracer un rectangle avec les nouvelles limites pour visualiser l'aire englobante
-        var rectangleOptions = {
-            color: 'blue', // Couleur du contour
-            weight: 2, // Épaisseur du contour
-            fillColor: 'rgba(0, 0, 255, 0.05)', // Couleur de remplissage transparente pour visualisation
-            fillOpacity: 0.2 // Opacité du remplissage
-        };
-
-        //console.log("MySQL Query to get zones within the rectangle:", coord_str_wkt);
-        // console.log("** We load data **");
-
         // Supprimer l'ancien rectangle s'il existe
         if (window.rectangle) {
             map.removeLayer(window.rectangle);
         }
 
         // Ajouter le nouveau rectangle à la carte
-    // window.rectangle = L.rectangle(newBounds, rectangleOptions).addTo(map);
+        window.rectangle = L.rectangle(newBounds);
 
-        // return window.rectangle.getLatLngs();
-        return true;
+        return window.rectangle.getLatLngs();
+        // return true;
     }
 
     return null;

@@ -155,10 +155,10 @@ class PolygonType extends Type
                 'latitude' => $point['lat'], 
                 'longitude' => $point['lng']
             ];
-            $polygon_str .= $point['lng'] . ' ' . $point['lat'] . ', ';
+            $polygon_str .= $point['lat'] . ' ' . $point['lng'] . ', ';
         }
         // Fermer le polygone en ajoutant le premier point à la fin
-        $polygon_str .= $polygon[0]['longitude'] . ' ' . $polygon[0]['latitude'] . '))'; 
+        $polygon_str .= $polygon[0]['latitude'] . ' ' . $polygon[0]['longitude'] . '))'; 
         return $polygon_str;
     }
 

@@ -44,7 +44,7 @@ async function loadSitesOnMap() {
     document.getElementById('loading-on-map').style.display = "block";
 
     // Supprimer tous les marqueurs
-    // removeSiteOnMap();
+    removeSiteOnMap();
 
     for (const site of site_loaded) {
         var icon = await get_icon(`${site.typeInfra}`);
@@ -61,12 +61,6 @@ async function loadSitesOnMap() {
 function loadSiteOnView(api) {
     var boundsview = getBoundsView();
     if(boundsview) {
-        //console.log(JSON.stringify({ bounds: rectangle.getLatLngs() }));
-
-        // Mettre à jour les limites de la carte avec les nouvelles limites
-        // map.fitBounds(newBounds, { padding: [50, 50] }); // Le padding peut être ajusté selon vos besoins
-        // console.log(boundsview);
-
         $.ajax({
             url: api,
             method: 'POST',
@@ -82,7 +76,7 @@ function loadSiteOnView(api) {
                 let data = JSON.parse(response);
 
                 site_loaded = data.infras;
-                // console.log(site_loaded);
+                // console.log(data);
 
                 loadSitesOnMap();
             },

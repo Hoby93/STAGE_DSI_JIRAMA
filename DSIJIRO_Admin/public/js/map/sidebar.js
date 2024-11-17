@@ -77,17 +77,17 @@ function set_sidebar_content_by_coupure(zone_coupee) {
     var postes = zone_coupee.zone.postes.split('-');
 
     // Ajouter les badges à l'élément div
-    // var postesCoupee = document.getElementById('postes-coupee');
-    // postesCoupee.innerHTML = "";
-    // postes.forEach(function(post) {
-    //     // Créer un nœud DOM à partir de la chaîne HTML
-    //     var badgeNode = document.createElement('span');
-    //     badgeNode.className = 'badge btn btn-outline-primary mr-1';
-    //     badgeNode.textContent = post;
+    var postesCoupee = document.getElementById('postes-coupee');
+    postesCoupee.innerHTML = "";
+    postes.forEach(function(post) {
+        // Créer un nœud DOM à partir de la chaîne HTML
+        var badgeNode = document.createElement('span');
+        badgeNode.className = 'badge btn btn-outline-primary mr-1';
+        badgeNode.textContent = post;
 
-    //     // Ajouter le nœud DOM à l'élément parent
-    //     postesCoupee.appendChild(badgeNode);
-    // });
+        // Ajouter le nœud DOM à l'élément parent
+        postesCoupee.appendChild(badgeNode);
+    });
 
     function createEvent(coupure) {
         // Convertir les timestamps Unix en objets Date
@@ -178,7 +178,7 @@ function set_sidebar_content_by_site(site) {
     document.getElementById("site-libelle").innerHTML = site.libelle;
     document.getElementById("site-descr").innerHTML = site.descr;
     document.getElementById("site-adresse").innerHTML = site.adresse;
-    document.getElementById("site-type").innerHTML = site.typeInfra;
+    document.getElementById("site-type").innerHTML = getTypeSiteTitle(site.typeInfra);
     document.getElementById("site-ref").innerHTML = site.refInfra;
     document.getElementById("site-contact").innerHTML = site.contact;
     document.getElementById("update-link").href = "modifier-site/" + site.id;

@@ -34,7 +34,7 @@ class ParametrageService
         $motclee = addslashes($motclee);
         
         $sql = "
-            SELECT * FROM secteur_electrique where ref_secteur like '%{$motclee}%' limit 5
+            SELECT * FROM secteur_electrique where ref_secteur like '%{$motclee}%' limit 10
         ";
 
         // Exécutez la requête et obtenez les résultats sous forme associative

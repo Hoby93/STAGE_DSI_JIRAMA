@@ -17,7 +17,7 @@
                         <nav class="d-none d-md-block" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a>Sites</a>
+                                    <a>Site</a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Liste</li>
                             </ol>
@@ -74,7 +74,7 @@
                                 <thead>
                                 <tr>
                                     <th class="font-weight-semi-bold border-top-0 py-2">
-                                        Ref
+                                        Réf
                                     </th>
                                     <th class="font-weight-semi-bold border-top-0 py-2">
                                         Type
@@ -135,7 +135,7 @@
             var tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="py-3">${infra.refInfra}</td>
-                <td class="py-3">${infra.typeInfra}</td>
+                <td class="py-3">${getTypeShopBadge(infra.typeInfra)}</td>
                 <td class="py-3">${infra.libelle}</td>
                 <td class="py-3">${infra.adresse}</td>
                 <td class="py-3">
@@ -171,6 +171,13 @@
             motclee: document.getElementById('mot-clee').value
         };
         fetchZone(data);
+    }
+
+    function getTypeShopBadge(type) {
+        if(type === 1) {
+            return "<span class='badge badge-primary'>Shop</span>";
+        }
+        return "<span class='badge badge-secondary'>Agence</span>";
     }
 
     function fetchZone(data) {

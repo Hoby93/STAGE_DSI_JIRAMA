@@ -104,7 +104,7 @@
                                 </div>
                             </div>
 
-                            <div class="card-body text-center mb-4">
+                            <div class="card-body text-center mb-10">
                                 <a class="link switch-chart hcoupure d-inline-block mr-4 active" onclick="switchChartType('hcoupure')">
                                     Heure de coupure <i class="gd-pulse icon-text ml-1" style="color: #8069f2"></i>
                                 </a>
@@ -236,7 +236,7 @@
                     const month = parseInt(dateValue.slice(5, 7)) - 1;
                     
                     const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
-                    return Array(lastDayOfMonth).fill().map((_, i) => `${(i + 1).toString().padStart(2, '0')}/10/2024`); 
+                    return Array(lastDayOfMonth).fill().map((_, i) => `${(i + 1).toString().padStart(2, '0')}/${(month+1).toString().padStart(2, '0')}/${year}`); 
                 case 'annee':
                     return months;
                 default:
@@ -360,6 +360,8 @@
                 lineColor = ["#8069f2"], fillColor = ["rgba(128,105,242,.7)","rgba(255,255,255,.6)"], unite = "h";
             }
 
+            // console.log(labels);
+
             return {
                 high: high, labels: labels, series: series, unite: unite,
                 qty: qty, lineColor: lineColor, fillColor: fillColor
@@ -385,7 +387,7 @@
                     data-low="1000"
                     data-offset-x="30"
                     data-offset-y="60"
-                    data-is-line-smooth='[false]'
+                    data-is-line-smooth='["simple"]'
                     data-line-width='["1px"]'
                     data-line-colors='${JSON.stringify(cst_data.lineColor)}'
                     data-fill-opacity=".4"

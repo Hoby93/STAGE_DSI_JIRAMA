@@ -274,6 +274,10 @@ class ZoneElectrique
 
     // Definir la prioritee du zone geographique en fonction des specificites enregistree
     public function initDegree(): void { 
+        if(!$this->specificite) {
+            $this->degree = 1;
+            return;
+        }
         // Définir les clés spéciales à vérifier
         $specialKeys = ['hopital', 'prison'];
         
